@@ -112,6 +112,14 @@
     </main>
   </div>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <div id="backupConfirm" class="backup-confirm" role="dialog" aria-modal="true" aria-labelledby="backupConfirmTitle" hidden>
+    <div class="backup-confirm-card">
+      <h2 id="backupConfirmTitle">Confirmar importación</h2>
+      <p id="backupConfirmDetails"></p>
+      <p>Esto reemplazará los datos guardados en esta versión de la app.</p>
+      <div class="backup-confirm-actions"><button id="cancelBackupImport" class="button secondary" type="button">Cancelar</button><button id="confirmBackupImport" class="button primary" type="button">Importar y aplicar</button></div>
+    </div>
+  </div>
   <script src="app.js"></script>
 </body>
 </html>

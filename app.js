@@ -313,6 +313,7 @@
     localStorage.setItem(THEME_KEY, nextTheme);
     updateThemeControl();
   });
+  let pendingBackupImport = null;
   $('#exportBackup').addEventListener('click', () => {
     const backup = { app: 'GRUPODGH', version: 1, exportedAt: new Date().toISOString(), data: state };
     const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
@@ -336,14 +337,31 @@
         flash('Ese archivo no es un respaldo válido de GRUPODGH.');
         return;
       }
-      if (!window.confirm('Importar este respaldo reemplazará los datos actuales de esta app. ¿Quieres continuar?')) return;
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(imported));
-      flash('Respaldo importado. Recargando la app…');
-      setTimeout(() => window.location.reload(), 350);
+      pendingBackupImport = imported;
+      $('#backupConfirmDetails').textContent = `Archivo: ${file.name}. Se importarán ${imported.models.length} modelos, ${imported.entries.length} ingresos y sus tasas.`;
+      $('#backupConfirm').hidden = false;
     } catch {
       flash('No se pudo importar. Revisa que el archivo sea un respaldo válido.');
     } finally {
       event.target.value = '';
+    }
+  });
+  $('#cancelBackupImport').addEventListener('click', () => {
+    pendingBackupImport = null;
+    $('#backupConfirm').hidden = true;
+  });
+  $('#confirmBackupImport').addEventListener('click', () => {
+    if (!pendingBackupImport) return;
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(pendingBackupImport));
+      pendingBackupImport = null;
+      $('#backupConfirm').hidden = true;
+      flash('Respaldo importado. Recargando la app…');
+      setTimeout(() => window.location.reload(), 350);
+    } catch {
+      pendingBackupImport = null;
+      $('#backupConfirm').hidden = true;
+      flash('No se pudo guardar el respaldo en este navegador.');
     }
   });
   $('#entryDate').value = todayISO();
