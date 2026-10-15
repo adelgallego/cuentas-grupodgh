@@ -47,7 +47,7 @@
 
       <section class="backup-panel" aria-label="Respaldo y transferencia de datos">
         <div><b>Respaldo de datos</b><p>Transfiere modelos, ingresos y tasas entre la app local y la versión web.</p></div>
-        <div class="backup-actions"><button id="exportBackup" class="button secondary" type="button">Descargar respaldo</button><button id="importBackup" class="button secondary" type="button">Importar respaldo</button><input id="backupFile" type="file" accept=".json,application/json" hidden></div>
+        <div class="backup-actions"><button id="exportBackup" class="button secondary" type="button">Descargar respaldo</button><label id="importBackup" class="button secondary" for="backupFile" tabindex="0" role="button">Importar respaldo</label><input id="backupFile" class="backup-file-input" type="file" accept=".json,application/json"></div>
       </section>
 
       <section class="summary-grid" aria-label="Resumen de ingresos">

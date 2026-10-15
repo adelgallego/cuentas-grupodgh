@@ -326,7 +326,12 @@
     setTimeout(() => URL.revokeObjectURL(url), 1000);
     flash('Respaldo descargado.');
   });
-  $('#importBackup').addEventListener('click', () => $('#backupFile').click());
+  $('#importBackup').addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      $('#backupFile').click();
+    }
+  });
   $('#backupFile').addEventListener('change', async (event) => {
     const file = event.target.files?.[0];
     if (!file) return;
