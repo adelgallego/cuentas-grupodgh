@@ -45,6 +45,11 @@
         <span class="saved-indicator" id="saveIndicator">● Guardado</span>
       </section>
 
+      <section class="backup-panel" aria-label="Respaldo y transferencia de datos">
+        <div><b>Respaldo de datos</b><p>Transfiere modelos, ingresos y tasas entre la app local y la versión web.</p></div>
+        <div class="backup-actions"><button id="exportBackup" class="button secondary" type="button">Descargar respaldo</button><button id="importBackup" class="button secondary" type="button">Importar respaldo</button><input id="backupFile" type="file" accept=".json,application/json" hidden></div>
+      </section>
+
       <section class="summary-grid" aria-label="Resumen de ingresos">
         <article class="summary-card"><div class="card-top"><span class="card-label">INGRESOS REGISTRADOS</span><span class="card-icon violet">↗</span></div><strong id="totalTokens">0 <small>tokens</small></strong><div class="card-foot">En el periodo seleccionado</div></article>
         <article class="summary-card"><div class="card-top"><span class="card-label">VALOR TOTAL</span><span class="card-icon blue">＄</span></div><strong id="totalUsd">$0.00 <small>USD</small></strong><div class="card-foot" id="totalCop">≈ $0 COP</div></article>

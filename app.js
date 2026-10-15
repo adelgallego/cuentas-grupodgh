@@ -313,6 +313,40 @@
     localStorage.setItem(THEME_KEY, nextTheme);
     updateThemeControl();
   });
+  $('#exportBackup').addEventListener('click', () => {
+    const backup = { app: 'GRUPODGH', version: 1, exportedAt: new Date().toISOString(), data: state };
+    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const download = document.createElement('a');
+    download.href = url;
+    download.download = `grupodgh-respaldo-${todayISO()}.json`;
+    document.body.append(download);
+    download.click();
+    download.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    flash('Respaldo descargado.');
+  });
+  $('#importBackup').addEventListener('click', () => $('#backupFile').click());
+  $('#backupFile').addEventListener('change', async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    try {
+      const backup = JSON.parse(await file.text());
+      const imported = backup?.data;
+      if (backup?.app !== 'GRUPODGH' || backup?.version !== 1 || !imported || !Array.isArray(imported.models) || !Array.isArray(imported.entries) || !imported.rates || typeof imported.rates !== 'object') {
+        flash('Ese archivo no es un respaldo válido de GRUPODGH.');
+        return;
+      }
+      if (!window.confirm('Importar este respaldo reemplazará los datos actuales de esta app. ¿Quieres continuar?')) return;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(imported));
+      flash('Respaldo importado. Recargando la app…');
+      setTimeout(() => window.location.reload(), 350);
+    } catch {
+      flash('No se pudo importar. Revisa que el archivo sea un respaldo válido.');
+    } finally {
+      event.target.value = '';
+    }
+  });
   $('#entryDate').value = todayISO();
   $('#rateStripchat').value = state.rates.usdPerToken.stripchat;
   $('#rateChaturbate').value = state.rates.usdPerToken.chaturbate;
