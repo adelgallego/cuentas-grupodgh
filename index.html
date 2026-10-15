@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f7fb">
+  <title>GRUPODGH — ingresos por tokens</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <a class="brand" href="#inicio" aria-label="GRUPODGH, inicio">
+        <span class="brand-mark">G</span><span>GRUPO<span class="brand-light">DGH</span></span>
+      </a>
+      <div class="workspace-label">ADMINISTRACIÓN</div>
+      <nav aria-label="Navegación principal">
+        <a class="nav-link active" href="#inicio"><span class="nav-icon">▦</span> Resumen</a>
+        <a class="nav-link" href="#registro"><span class="nav-icon">＋</span> Registrar ingresos</a>
+        <a class="nav-link" href="#modelos"><span class="nav-icon">♙</span> Modelos</a>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="privacy-note"><span class="lock">▣</span><div><b>Datos en este dispositivo</b><p>Esta primera versión guarda la información en este navegador.</p></div></div>
+        <div class="user-badge"><span class="avatar">A</span><span><b>Administrador</b><small>Cuenta local</small></span><span class="dots">···</span></div>
+      </div>
+    </aside>
+
+    <main id="inicio" class="main-content">
+      <header class="topbar">
+        <div class="breadcrumb">Administración <span>/</span> <b>Resumen</b></div>
+        <div class="top-actions"><span class="today" id="today"></span><button id="themeToggle" class="theme-toggle" type="button" aria-label="Activar modo oscuro" title="Activar modo oscuro"><span id="themeIcon" aria-hidden="true">☾</span></button><span class="avatar small-avatar">A</span></div>
+      </header>
+      <section class="page-heading">
+        <div><p class="eyebrow">TU NEGOCIO, EN ORDEN</p><h1>Resumen de ingresos</h1><p class="subheading">Controla tokens, conversiones y repartos en un solo lugar.</p></div>
+        <a class="button primary" href="#registro"><span>＋</span> Registrar ingresos</a>
+      </section>
+
+      <section class="rate-strip" aria-label="Tasas de conversión">
+        <div class="rate-title"><span class="rate-icon">↗</span><div><b>Tasas de conversión</b><small>USD que recibes por cada token</small></div></div>
+        <label class="rate-field"><span>Stripchat · USD/token</span><span class="input-suffix"><input id="rateStripchat" type="number" min="0.0001" step="any" placeholder="0,05" inputmode="decimal"><i>USD</i></span></label>
+        <label class="rate-field"><span>Chaturbate · USD/token</span><span class="input-suffix"><input id="rateChaturbate" type="number" min="0.0001" step="any" placeholder="0,05" inputmode="decimal"><i>USD</i></span></label>
+        <label class="rate-field"><span>BANTOKENS · COP por USD</span><span class="input-suffix"><input id="copPerUsdBantokens" type="number" min="0.0001" step="any" placeholder="Ej. 3.147" inputmode="decimal"><i>COP</i></span></label>
+        <label class="rate-field"><span>TWL · COP por USD</span><span class="input-suffix"><input id="copPerUsdTwl" type="number" min="0.0001" step="any" placeholder="Ej. 3.147" inputmode="decimal"><i>COP</i></span></label>
+        <label class="rate-field"><span>USDT · COP por USDT</span><span class="input-suffix"><input id="copPerUsdUsdt" type="number" min="0.0001" step="any" placeholder="Ej. 3.147" inputmode="decimal"><i>COP</i></span></label>
+        <span class="saved-indicator" id="saveIndicator">● Guardado</span>
+      </section>
+
+      <section class="summary-grid" aria-label="Resumen de ingresos">
+        <article class="summary-card"><div class="card-top"><span class="card-label">INGRESOS REGISTRADOS</span><span class="card-icon violet">↗</span></div><strong id="totalTokens">0 <small>tokens</small></strong><div class="card-foot">En el periodo seleccionado</div></article>
+        <article class="summary-card"><div class="card-top"><span class="card-label">VALOR TOTAL</span><span class="card-icon blue">＄</span></div><strong id="totalUsd">$0.00 <small>USD</small></strong><div class="card-foot" id="totalCop">≈ $0 COP</div></article>
+        <article class="summary-card"><div class="card-top"><span class="card-label">PARA LAS MODELOS</span><span class="card-icon green">♙</span></div><strong id="modelsUsd">$0.00 <small>USD</small></strong><div class="card-foot" id="modelsCop">≈ $0 COP</div></article>
+        <article class="summary-card"><div class="card-top"><span class="card-label">TU PARTE NETA</span><span class="card-icon amber">▤</span></div><strong id="ownerUsd">$0.00 <small>USD</small></strong><div class="card-foot" id="ownerCop">≈ $0 COP</div><div class="fee-summary" id="ownerFeeSummary">Retención TWL (10% del total): $0.00 USD · $0 COP</div></article>
+      </section>
+
+      <section class="panel weekly-panel">
+        <div class="panel-heading"><div><h2>Liquidación semanal por modelo</h2><p id="weeklyDateRange">Semana actual · lunes a domingo</p></div></div>
+        <div class="table-wrap"><table><thead><tr><th>MODELO</th><th>PÁGINA</th><th>MONETIZADORA</th><th>TOKENS EN LA SEMANA</th><th>MODELO · USD</th><th>MODELO · COP</th><th>TWL 10% DEL TOTAL · USD / COP</th><th>TU NETO · USD</th><th>TU NETO · COP</th></tr></thead><tbody id="weeklyPayoutBody"></tbody><tfoot id="weeklyPayoutFoot"></tfoot></table><div class="empty-state" id="weeklyPayoutEmpty"><span class="empty-icon">◷</span><b>Aún no hay ingresos esta semana</b><p>Al registrar lecturas, aquí verás el pago por modelo, página y monetizadora.</p></div></div>
+      </section>
+
+      <section class="content-grid">
+        <article class="panel entries-panel">
+          <div class="panel-heading"><div><h2>Ingresos recientes</h2><p>Detalle de los registros por modelo</p></div><div class="table-filters"><label class="period-select"><span class="sr-only">Filtrar página</span><select id="platformFilter"><option value="all">Todas las páginas</option><option value="stripchat">Stripchat</option><option value="chaturbate">Chaturbate</option></select></label><label class="period-select"><span class="sr-only">Filtrar monetizadora</span><select id="providerFilter"><option value="all">Todas las monetizadoras</option><option value="bantokens">BANTOKENS</option><option value="twl">TWL</option><option value="usdt">USDT</option></select></label><label class="period-select"><span class="sr-only">Filtrar periodo</span><select id="period"><option value="all">Todo el tiempo</option><option value="month">Este mes</option><option value="week">Últimos 7 días</option></select></label></div></div>
+          <div class="table-wrap"><table><thead><tr><th>MODELO</th><th>PÁGINA</th><th>MONETIZADORA</th><th>FECHA</th><th>TOKENS DEL DÍA</th><th>ACUMULADO SEMANAL</th><th>VALOR USD</th><th>MODELO · USD / COP</th><th>TWL 10% DEL TOTAL · USD / COP</th><th>TU NETO · USD / COP</th><th></th></tr></thead><tbody id="entriesBody"></tbody></table><div class="empty-state" id="emptyState"><span class="empty-icon">↗</span><b>Aún no hay ingresos</b><p>Registra el acumulado semanal para calcular los tokens de cada día.</p><a href="#registro">Registrar ingreso <span>→</span></a></div></div>
+        </article>
+        <article class="panel models-panel" id="modelesPanel">
+          <div class="panel-heading"><div><h2>Modelos</h2><p>Modelos registradas</p></div><a class="text-action" href="#modelos">Gestionar <span>→</span></a></div>
+          <div id="modelList" class="model-list"></div>
+          <div id="noModels" class="mini-empty">Agrega tus modelos para comenzar.</div>
+          <a class="add-model-link" href="#modelos"><span>＋</span> Agregar modelo</a>
+        </article>
+      </section>
+
+      <section class="lower-grid">
+        <article class="panel form-panel" id="registro">
+          <div class="panel-heading"><div><p class="eyebrow">NUEVO MOVIMIENTO</p><h2 id="entryFormTitle">Registrar ingresos</h2><p>Ingresa los tokens ganados por una modelo.</p></div></div>
+          <form id="entryForm" class="entry-form">
+            <input id="editingEntryId" type="hidden" value="">
+            <label>Página<select id="entryPlatform" required><option value="stripchat">Stripchat</option><option value="chaturbate">Chaturbate</option></select></label>
+            <label>Monetizadora<select id="entryProvider" required><option value="bantokens">BANTOKENS</option><option value="twl">TWL</option><option value="usdt">USDT</option></select></label>
+            <label>Modelo<select id="entryModel" required><option value="">Selecciona un modelo</option></select></label>
+            <label>Fecha<input id="entryDate" type="date" required></label>
+            <label>Tokens acumulados en la semana<input id="entryWeeklyTokens" type="number" min="0" step="any" placeholder="Ej. 25000" required inputmode="decimal"><small>Escribe el acumulado que muestra la página. Se resta la lectura anterior de esta modelo y página (semana de lunes a domingo).</small></label>
+            <div class="form-calculation" id="entryPreview">Configura las tasas de conversión para ver el cálculo estimado.</div>
+            <div class="entry-form-actions"><button id="entrySubmitButton" class="button primary" type="submit">Guardar ingreso <span>→</span></button><button id="cancelEntryEdit" class="button secondary" type="button" hidden>Cancelar edición</button></div>
+          </form>
+        </article>
+        <article class="panel form-panel" id="modelos">
+          <div class="panel-heading"><div><p class="eyebrow">EQUIPO</p><h2 id="modelFormTitle">Agregar modelo</h2><p>Agrega cada modelo una vez y define su porcentaje para cada página.</p></div></div>
+          <form id="modelForm" class="model-form">
+            <input id="editingModelId" type="hidden" value="">
+            <label>Nombre de la modelo<input id="modelName" type="text" maxlength="60" placeholder="Ej. Valentina" required></label>
+            <div class="model-split-fields">
+              <label>Stripchat<span class="percent-input"><input id="modelShareStripchat" type="number" min="0" max="100" step="0.1" placeholder="10" required inputmode="decimal"><i>%</i></span></label>
+              <label>Chaturbate<span class="percent-input"><input id="modelShareChaturbate" type="number" min="0" max="100" step="0.1" placeholder="50" required inputmode="decimal"><i>%</i></span></label>
+            </div>
+            <div class="model-split-fields">
+              <label>Stripchat · COP menos/USD<span class="input-suffix"><input id="modelCopStripchat" type="number" min="0" step="1" placeholder="Ej. 100" required inputmode="numeric"><i>COP</i></span></label>
+              <label>Chaturbate · COP menos/USD<span class="input-suffix"><input id="modelCopChaturbate" type="number" min="0" step="1" placeholder="Ej. 150" required inputmode="numeric"><i>COP</i></span></label>
+            </div>
+            <small class="split-note">La misma modelo estará disponible en ambas páginas. El registro usa los porcentajes y el descuento de la página elegida.</small>
+            <div class="model-form-actions"><button class="button secondary" id="modelSubmitButton" type="submit"><span>＋</span> Agregar modelo</button><button class="button cancel-edit" id="cancelModelEdit" type="button" hidden>Cancelar</button></div>
+          </form>
+          <div class="model-manage-list" id="modelManageList"></div>
+        </article>
+      </section>
+      <footer class="footer-note">GRUPODGH <span>·</span> Los valores son estimados según las tasas que configures.</footer>
+    </main>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
