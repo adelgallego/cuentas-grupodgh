@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f5f7fb">
   <title>GRUPODGH — ingresos por tokens</title>
-  <link rel="stylesheet" href="styles.css?v=weekly-history-1">
+  <link rel="stylesheet" href="styles.css?v=model-filter-1">
 </head>
 <body>
   <div class="shell">
@@ -41,10 +41,10 @@
         <div class="rate-field"><div class="rate-heading"><label for="rateChaturbate">Chaturbate · USD/token</label></div><span class="input-suffix"><input id="rateChaturbate" type="number" min="0.0001" step="any" placeholder="0,05" inputmode="decimal"><i>USD</i></span></div>
         <div class="rate-field">
           <div class="rate-heading"><label for="copPerUsdBantokens">BANTOKENS · COP por USD</label><button class="info-trigger" type="button" aria-label="Información sobre la tasa BANTOKENS" aria-describedby="bantokensRateNote">i</button><span class="rate-tooltip" id="bantokensRateNote" role="tooltip">La tasa usa la TRM de Wilkinsonpc menos $50 COP por USD.</span></div>
-          <span class="input-suffix"><input id="copPerUsdBantokens" type="number" min="0.0001" step="any" placeholder="Ej. 3.147" inputmode="decimal"><i>COP</i></span>
+          <span class="input-suffix"><input id="copPerUsdBantokens" type="number" min="0.0001" step="any" placeholder="Ej. 3.147" inputmode="decimal" title="Esta tasa actualiza los ingresos BANTOKENS de la semana actual. Las semanas anteriores conservan su tasa."><i>COP</i></span>
         </div>
-        <div class="rate-field"><div class="rate-heading"><label for="copPerUsdTwl">TWL · COP por USD</label></div><span class="input-suffix"><input id="copPerUsdTwl" type="number" min="0.0001" step="any" placeholder="Ej. 3.147" inputmode="decimal"><i>COP</i></span></div>
-        <div class="rate-field"><div class="rate-heading"><label for="copPerUsdUsdt">USDT · COP por USDT</label></div><span class="input-suffix"><input id="copPerUsdUsdt" type="number" min="0.0001" step="any" placeholder="Ej. 3.147" inputmode="decimal"><i>COP</i></span></div>
+        <div class="rate-field"><div class="rate-heading"><label for="copPerUsdTwl">TWL · COP por USD</label></div><span class="input-suffix"><input id="copPerUsdTwl" type="number" min="0.0001" step="any" placeholder="Ej. 3.147" inputmode="decimal" title="Esta tasa actualiza los ingresos TWL de la semana actual. Las semanas anteriores conservan su tasa."><i>COP</i></span></div>
+        <div class="rate-field"><div class="rate-heading"><label for="copPerUsdUsdt">USDT · COP por USDT</label></div><span class="input-suffix"><input id="copPerUsdUsdt" type="number" min="0.0001" step="any" placeholder="Ej. 3.147" inputmode="decimal" title="Esta tasa actualiza los ingresos USDT de la semana actual. Las semanas anteriores conservan su tasa."><i>COP</i></span></div>
         <span class="saved-indicator" id="saveIndicator">● Guardado</span>
       </section>
 
@@ -72,7 +72,7 @@
 
       <section class="content-grid">
         <article class="panel entries-panel">
-          <div class="panel-heading"><div><h2>Ingresos recientes</h2><p>Detalle de los registros por modelo</p></div><div class="table-filters"><label class="period-select"><span class="sr-only">Filtrar página</span><select id="platformFilter"><option value="all">Todas las páginas</option><option value="stripchat">Stripchat</option><option value="chaturbate">Chaturbate</option></select></label><label class="period-select"><span class="sr-only">Filtrar monetizadora</span><select id="providerFilter"><option value="all">Todas las monetizadoras</option><option value="bantokens">BANTOKENS</option><option value="twl">TWL</option><option value="usdt">USDT</option></select></label><label class="period-select"><span class="sr-only">Filtrar periodo</span><select id="period"><option value="selected-week">Semana seleccionada</option><option value="all">Todo el tiempo</option><option value="month">Este mes</option><option value="week">Últimos 7 días</option></select></label></div></div>
+          <div class="panel-heading"><div><h2>Ingresos recientes</h2><p>Detalle de los registros por modelo</p></div><div class="table-filters"><label class="period-select"><span class="sr-only">Filtrar página</span><select id="platformFilter"><option value="all">Todas las páginas</option><option value="stripchat">Stripchat</option><option value="chaturbate">Chaturbate</option></select></label><label class="period-select"><span class="sr-only">Filtrar monetizadora</span><select id="providerFilter"><option value="all">Todas las monetizadoras</option><option value="bantokens">BANTOKENS</option><option value="twl">TWL</option><option value="usdt">USDT</option></select></label><label class="period-select"><span class="sr-only">Filtrar modelo</span><select id="modelFilter"><option value="all">Todas las modelos</option></select></label><label class="period-select"><span class="sr-only">Filtrar periodo</span><select id="period"><option value="selected-week">Semana seleccionada</option><option value="all">Todo el tiempo</option><option value="month">Este mes</option><option value="week">Últimos 7 días</option></select></label></div></div>
           <div class="table-wrap"><table><thead><tr><th>MODELO</th><th>PÁGINA</th><th>MONETIZADORA</th><th>FECHA</th><th>TOKENS DEL DÍA</th><th>ACUMULADO SEMANAL</th><th>VALOR USD</th><th>MODELO · USD / COP</th><th>TWL 10% DEL TOTAL · USD / COP</th><th>TU NETO · USD / COP</th><th></th></tr></thead><tbody id="entriesBody"></tbody></table><div class="empty-state" id="emptyState"><span class="empty-icon">↗</span><b>Aún no hay ingresos</b><p>Registra el acumulado semanal para calcular los tokens de cada día.</p><a href="#registro">Registrar ingreso <span>→</span></a></div></div>
         </article>
         <article class="panel models-panel" id="modelesPanel">
@@ -128,6 +128,6 @@
       <div class="backup-confirm-actions"><button id="cancelBackupImport" class="button secondary" type="button">Cancelar</button><button id="confirmBackupImport" class="button primary" type="button">Importar y aplicar</button></div>
     </div>
   </div>
-  <script src="app.js?v=weekly-history-1"></script>
+  <script src="app.js?v=current-week-rates-1"></script>
 </body>
 </html>

@@ -187,7 +187,12 @@
     return Math.max(0, number(entry.weeklyTokens) - number(previous?.weeklyTokens));
   };
   const entryUsd = (entry) => entryTokens(entry) * (number(entry.usdPerToken) || number(state.rates.usdPerToken[entry.platform]) || 0);
-  const entryCopRate = (entry) => number(entry.copPerUsd) || number(state.rates.copPerUsdByProvider[entry.provider]) || number(state.rates.copPerUsd);
+  const entryCopRate = (entry) => {
+    const currentRate = number(state.rates.copPerUsdByProvider[entry.provider]);
+    const recordedRate = number(entry.copPerUsd);
+    if (weekKey(entry.date) === weekKey(todayISO()) && currentRate > 0) return currentRate;
+    return recordedRate || currentRate || number(state.rates.copPerUsd);
+  };
   const entryModelCopRate = (entry) => Math.max(0, entryCopRate(entry) - number(entry.copDiscountPerUsd));
   const entryModelUsd = (entry) => entryUsd(entry) * number(entry.sharePct) / 100;
   const entryModelCop = (entry) => entryUsd(entry) * number(entry.sharePct) / 100 * entryModelCopRate(entry);
@@ -210,11 +215,12 @@
     const period = $('#period').value;
     const platform = $('#platformFilter').value;
     const provider = $('#providerFilter').value;
+    const modelId = $('#modelFilter').value;
     const now = new Date();
     const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     if (period === 'month') start.setDate(1);
     if (period === 'week') start.setDate(start.getDate() - 6);
-    return state.entries.filter((e) => (platform === 'all' || e.platform === platform) && (provider === 'all' || e.provider === provider) && (period === 'all' || (period === 'selected-week' ? weekKey(e.date) === selectedWeek : new Date(`${e.date}T00:00:00`) >= start)));
+    return state.entries.filter((e) => (platform === 'all' || e.platform === platform) && (provider === 'all' || e.provider === provider) && (modelId === 'all' || e.modelId === modelId) && (period === 'all' || (period === 'selected-week' ? weekKey(e.date) === selectedWeek : new Date(`${e.date}T00:00:00`) >= start)));
   }
   function renderSummary() {
     const entries = periodEntries();
@@ -300,6 +306,10 @@
     $('#weeklyHistoryFoot').innerHTML = rows.length ? `<tr><th>ACUMULADO HISTÓRICO</th><th data-label="Tokens">${fmt(total.tokens, 0)}</th><th data-label="Total · USD">${usd(total.totalUsd)}</th><th data-label="Modelos · USD">${usd(total.modelUsd)}</th><th data-label="Modelos · COP">${total.hasCopRate ? cop(total.modelCop) : 'Configura las tasas'}</th><th data-label="Tu neto · USD">${usd(total.ownerUsd)}</th><th data-label="Tu neto · COP">${total.hasCopRate ? cop(total.ownerCop) : 'Configura las tasas'}</th><th></th></tr>` : '';
   }
   function renderEntries() {
+    const modelFilter = $('#modelFilter');
+    const selectedModel = modelFilter.value;
+    modelFilter.innerHTML = `<option value="all">Todas las modelos</option>${state.models.map((model) => `<option value="${escapeHtml(model.id)}">${escapeHtml(model.name)}</option>`).join('')}`;
+    if ([...modelFilter.options].some((option) => option.value === selectedModel)) modelFilter.value = selectedModel;
     const tbody = $('#entriesBody');
     const entries = periodEntries().slice().sort((a, b) => b.date.localeCompare(a.date) || (b.createdAt || 0) - (a.createdAt || 0));
     $('#emptyState').hidden = entries.length > 0;
@@ -357,7 +367,7 @@
     const dailyTokens = Math.max(0, weeklyTokens - previousTokens);
     const previousInfo = previous ? `${previous.legacy ? 'Tokens registrados antes' : 'Última lectura'}: ${fmt(previousTokens, 0)} (${new Date(`${previous.date}T00:00:00`).toLocaleDateString('es-CO', { day: 'numeric', month: 'short' })}).` : 'Primera lectura de esta modelo y página en la semana: el acumulado completo se contará como tokens del día.';
     const previewUsdPerToken = sameContext ? number(editingEntry.usdPerToken) : number(state.rates.usdPerToken[platform]);
-    const previewCopRate = sameContext ? number(editingEntry.copPerUsd) : number(state.rates.copPerUsdByProvider[provider]);
+    const previewCopRate = sameContext ? entryCopRate(editingEntry) : number(state.rates.copPerUsdByProvider[provider]);
     if (!(previewUsdPerToken > 0 && previewCopRate > 0)) {
       preview.innerHTML = `${sameContext || sameDay ? 'Actualizando ingreso.' : 'Tokens del día estimados:'} <b>${fmt(dailyTokens, 0)}</b> · Acumulado semanal: <b>${fmt(weeklyTokens, 0)}</b>. ${previousInfo} Configura las tasas para calcular el dinero.`;
       return;
@@ -526,6 +536,7 @@
   $('#period').addEventListener('change', renderEntries);
   $('#platformFilter').addEventListener('change', renderEntries);
   $('#providerFilter').addEventListener('change', renderEntries);
+  $('#modelFilter').addEventListener('change', renderEntries);
   $('#weekSelector').addEventListener('change', (event) => { selectedWeek = event.target.value; renderEntries(); });
   $('#weeklyHistoryBody').addEventListener('click', (event) => {
     const button = event.target.closest('[data-select-week]');
@@ -594,7 +605,7 @@
     const sharePct = sameContext ? number(editingEntry.sharePct) : Number(model.sharePctByPlatform[platform]);
     if (!Number.isFinite(sharePct) || sharePct < 0 || sharePct > 100) { flash('Esta modelo no tiene un porcentaje configurado. Agrégala de nuevo con página y porcentaje.'); return; }
     const copDiscountPerUsd = sameContext ? number(editingEntry.copDiscountPerUsd) : number(model.copDiscountByPlatform[platform]);
-    const copPerUsd = sameContext ? number(editingEntry.copPerUsd) : number(state.rates.copPerUsdByProvider[provider]);
+    const copPerUsd = sameContext ? entryCopRate(editingEntry) : number(state.rates.copPerUsdByProvider[provider]);
     const usdPerToken = sameContext ? number(editingEntry.usdPerToken) : number(state.rates.usdPerToken[platform]);
     if (copDiscountPerUsd >= copPerUsd) { flash('El descuento por dólar debe ser menor que la tasa COP/USD de esta monetizadora.'); return; }
     const reading = { id: editingEntry?.id || existingReading?.id || (crypto.randomUUID ? crypto.randomUUID() : String(Date.now())), modelId: model.id, modelName: model.name, platform, provider, date, tokens: dailyTokens, weeklyTokens, sharePct, usdPerToken, copPerUsd, copDiscountPerUsd, createdAt: editingEntry?.createdAt || existingReading?.createdAt || Date.now() };
