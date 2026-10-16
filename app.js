@@ -3,6 +3,8 @@
   const THEME_KEY = 'cuenta-clara-theme';
   const TIFFANY_SHARE_MIGRATION_KEY = 'grupodgh-tiffany-share-80-v1';
   const TWL_OWNER_FEE_RATE = 0.10;
+  const USDT_STRIPCHAT_FEE_RATE = 0.01;
+  const USDT_STRIPCHAT_MODEL_SHARE = 80;
   const TRM_RATE_URL = './data/bantokens-trm.json';
   const ACCENT_KEY = 'grupodgh-accent-color';
   const TEXT_SIZE_KEY = 'grupodgh-text-size';
@@ -194,10 +196,14 @@
     return recordedRate || currentRate || number(state.rates.copPerUsd);
   };
   const entryModelCopRate = (entry) => Math.max(0, entryCopRate(entry) - number(entry.copDiscountPerUsd));
-  const entryModelUsd = (entry) => entryUsd(entry) * number(entry.sharePct) / 100;
-  const entryModelCop = (entry) => entryUsd(entry) * number(entry.sharePct) / 100 * entryModelCopRate(entry);
-  const entryOwnerFeeUsd = (entry) => entry.provider === 'twl' ? entryUsd(entry) * TWL_OWNER_FEE_RATE : 0;
+  const entryOwnerFeeRate = (provider, platform) => provider === 'twl' ? TWL_OWNER_FEE_RATE : provider === 'usdt' && platform === 'stripchat' ? USDT_STRIPCHAT_FEE_RATE : 0;
+  const entryOwnerFeeLabel = (provider, platform) => provider === 'twl' ? 'TWL · 10%' : provider === 'usdt' && platform === 'stripchat' ? 'USDT Stripchat · 1%' : '';
+  const entryOwnerFeeUsd = (entry) => entryUsd(entry) * entryOwnerFeeRate(entry.provider, entry.platform);
   const entryOwnerFeeCop = (entry) => entryOwnerFeeUsd(entry) * entryCopRate(entry);
+  const entryShareBaseUsd = (gross, provider, platform) => provider === 'usdt' && platform === 'stripchat' ? gross * (1 - USDT_STRIPCHAT_FEE_RATE) : gross;
+  const entrySharePct = (entry) => entry.provider === 'usdt' && entry.platform === 'stripchat' ? USDT_STRIPCHAT_MODEL_SHARE : number(entry.sharePct);
+  const entryModelUsd = (entry) => entryShareBaseUsd(entryUsd(entry), entry.provider, entry.platform) * entrySharePct(entry) / 100;
+  const entryModelCop = (entry) => entryModelUsd(entry) * entryModelCopRate(entry);
   const entryOwnerUsd = (entry) => entryUsd(entry) - entryModelUsd(entry) - entryOwnerFeeUsd(entry);
   const entryOwnerCop = (entry) => entryUsd(entry) * entryCopRate(entry) - entryModelCop(entry) - entryOwnerFeeCop(entry);
   function persist() {
@@ -243,7 +249,7 @@
     $('#ownerUsd').innerHTML = `${usd(ownerTotal)} <small>USD</small>`;
     $('#ownerCop').textContent = entries.length && entries.every((e) => entryCopRate(e) > 0) ? `≈ ${cop(ownerCop)}` : 'Configura las tasas para convertir a COP';
     const feeCopText = entries.every((e) => entryCopRate(e) > 0) ? cop(ownerFeeCop) : 'COP pendiente de tasa';
-    $('#ownerFeeSummary').textContent = `Retención TWL (10% del total): ${usd(ownerFeeUsd)} · ${feeCopText}`;
+    $('#ownerFeeSummary').textContent = `Retenciones (TWL 10% / USDT Stripchat 1%): ${usd(ownerFeeUsd)} · ${feeCopText}`;
   }
   function renderWeekOptions() {
     const weeks = new Set([weekKey(todayISO()), ...state.entries.map((entry) => weekKey(entry.date))]);
@@ -273,7 +279,8 @@
     $('#weeklyPayoutBody').innerHTML = rows.map((row) => {
       const platform = row.platform === 'stripchat' ? 'Stripchat' : row.platform === 'chaturbate' ? 'Chaturbate' : 'Anterior';
       const provider = row.provider === 'bantokens' ? 'BANTOKENS' : row.provider === 'twl' ? 'TWL' : row.provider === 'usdt' ? 'USDT' : 'Anterior';
-      return `<tr><td data-label="Modelo"><span class="model-cell"><span class="model-dot">${escapeHtml(row.modelName.trim().charAt(0).toUpperCase() || '?')}</span>${escapeHtml(row.modelName)}</span></td><td data-label="Página">${platform}</td><td data-label="Monetizadora">${provider}</td><td class="token-cell" data-label="Tokens en la semana">${fmt(row.tokens, 0)}</td><td class="amount-cell" data-label="Modelo · USD">${usd(row.modelUsd)}</td><td class="share-cell" data-label="Modelo · COP">${row.hasCopRate ? cop(row.modelCop) : 'Configura la tasa COP/USD'}</td><td class="fee-cell" data-label="Retención TWL">${row.provider === 'twl' ? `${usd(row.ownerFeeUsd)}<small>${row.hasCopRate ? cop(row.ownerFeeCop) : 'Configura tasa COP/USD'}</small>` : '—'}</td><td class="amount-cell" data-label="Tu neto · USD">${usd(row.ownerUsd)}</td><td class="owner-cell" data-label="Tu neto · COP">${row.hasCopRate ? cop(row.ownerCop) : 'Configura la tasa COP/USD'}</td></tr>`;
+      const feeLabel = entryOwnerFeeLabel(row.provider, row.platform);
+      return `<tr><td data-label="Modelo"><span class="model-cell"><span class="model-dot">${escapeHtml(row.modelName.trim().charAt(0).toUpperCase() || '?')}</span>${escapeHtml(row.modelName)}</span></td><td data-label="Página">${platform}</td><td data-label="Monetizadora">${provider}</td><td class="token-cell" data-label="Tokens en la semana">${fmt(row.tokens, 0)}</td><td class="amount-cell" data-label="Modelo · USD">${usd(row.modelUsd)}</td><td class="share-cell" data-label="Modelo · COP">${row.hasCopRate ? cop(row.modelCop) : 'Configura la tasa COP/USD'}</td><td class="fee-cell" data-label="Retención monetizadora">${row.ownerFeeUsd > 0 ? `${usd(row.ownerFeeUsd)}<small>${row.hasCopRate ? cop(row.ownerFeeCop) : 'Configura tasa COP/USD'}</small><small>${feeLabel}</small>` : '—'}</td><td class="amount-cell" data-label="Tu neto · USD">${usd(row.ownerUsd)}</td><td class="owner-cell" data-label="Tu neto · COP">${row.hasCopRate ? cop(row.ownerCop) : 'Configura la tasa COP/USD'}</td></tr>`;
     }).join('');
     const totalTokens = rows.reduce((sum, row) => sum + row.tokens, 0);
     const totalModelUsd = rows.reduce((sum, row) => sum + row.modelUsd, 0);
@@ -283,7 +290,7 @@
     const totalOwnerUsd = rows.reduce((sum, row) => sum + row.ownerUsd, 0);
     const totalOwnerCop = rows.reduce((sum, row) => sum + row.ownerCop, 0);
     const allCopRatesReady = rows.length > 0 && rows.every((row) => row.hasCopRate);
-    $('#weeklyPayoutFoot').innerHTML = rows.length ? `<tr><th colspan="3">TOTAL SEMANAL</th><th data-label="Tokens en la semana">${fmt(totalTokens, 0)}</th><th data-label="Modelo · USD">${usd(totalModelUsd)}</th><th data-label="Modelo · COP">${allCopRatesReady ? cop(totalModelCop) : 'Configura las tasas'}</th><th data-label="Retención TWL">${usd(totalFeeUsd)}<small>${allCopRatesReady ? cop(totalFeeCop) : 'Configura las tasas'}</small></th><th data-label="Tu neto · USD">${usd(totalOwnerUsd)}</th><th data-label="Tu neto · COP">${allCopRatesReady ? cop(totalOwnerCop) : 'Configura las tasas'}</th></tr>` : '';
+    $('#weeklyPayoutFoot').innerHTML = rows.length ? `<tr><th colspan="3">TOTAL SEMANAL</th><th data-label="Tokens en la semana">${fmt(totalTokens, 0)}</th><th data-label="Modelo · USD">${usd(totalModelUsd)}</th><th data-label="Modelo · COP">${allCopRatesReady ? cop(totalModelCop) : 'Configura las tasas'}</th><th data-label="Retención monetizadora">${usd(totalFeeUsd)}<small>${allCopRatesReady ? cop(totalFeeCop) : 'Configura las tasas'}</small></th><th data-label="Tu neto · USD">${usd(totalOwnerUsd)}</th><th data-label="Tu neto · COP">${allCopRatesReady ? cop(totalOwnerCop) : 'Configura las tasas'}</th></tr>` : '';
   }
   function renderWeeklyHistory() {
     const totals = new Map();
@@ -317,13 +324,14 @@
       const model = modelById(e.modelId);
       const name = e.modelName || model?.name || 'Modelo eliminada';
       const gross = entryUsd(e);
-      const share = number(e.sharePct);
+      const share = entrySharePct(e);
       const platform = e.platform === 'stripchat' ? 'Stripchat' : e.platform === 'chaturbate' ? 'Chaturbate' : 'Anterior';
       const provider = e.provider === 'bantokens' ? 'BANTOKENS' : e.provider === 'twl' ? 'TWL' : e.provider === 'usdt' ? 'USDT' : 'Anterior';
       const d = new Date(`${e.date}T00:00:00`).toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' });
       const dailyTokens = entryTokens(e);
       const weeklyTokens = e.weeklyTokens === undefined || e.weeklyTokens === null ? '—' : fmt(e.weeklyTokens, 0);
-      return `<tr><td data-label="Modelo"><span class="model-cell"><span class="model-dot">${escapeHtml(name.trim().charAt(0).toUpperCase() || '?')}</span>${escapeHtml(name)}</span></td><td data-label="Página">${platform}</td><td data-label="Monetizadora">${provider}</td><td data-label="Fecha">${d}</td><td class="token-cell" data-label="Tokens del día">${fmt(dailyTokens, 0)}</td><td data-label="Acumulado semanal">${weeklyTokens}</td><td class="amount-cell" data-label="Valor total · USD">${usd(gross)}</td><td class="share-cell" data-label="Modelo · USD / COP">${usd(entryModelUsd(e))} <span style="color:#9aa2af">(${fmt(share, 1)}%)</span><small class="payout-cop">${cop(entryModelCop(e))}</small></td><td class="fee-cell" data-label="Retención TWL">${e.provider === 'twl' ? `${usd(entryOwnerFeeUsd(e))}<small>${cop(entryOwnerFeeCop(e))}</small>` : '—'}</td><td class="owner-cell" data-label="Tu neto · USD / COP">${usd(entryOwnerUsd(e))}<small>${cop(entryOwnerCop(e))}</small></td><td class="entry-actions-cell" data-label="Acciones"><div class="entry-actions"><button class="edit-entry" data-edit-entry="${escapeHtml(e.id)}" aria-label="Editar ingreso" title="Editar ingreso">Editar</button><button class="delete-entry" data-delete-entry="${escapeHtml(e.id)}" aria-label="Eliminar ingreso" title="Eliminar ingreso">×</button></div></td></tr>`;
+      const feeLabel = entryOwnerFeeLabel(e.provider, e.platform);
+      return `<tr><td data-label="Modelo"><span class="model-cell"><span class="model-dot">${escapeHtml(name.trim().charAt(0).toUpperCase() || '?')}</span>${escapeHtml(name)}</span></td><td data-label="Página">${platform}</td><td data-label="Monetizadora">${provider}</td><td data-label="Fecha">${d}</td><td class="token-cell" data-label="Tokens del día">${fmt(dailyTokens, 0)}</td><td data-label="Acumulado semanal">${weeklyTokens}</td><td class="amount-cell" data-label="Valor total · USD">${usd(gross)}</td><td class="share-cell" data-label="Modelo · USD / COP">${usd(entryModelUsd(e))} <span style="color:#9aa2af">(${fmt(share, 1)}%)</span><small class="payout-cop">${cop(entryModelCop(e))}</small></td><td class="fee-cell" data-label="Retención monetizadora">${entryOwnerFeeUsd(e) > 0 ? `${usd(entryOwnerFeeUsd(e))}<small>${cop(entryOwnerFeeCop(e))}</small><small>${feeLabel}</small>` : '—'}</td><td class="owner-cell" data-label="Tu neto · USD / COP">${usd(entryOwnerUsd(e))}<small>${cop(entryOwnerCop(e))}</small></td><td class="entry-actions-cell" data-label="Acciones"><div class="entry-actions"><button class="edit-entry" data-edit-entry="${escapeHtml(e.id)}" aria-label="Editar ingreso" title="Editar ingreso">Editar</button><button class="delete-entry" data-delete-entry="${escapeHtml(e.id)}" aria-label="Eliminar ingreso" title="Eliminar ingreso">×</button></div></td></tr>`;
     }).join('');
     renderWeekOptions();
     renderSummary();
@@ -373,17 +381,19 @@
       return;
     }
     const gross = dailyTokens * previewUsdPerToken;
-    const sharePct = sameContext ? number(editingEntry.sharePct) : Number(model.sharePctByPlatform[platform]);
+    const sharePct = provider === 'usdt' && platform === 'stripchat' ? USDT_STRIPCHAT_MODEL_SHARE : sameContext ? number(editingEntry.sharePct) : Number(model.sharePctByPlatform[platform]);
     if (!Number.isFinite(sharePct) || sharePct < 0 || sharePct > 100) { preview.textContent = 'Esta modelo no tiene un porcentaje configurado. Agrégala de nuevo con página y porcentaje.'; return; }
-    const modelPart = gross * sharePct / 100;
+    const ownerFeeUsd = gross * entryOwnerFeeRate(provider, platform);
+    const shareBase = entryShareBaseUsd(gross, provider, platform);
+    const modelPart = shareBase * sharePct / 100;
     const discount = sameContext ? number(editingEntry.copDiscountPerUsd) : number(model.copDiscountByPlatform[platform]);
     const copRate = previewCopRate;
     const modelPayoutCop = modelPart * Math.max(0, copRate - discount);
     const totalCop = gross * copRate;
-    const ownerFeeUsd = provider === 'twl' ? gross * TWL_OWNER_FEE_RATE : 0;
     const ownerNetUsd = gross - modelPart - ownerFeeUsd;
     const ownerNetCop = totalCop - modelPayoutCop - ownerFeeUsd * copRate;
-    preview.innerHTML = `${sameContext || sameDay ? 'Actualizando ingreso.' : 'Tokens del día estimados:'} <b>${fmt(dailyTokens, 0)}</b> · Acumulado: <b>${fmt(weeklyTokens, 0)}</b>. ${previousInfo}<br>Total del día: <b>${usd(gross)}</b> (${cop(totalCop)}). Modelo (${fmt(sharePct, 1)}%): <b>${usd(modelPart)}</b> · paga <b>${cop(modelPayoutCop)}</b>. ${provider === 'twl' ? `TWL retiene ${usd(ownerFeeUsd)} (${cop(ownerFeeUsd * copRate)}) del total. ` : ''}Tu parte neta: <b>${usd(ownerNetUsd)}</b> · <b>${cop(ownerNetCop)}</b>.`;
+    const feeDescription = provider === 'twl' ? `TWL retiene ${usd(ownerFeeUsd)} (${cop(ownerFeeUsd * copRate)}) del total. ` : provider === 'usdt' && platform === 'stripchat' ? `USDT descuenta primero ${usd(ownerFeeUsd)} (1%); los ${usd(shareBase)} restantes se reparten ${fmt(sharePct, 1)}% para ella y ${fmt(100 - sharePct, 1)}% para ti. ` : '';
+    preview.innerHTML = `${sameContext || sameDay ? 'Actualizando ingreso.' : 'Tokens del día estimados:'} <b>${fmt(dailyTokens, 0)}</b> · Acumulado: <b>${fmt(weeklyTokens, 0)}</b>. ${previousInfo}<br>Total del día: <b>${usd(gross)}</b> (${cop(totalCop)}). Modelo (${fmt(sharePct, 1)}%): <b>${usd(modelPart)}</b> · paga <b>${cop(modelPayoutCop)}</b>. ${feeDescription}Tu parte neta: <b>${usd(ownerNetUsd)}</b> · <b>${cop(ownerNetCop)}</b>.`;
   }
   function render() { renderModels(); renderEntries(); renderPreview(); }
   function updateThemeControl() {
@@ -602,7 +612,7 @@
     if (nextReading && weeklyTokens > number(nextReading.weeklyTokens)) { flash(`El acumulado supera la lectura posterior del ${new Date(`${nextReading.date}T00:00:00`).toLocaleDateString('es-CO', { day: 'numeric', month: 'short' })} (${fmt(nextReading.weeklyTokens, 0)} tokens).`); return; }
     const dailyTokens = Math.max(0, weeklyTokens - previousTokens);
     const sameContext = editingEntry && editingEntry.modelId === model.id && editingEntry.platform === platform && editingEntry.provider === provider;
-    const sharePct = sameContext ? number(editingEntry.sharePct) : Number(model.sharePctByPlatform[platform]);
+    const sharePct = provider === 'usdt' && platform === 'stripchat' ? USDT_STRIPCHAT_MODEL_SHARE : sameContext ? number(editingEntry.sharePct) : Number(model.sharePctByPlatform[platform]);
     if (!Number.isFinite(sharePct) || sharePct < 0 || sharePct > 100) { flash('Esta modelo no tiene un porcentaje configurado. Agrégala de nuevo con página y porcentaje.'); return; }
     const copDiscountPerUsd = sameContext ? number(editingEntry.copDiscountPerUsd) : number(model.copDiscountByPlatform[platform]);
     const copPerUsd = sameContext ? entryCopRate(editingEntry) : number(state.rates.copPerUsdByProvider[provider]);
