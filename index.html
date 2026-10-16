@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f5f7fb">
   <title>GRUPODGH — ingresos por tokens</title>
-  <link rel="stylesheet" href="styles.css?v=custom-accent-1">
+  <link rel="stylesheet" href="styles.css?v=weekly-history-1">
 </head>
 <body>
   <div class="shell">
@@ -28,7 +28,7 @@
     <main id="inicio" class="main-content">
       <header class="topbar">
         <div class="breadcrumb">Administración <span>/</span> <b>Resumen</b></div>
-        <div class="top-actions"><span class="today" id="today"></span><label class="theme-toggle accent-picker" title="Personalizar color principal"><span class="accent-swatch" id="accentSwatch" aria-hidden="true"></span><input id="accentColorInput" type="color" value="#6856d9" aria-label="Personalizar color principal"></label><button id="themeToggle" class="theme-toggle" type="button" aria-label="Activar modo oscuro" title="Activar modo oscuro"><span id="themeIcon" aria-hidden="true">☾</span></button><span class="avatar small-avatar">A</span></div>
+        <div class="top-actions"><span class="today" id="today"></span><div class="text-size-control"><button id="textSizeToggle" class="theme-toggle text-size-toggle" type="button" aria-label="Ajustar tamaño de letra" aria-expanded="false" aria-controls="textSizePanel" title="Ajustar tamaño de letra">Aa</button><div id="textSizePanel" class="text-size-panel" hidden><label for="textSizeRange">Tamaño de letra <output id="textSizeValue" for="textSizeRange">100%</output></label><input id="textSizeRange" type="range" min="100" max="140" step="10" value="100"><small>Amplía los textos y controles de la app.</small><button id="textSizeReset" type="button">Restablecer</button></div></div><label class="theme-toggle accent-picker" title="Personalizar color principal"><span class="accent-swatch" id="accentSwatch" aria-hidden="true"></span><input id="accentColorInput" type="color" value="#6856d9" aria-label="Personalizar color principal"></label><button id="themeToggle" class="theme-toggle" type="button" aria-label="Activar modo oscuro" title="Activar modo oscuro"><span id="themeIcon" aria-hidden="true">☾</span></button><span class="avatar small-avatar">A</span></div>
       </header>
       <section class="page-heading">
         <div><p class="eyebrow">TU NEGOCIO, EN ORDEN</p><h1>Resumen de ingresos</h1><p class="subheading">Controla tokens, conversiones y repartos en un solo lugar.</p></div>
@@ -54,20 +54,25 @@
       </section>
 
       <section class="summary-grid" aria-label="Resumen de ingresos">
-        <article class="summary-card"><div class="card-top"><span class="card-label">INGRESOS REGISTRADOS</span><span class="card-icon violet">↗</span></div><strong id="totalTokens">0 <small>tokens</small></strong><div class="card-foot">En el periodo seleccionado</div></article>
+        <article class="summary-card"><div class="card-top"><span class="card-label">INGRESOS REGISTRADOS</span><span class="card-icon violet">↗</span></div><strong id="totalTokens">0 <small>tokens</small></strong><div class="card-foot" id="summaryPeriodLabel">En la semana seleccionada</div></article>
         <article class="summary-card"><div class="card-top"><span class="card-label">VALOR TOTAL</span><span class="card-icon blue">＄</span></div><strong id="totalUsd">$0.00 <small>USD</small></strong><div class="card-foot" id="totalCop">≈ $0 COP</div></article>
         <article class="summary-card"><div class="card-top"><span class="card-label">PARA LAS MODELOS</span><span class="card-icon green">♙</span></div><strong id="modelsUsd">$0.00 <small>USD</small></strong><div class="card-foot" id="modelsCop">≈ $0 COP</div></article>
         <article class="summary-card"><div class="card-top"><span class="card-label">TU PARTE NETA</span><span class="card-icon amber">▤</span></div><strong id="ownerUsd">$0.00 <small>USD</small></strong><div class="card-foot" id="ownerCop">≈ $0 COP</div><div class="fee-summary" id="ownerFeeSummary">Retención TWL (10% del total): $0.00 USD · $0 COP</div></article>
       </section>
 
-      <section class="panel weekly-panel">
-        <div class="panel-heading"><div><h2>Liquidación semanal por modelo</h2><p id="weeklyDateRange">Semana actual · lunes a domingo</p></div></div>
+      <section id="weekly-panel" class="panel weekly-panel">
+        <div class="panel-heading"><div><h2>Liquidación semanal por modelo</h2><p id="weeklyDateRange">Semana actual · lunes a domingo</p></div><label class="period-select week-select"><span>Consultar semana</span><select id="weekSelector" aria-label="Consultar semana"></select></label></div>
         <div class="table-wrap"><table><thead><tr><th>MODELO</th><th>PÁGINA</th><th>MONETIZADORA</th><th>TOKENS EN LA SEMANA</th><th>MODELO · USD</th><th>MODELO · COP</th><th>TWL 10% DEL TOTAL · USD / COP</th><th>TU NETO · USD</th><th>TU NETO · COP</th></tr></thead><tbody id="weeklyPayoutBody"></tbody><tfoot id="weeklyPayoutFoot"></tfoot></table><div class="empty-state" id="weeklyPayoutEmpty"><span class="empty-icon">◷</span><b>Aún no hay ingresos esta semana</b><p>Al registrar lecturas, aquí verás el pago por modelo, página y monetizadora.</p></div></div>
+      </section>
+
+      <section class="panel history-panel">
+        <div class="panel-heading"><div><h2>Histórico semanal</h2><p>Cada semana se conserva por separado; el total reúne todo el historial.</p></div></div>
+        <div class="table-wrap"><table><thead><tr><th>SEMANA</th><th>TOKENS</th><th>TOTAL · USD</th><th>MODELOS · USD</th><th>MODELOS · COP</th><th>TU NETO · USD</th><th>TU NETO · COP</th><th></th></tr></thead><tbody id="weeklyHistoryBody"></tbody><tfoot id="weeklyHistoryFoot"></tfoot></table><div class="empty-state" id="weeklyHistoryEmpty"><span class="empty-icon">◷</span><b>Aún no hay semanas registradas</b><p>Al ingresar ingresos, cada semana aparecerá aquí y se sumará al acumulado histórico.</p></div></div>
       </section>
 
       <section class="content-grid">
         <article class="panel entries-panel">
-          <div class="panel-heading"><div><h2>Ingresos recientes</h2><p>Detalle de los registros por modelo</p></div><div class="table-filters"><label class="period-select"><span class="sr-only">Filtrar página</span><select id="platformFilter"><option value="all">Todas las páginas</option><option value="stripchat">Stripchat</option><option value="chaturbate">Chaturbate</option></select></label><label class="period-select"><span class="sr-only">Filtrar monetizadora</span><select id="providerFilter"><option value="all">Todas las monetizadoras</option><option value="bantokens">BANTOKENS</option><option value="twl">TWL</option><option value="usdt">USDT</option></select></label><label class="period-select"><span class="sr-only">Filtrar periodo</span><select id="period"><option value="all">Todo el tiempo</option><option value="month">Este mes</option><option value="week">Últimos 7 días</option></select></label></div></div>
+          <div class="panel-heading"><div><h2>Ingresos recientes</h2><p>Detalle de los registros por modelo</p></div><div class="table-filters"><label class="period-select"><span class="sr-only">Filtrar página</span><select id="platformFilter"><option value="all">Todas las páginas</option><option value="stripchat">Stripchat</option><option value="chaturbate">Chaturbate</option></select></label><label class="period-select"><span class="sr-only">Filtrar monetizadora</span><select id="providerFilter"><option value="all">Todas las monetizadoras</option><option value="bantokens">BANTOKENS</option><option value="twl">TWL</option><option value="usdt">USDT</option></select></label><label class="period-select"><span class="sr-only">Filtrar periodo</span><select id="period"><option value="selected-week">Semana seleccionada</option><option value="all">Todo el tiempo</option><option value="month">Este mes</option><option value="week">Últimos 7 días</option></select></label></div></div>
           <div class="table-wrap"><table><thead><tr><th>MODELO</th><th>PÁGINA</th><th>MONETIZADORA</th><th>FECHA</th><th>TOKENS DEL DÍA</th><th>ACUMULADO SEMANAL</th><th>VALOR USD</th><th>MODELO · USD / COP</th><th>TWL 10% DEL TOTAL · USD / COP</th><th>TU NETO · USD / COP</th><th></th></tr></thead><tbody id="entriesBody"></tbody></table><div class="empty-state" id="emptyState"><span class="empty-icon">↗</span><b>Aún no hay ingresos</b><p>Registra el acumulado semanal para calcular los tokens de cada día.</p><a href="#registro">Registrar ingreso <span>→</span></a></div></div>
         </article>
         <article class="panel models-panel" id="modelesPanel">
@@ -123,6 +128,6 @@
       <div class="backup-confirm-actions"><button id="cancelBackupImport" class="button secondary" type="button">Cancelar</button><button id="confirmBackupImport" class="button primary" type="button">Importar y aplicar</button></div>
     </div>
   </div>
-  <script src="app.js?v=custom-accent-1"></script>
+  <script src="app.js?v=weekly-history-1"></script>
 </body>
 </html>

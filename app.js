@@ -5,10 +5,17 @@
   const TWL_OWNER_FEE_RATE = 0.10;
   const TRM_RATE_URL = './data/bantokens-trm.json';
   const ACCENT_KEY = 'grupodgh-accent-color';
+  const TEXT_SIZE_KEY = 'grupodgh-text-size';
   const $ = (selector) => document.querySelector(selector);
   let savedTheme = 'light';
   try { savedTheme = localStorage.getItem(THEME_KEY) || 'light'; } catch { /* Keep the default theme when browser storage is unavailable. */ }
   document.documentElement.dataset.theme = savedTheme === 'dark' ? 'dark' : 'light';
+  let savedTextSize = 100;
+  try {
+    const storedTextSize = Number(localStorage.getItem(TEXT_SIZE_KEY));
+    if ([100, 110, 120, 130, 140].includes(storedTextSize)) savedTextSize = storedTextSize;
+  } catch { /* Keep the default text size when browser storage is unavailable. */ }
+  document.documentElement.style.setProperty('--app-zoom', String(savedTextSize / 100));
   let savedAccent = '';
   try {
     const storedAccent = localStorage.getItem(ACCENT_KEY) || '';
@@ -153,6 +160,14 @@
     date.setDate(date.getDate() - ((date.getDay() + 6) % 7));
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
   };
+  let selectedWeek = weekKey(todayISO());
+  const weekRangeLabel = (key) => {
+    const monday = new Date(`${key}T00:00:00`);
+    const sunday = new Date(monday);
+    sunday.setDate(sunday.getDate() + 6);
+    const dateLabel = (date) => date.toLocaleDateString('es-CO', { day: 'numeric', month: 'short' });
+    return `${dateLabel(monday)} – ${dateLabel(sunday)}, ${sunday.getFullYear()}`;
+  };
   const escapeHtml = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
   const modelById = (id) => state.models.find((m) => m.id === id);
   const ratesReady = (platform = $('#entryPlatform')?.value || 'stripchat', provider = $('#entryProvider')?.value || 'bantokens') => number(state.rates.usdPerToken[platform]) > 0 && number(state.rates.copPerUsdByProvider[provider]) > 0;
@@ -199,7 +214,7 @@
     const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     if (period === 'month') start.setDate(1);
     if (period === 'week') start.setDate(start.getDate() - 6);
-    return state.entries.filter((e) => (platform === 'all' || e.platform === platform) && (provider === 'all' || e.provider === provider) && (period === 'all' || new Date(`${e.date}T00:00:00`) >= start));
+    return state.entries.filter((e) => (platform === 'all' || e.platform === platform) && (provider === 'all' || e.provider === provider) && (period === 'all' || (period === 'selected-week' ? weekKey(e.date) === selectedWeek : new Date(`${e.date}T00:00:00`) >= start)));
   }
   function renderSummary() {
     const entries = periodEntries();
@@ -212,6 +227,8 @@
     const ownerCop = entries.reduce((sum, e) => sum + entryOwnerCop(e), 0);
     const ownerFeeUsd = entries.reduce((sum, e) => sum + entryOwnerFeeUsd(e), 0);
     const ownerFeeCop = entries.reduce((sum, e) => sum + entryOwnerFeeCop(e), 0);
+    const period = $('#period').value;
+    $('#summaryPeriodLabel').textContent = period === 'selected-week' ? `Semana ${weekRangeLabel(selectedWeek)}` : period === 'all' ? 'Histórico completo' : period === 'month' ? 'Desde el inicio del mes' : 'Últimos 7 días';
     $('#totalTokens').innerHTML = `${fmt(tokens, 0)} <small>tokens</small>`;
     $('#totalUsd').innerHTML = `${usd(total)} <small>USD</small>`;
     $('#totalCop').textContent = entries.length && entries.every((e) => entryCopRate(e) > 0) ? `≈ ${cop(totalCop)}` : 'Configura las tasas para convertir a COP';
@@ -222,15 +239,17 @@
     const feeCopText = entries.every((e) => entryCopRate(e) > 0) ? cop(ownerFeeCop) : 'COP pendiente de tasa';
     $('#ownerFeeSummary').textContent = `Retención TWL (10% del total): ${usd(ownerFeeUsd)} · ${feeCopText}`;
   }
+  function renderWeekOptions() {
+    const weeks = new Set([weekKey(todayISO()), ...state.entries.map((entry) => weekKey(entry.date))]);
+    if (!weeks.has(selectedWeek)) selectedWeek = weekKey(todayISO());
+    const options = [...weeks].sort((a, b) => b.localeCompare(a));
+    $('#weekSelector').innerHTML = options.map((week) => `<option value="${week}">${escapeHtml(weekRangeLabel(week))}${week === weekKey(todayISO()) ? ' · actual' : ''}</option>`).join('');
+    $('#weekSelector').value = selectedWeek;
+  }
   function renderWeeklyPayouts() {
-    const thisWeek = weekKey(todayISO());
-    const monday = new Date(`${thisWeek}T00:00:00`);
-    const sunday = new Date(monday);
-    sunday.setDate(sunday.getDate() + 6);
-    const dateLabel = (date) => date.toLocaleDateString('es-CO', { day: 'numeric', month: 'short' });
-    $('#weeklyDateRange').textContent = `Semana actual (lunes a domingo) · ${dateLabel(monday)} al ${dateLabel(sunday)} · TWL retiene 10% del total y luego se calcula tu restante.`;
+    $('#weeklyDateRange').textContent = `Lunes a domingo · ${weekRangeLabel(selectedWeek)} · TWL retiene 10% del total y luego se calcula tu restante.`;
     const totals = new Map();
-    state.entries.filter((entry) => weekKey(entry.date) === thisWeek).forEach((entry) => {
+    state.entries.filter((entry) => weekKey(entry.date) === selectedWeek).forEach((entry) => {
       const key = JSON.stringify([entry.modelId, entry.platform, entry.provider]);
       if (!totals.has(key)) totals.set(key, { modelName: entry.modelName || modelById(entry.modelId)?.name || 'Modelo eliminada', platform: entry.platform, provider: entry.provider, tokens: 0, modelUsd: 0, modelCop: 0, ownerFeeUsd: 0, ownerFeeCop: 0, ownerUsd: 0, ownerCop: 0, hasCopRate: true });
       const total = totals.get(key);
@@ -260,6 +279,26 @@
     const allCopRatesReady = rows.length > 0 && rows.every((row) => row.hasCopRate);
     $('#weeklyPayoutFoot').innerHTML = rows.length ? `<tr><th colspan="3">TOTAL SEMANAL</th><th data-label="Tokens en la semana">${fmt(totalTokens, 0)}</th><th data-label="Modelo · USD">${usd(totalModelUsd)}</th><th data-label="Modelo · COP">${allCopRatesReady ? cop(totalModelCop) : 'Configura las tasas'}</th><th data-label="Retención TWL">${usd(totalFeeUsd)}<small>${allCopRatesReady ? cop(totalFeeCop) : 'Configura las tasas'}</small></th><th data-label="Tu neto · USD">${usd(totalOwnerUsd)}</th><th data-label="Tu neto · COP">${allCopRatesReady ? cop(totalOwnerCop) : 'Configura las tasas'}</th></tr>` : '';
   }
+  function renderWeeklyHistory() {
+    const totals = new Map();
+    state.entries.forEach((entry) => {
+      const key = weekKey(entry.date);
+      if (!totals.has(key)) totals.set(key, { week: key, tokens: 0, totalUsd: 0, modelUsd: 0, modelCop: 0, ownerUsd: 0, ownerCop: 0, hasCopRate: true });
+      const week = totals.get(key);
+      week.tokens += entryTokens(entry);
+      week.totalUsd += entryUsd(entry);
+      week.modelUsd += entryModelUsd(entry);
+      week.modelCop += entryModelCop(entry);
+      week.ownerUsd += entryOwnerUsd(entry);
+      week.ownerCop += entryOwnerCop(entry);
+      if (!(entryCopRate(entry) > 0)) week.hasCopRate = false;
+    });
+    const rows = [...totals.values()].sort((a, b) => b.week.localeCompare(a.week));
+    $('#weeklyHistoryEmpty').hidden = rows.length > 0;
+    $('#weeklyHistoryBody').innerHTML = rows.map((row) => `<tr><td data-label="Semana">${escapeHtml(weekRangeLabel(row.week))}</td><td class="token-cell" data-label="Tokens">${fmt(row.tokens, 0)}</td><td class="amount-cell" data-label="Total · USD">${usd(row.totalUsd)}</td><td class="share-cell" data-label="Modelos · USD">${usd(row.modelUsd)}</td><td data-label="Modelos · COP">${row.hasCopRate ? cop(row.modelCop) : 'Configura las tasas'}</td><td class="amount-cell" data-label="Tu neto · USD">${usd(row.ownerUsd)}</td><td data-label="Tu neto · COP">${row.hasCopRate ? cop(row.ownerCop) : 'Configura las tasas'}</td><td data-label="Detalle"><button class="week-history-open" type="button" data-select-week="${row.week}">Ver semana →</button></td></tr>`).join('');
+    const total = rows.reduce((all, row) => ({ tokens: all.tokens + row.tokens, totalUsd: all.totalUsd + row.totalUsd, modelUsd: all.modelUsd + row.modelUsd, modelCop: all.modelCop + row.modelCop, ownerUsd: all.ownerUsd + row.ownerUsd, ownerCop: all.ownerCop + row.ownerCop, hasCopRate: all.hasCopRate && row.hasCopRate }), { tokens: 0, totalUsd: 0, modelUsd: 0, modelCop: 0, ownerUsd: 0, ownerCop: 0, hasCopRate: rows.length > 0 });
+    $('#weeklyHistoryFoot').innerHTML = rows.length ? `<tr><th>ACUMULADO HISTÓRICO</th><th data-label="Tokens">${fmt(total.tokens, 0)}</th><th data-label="Total · USD">${usd(total.totalUsd)}</th><th data-label="Modelos · USD">${usd(total.modelUsd)}</th><th data-label="Modelos · COP">${total.hasCopRate ? cop(total.modelCop) : 'Configura las tasas'}</th><th data-label="Tu neto · USD">${usd(total.ownerUsd)}</th><th data-label="Tu neto · COP">${total.hasCopRate ? cop(total.ownerCop) : 'Configura las tasas'}</th><th></th></tr>` : '';
+  }
   function renderEntries() {
     const tbody = $('#entriesBody');
     const entries = periodEntries().slice().sort((a, b) => b.date.localeCompare(a.date) || (b.createdAt || 0) - (a.createdAt || 0));
@@ -276,8 +315,10 @@
       const weeklyTokens = e.weeklyTokens === undefined || e.weeklyTokens === null ? '—' : fmt(e.weeklyTokens, 0);
       return `<tr><td data-label="Modelo"><span class="model-cell"><span class="model-dot">${escapeHtml(name.trim().charAt(0).toUpperCase() || '?')}</span>${escapeHtml(name)}</span></td><td data-label="Página">${platform}</td><td data-label="Monetizadora">${provider}</td><td data-label="Fecha">${d}</td><td class="token-cell" data-label="Tokens del día">${fmt(dailyTokens, 0)}</td><td data-label="Acumulado semanal">${weeklyTokens}</td><td class="amount-cell" data-label="Valor total · USD">${usd(gross)}</td><td class="share-cell" data-label="Modelo · USD / COP">${usd(entryModelUsd(e))} <span style="color:#9aa2af">(${fmt(share, 1)}%)</span><small class="payout-cop">${cop(entryModelCop(e))}</small></td><td class="fee-cell" data-label="Retención TWL">${e.provider === 'twl' ? `${usd(entryOwnerFeeUsd(e))}<small>${cop(entryOwnerFeeCop(e))}</small>` : '—'}</td><td class="owner-cell" data-label="Tu neto · USD / COP">${usd(entryOwnerUsd(e))}<small>${cop(entryOwnerCop(e))}</small></td><td class="entry-actions-cell" data-label="Acciones"><div class="entry-actions"><button class="edit-entry" data-edit-entry="${escapeHtml(e.id)}" aria-label="Editar ingreso" title="Editar ingreso">Editar</button><button class="delete-entry" data-delete-entry="${escapeHtml(e.id)}" aria-label="Eliminar ingreso" title="Eliminar ingreso">×</button></div></td></tr>`;
     }).join('');
+    renderWeekOptions();
     renderSummary();
     renderWeeklyPayouts();
+    renderWeeklyHistory();
   }
   function renderModels() {
     const currentSelection = $('#entryModel').value;
@@ -359,6 +400,38 @@
   }
 
   $('#today').textContent = new Date().toLocaleDateString('es-CO', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+  const textSizeToggle = $('#textSizeToggle');
+  const textSizePanel = $('#textSizePanel');
+  const textSizeRange = $('#textSizeRange');
+  const applyTextSize = (size) => {
+    savedTextSize = Number(size);
+    document.documentElement.style.setProperty('--app-zoom', String(savedTextSize / 100));
+    textSizeRange.value = String(savedTextSize);
+    $('#textSizeValue').value = `${savedTextSize}%`;
+    try { localStorage.setItem(TEXT_SIZE_KEY, String(savedTextSize)); } catch { /* Keep the size until the app is closed. */ }
+  };
+  applyTextSize(savedTextSize);
+  textSizeToggle.addEventListener('click', () => {
+    const open = textSizePanel.hidden;
+    textSizePanel.hidden = !open;
+    textSizeToggle.setAttribute('aria-expanded', String(open));
+    if (open) textSizeRange.focus();
+  });
+  textSizeRange.addEventListener('input', (event) => applyTextSize(event.target.value));
+  $('#textSizeReset').addEventListener('click', () => applyTextSize(100));
+  document.addEventListener('click', (event) => {
+    if (!event.target.closest('.text-size-control')) {
+      textSizePanel.hidden = true;
+      textSizeToggle.setAttribute('aria-expanded', 'false');
+    }
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !textSizePanel.hidden) {
+      textSizePanel.hidden = true;
+      textSizeToggle.setAttribute('aria-expanded', 'false');
+      textSizeToggle.focus();
+    }
+  });
   $('#accentColorInput').value = savedAccent || (document.documentElement.dataset.theme === 'dark' ? '#a99bf6' : '#6856d9');
   $('#accentColorInput').addEventListener('input', (event) => {
     savedAccent = event.target.value;
@@ -453,6 +526,16 @@
   $('#period').addEventListener('change', renderEntries);
   $('#platformFilter').addEventListener('change', renderEntries);
   $('#providerFilter').addEventListener('change', renderEntries);
+  $('#weekSelector').addEventListener('change', (event) => { selectedWeek = event.target.value; renderEntries(); });
+  $('#weeklyHistoryBody').addEventListener('click', (event) => {
+    const button = event.target.closest('[data-select-week]');
+    if (!button) return;
+    selectedWeek = button.dataset.selectWeek;
+    $('#weekSelector').value = selectedWeek;
+    $('#period').value = 'selected-week';
+    renderEntries();
+    $('#weekly-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
   $('#entryPlatform').addEventListener('change', renderPreview);
   $('#entryProvider').addEventListener('change', renderPreview);
   $('#entryModel').addEventListener('change', renderPreview);
