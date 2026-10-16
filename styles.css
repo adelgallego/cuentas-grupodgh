@@ -99,3 +99,4 @@
   :root[data-theme="dark"] .sidebar{box-shadow:0 -5px 20px rgba(0,0,0,.25)}
 }
 @media(max-width:390px){.main-content{padding-left:12px;padding-right:12px}.topbar{margin-left:-12px;margin-right:-12px;padding-left:12px;padding-right:12px}.rate-strip{grid-template-columns:minmax(0,1fr)}.rate-title,.saved-indicator{grid-column:1}.summary-card{padding:11px}.card-label{font-size:7px}.table-filters{grid-template-columns:minmax(0,1fr)}.weekly-panel tbody tr,.entries-panel tbody tr,.weekly-panel tfoot tr{grid-template-columns:minmax(0,1fr)}.weekly-panel tbody td:first-child,.entries-panel tbody td:first-child,.entries-panel tbody .entry-actions-cell,.weekly-panel tfoot th:first-child{grid-column:1}.model-split-fields{grid-template-columns:minmax(0,1fr)}}
+.rate-source-note{min-height:12px;color:#8b94a3;font-size:8px;font-weight:500;line-height:1.4}:root[data-theme="dark"] .rate-source-note{color:#a2adbe}

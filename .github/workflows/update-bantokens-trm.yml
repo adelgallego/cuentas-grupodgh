@@ -1,0 +1,33 @@
+name: Actualizar TRM de BANTOKENS
+
+on:
+  schedule:
+    - cron: '15 11 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-rate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Obtener repositorio
+        uses: actions/checkout@v4
+      - name: Preparar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Leer TRM y descontar 50 COP
+        run: node .github/scripts/update-bantokens-trm.mjs
+      - name: Guardar la nueva tasa
+        run: |
+          if git diff --quiet -- data/bantokens-trm.json; then
+            echo "La tasa no cambió."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/bantokens-trm.json
+          git commit -m "Actualizar TRM diaria de BANTOKENS"
+          git push

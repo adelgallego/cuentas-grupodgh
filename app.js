@@ -3,6 +3,7 @@
   const THEME_KEY = 'cuenta-clara-theme';
   const TIFFANY_SHARE_MIGRATION_KEY = 'grupodgh-tiffany-share-80-v1';
   const TWL_OWNER_FEE_RATE = 0.10;
+  const TRM_RATE_URL = './data/bantokens-trm.json';
   const $ = (selector) => document.querySelector(selector);
   let savedTheme = 'light';
   try { savedTheme = localStorage.getItem(THEME_KEY) || 'light'; } catch { /* Keep the default theme when browser storage is unavailable. */ }
@@ -91,6 +92,32 @@
   const fmt = (v, digits = 2) => new Intl.NumberFormat('es-CO', { maximumFractionDigits: digits }).format(number(v));
   const usd = (v) => '$' + fmt(v, 2);
   const cop = (v) => '$' + fmt(v, 0) + ' COP';
+  let lastTrmFetchedAt = '';
+  const syncBantokensTrm = async () => {
+    const note = $('#bantokensRateNote');
+    try {
+      if (!['http:', 'https:'].includes(window.location.protocol)) throw new Error('La sincronización requiere la versión web.');
+      const response = await fetch(`${TRM_RATE_URL}?v=${Date.now()}`, { cache: 'no-store' });
+      if (!response.ok) throw new Error('No se pudo consultar la TRM.');
+      const rate = await response.json();
+      const trm = Number(rate.trmRate);
+      const bantokensRate = Number(rate.bantokensRate);
+      if (!Number.isFinite(trm) || trm <= 50 || !Number.isFinite(bantokensRate) || bantokensRate <= 0 || Math.abs(bantokensRate - (trm - 50)) > 0.01) throw new Error('La tasa TRM recibida no es válida.');
+      const dateText = rate.validDate ? ` · ${rate.validDate}` : '';
+      note.textContent = `TRM ${fmt(trm, 2)} − $50 = ${fmt(bantokensRate, 2)} COP${dateText}`;
+      if (rate.fetchedAt !== lastTrmFetchedAt || number(state.rates.copPerUsdByProvider.bantokens) !== bantokensRate) {
+        lastTrmFetchedAt = rate.fetchedAt || '';
+        state.rates.copPerUsdByProvider.bantokens = bantokensRate;
+        $('#copPerUsdBantokens').value = bantokensRate;
+        persist();
+        render();
+      }
+    } catch {
+      note.textContent = number(state.rates.copPerUsdByProvider.bantokens) > 0
+        ? 'Usando la última tasa guardada; no se pudo actualizar la TRM.'
+        : 'TRM − $50 · se actualizará en la versión web.';
+    }
+  };
   const todayISO = () => {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -383,9 +410,12 @@
       const value = event.target.value;
       if (value && number(value) <= 0) { event.target.value = ''; return; }
       state.rates.copPerUsdByProvider[provider] = value;
+      if (provider === 'bantokens') $('#bantokensRateNote').textContent = 'Tasa editada manualmente; se sincroniza desde la TRM al abrir la versión web.';
       persist(); render();
     });
   }
+  syncBantokensTrm();
+  if (['http:', 'https:'].includes(window.location.protocol)) setInterval(syncBantokensTrm, 60 * 60 * 1000);
   $('#period').addEventListener('change', renderEntries);
   $('#platformFilter').addEventListener('change', renderEntries);
   $('#providerFilter').addEventListener('change', renderEntries);
