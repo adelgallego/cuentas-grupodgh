@@ -4,10 +4,36 @@
   const TIFFANY_SHARE_MIGRATION_KEY = 'grupodgh-tiffany-share-80-v1';
   const TWL_OWNER_FEE_RATE = 0.10;
   const TRM_RATE_URL = './data/bantokens-trm.json';
+  const ACCENT_KEY = 'grupodgh-accent-color';
   const $ = (selector) => document.querySelector(selector);
   let savedTheme = 'light';
   try { savedTheme = localStorage.getItem(THEME_KEY) || 'light'; } catch { /* Keep the default theme when browser storage is unavailable. */ }
   document.documentElement.dataset.theme = savedTheme === 'dark' ? 'dark' : 'light';
+  let savedAccent = '';
+  try {
+    const storedAccent = localStorage.getItem(ACCENT_KEY) || '';
+    if (/^#[\da-f]{6}$/i.test(storedAccent)) savedAccent = storedAccent;
+  } catch { /* Keep the default accent when browser storage is unavailable. */ }
+  const hexRgb = (hex) => hex.match(/[\da-f]{2}/gi).map((part) => parseInt(part, 16));
+  const rgbHex = (rgb) => `#${rgb.map((part) => Math.round(part).toString(16).padStart(2, '0')).join('')}`;
+  const blendHex = (front, back, amount) => rgbHex(hexRgb(front).map((value, index) => value * amount + hexRgb(back)[index] * (1 - amount)));
+  function applyAccentColor(color) {
+    const root = document.documentElement;
+    const dark = root.dataset.theme === 'dark';
+    const surface = dark ? '#1b2330' : '#ffffff';
+    const rgb = hexRgb(color);
+    root.style.setProperty('--user-accent', color);
+    root.style.setProperty('--user-accent-dark', blendHex(color, dark ? '#0b1020' : '#172033', 0.2));
+    root.style.setProperty('--user-accent-soft', blendHex(color, surface, dark ? 0.2 : 0.1));
+    root.style.setProperty('--user-accent-softer', blendHex(color, surface, dark ? 0.12 : 0.05));
+    root.style.setProperty('--user-accent-border', blendHex(color, dark ? '#303949' : '#e9edf3', dark ? 0.58 : 0.28));
+    root.style.setProperty('--user-accent-focus', blendHex(color, dark ? '#c0b5ff' : '#a497ec', 0.45));
+    root.style.setProperty('--user-accent-glow', `rgba(${rgb.join(', ')}, .14)`);
+    root.style.setProperty('--user-accent-contrast', rgb[0] * 0.2126 + rgb[1] * 0.7152 + rgb[2] * 0.0722 > 158 ? '#172033' : '#ffffff');
+    const swatch = $('#accentSwatch');
+    if (swatch) swatch.style.backgroundColor = color;
+  }
+  if (savedAccent) applyAccentColor(savedAccent);
   const defaults = { rates: { usdPerToken: { stripchat: 0.05, chaturbate: 0.05 }, copPerUsdByProvider: { bantokens: '', twl: '', usdt: '' } }, models: [], entries: [] };
   const modelIdRemap = {};
   let state;
@@ -333,11 +359,19 @@
   }
 
   $('#today').textContent = new Date().toLocaleDateString('es-CO', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+  $('#accentColorInput').value = savedAccent || (document.documentElement.dataset.theme === 'dark' ? '#a99bf6' : '#6856d9');
+  $('#accentColorInput').addEventListener('input', (event) => {
+    savedAccent = event.target.value;
+    applyAccentColor(savedAccent);
+    try { localStorage.setItem(ACCENT_KEY, savedAccent); } catch { /* Keep the color until the app is closed. */ }
+  });
   updateThemeControl();
   $('#themeToggle').addEventListener('click', () => {
     const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
     document.documentElement.dataset.theme = nextTheme;
     localStorage.setItem(THEME_KEY, nextTheme);
+    if (savedAccent) applyAccentColor(savedAccent);
+    else $('#accentColorInput').value = nextTheme === 'dark' ? '#a99bf6' : '#6856d9';
     updateThemeControl();
   });
   let pendingBackupImport = null;

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f5f7fb">
   <title>GRUPODGH — ingresos por tokens</title>
-  <link rel="stylesheet" href="styles.css?v=rate-alignment-6">
+  <link rel="stylesheet" href="styles.css?v=custom-accent-1">
 </head>
 <body>
   <div class="shell">
@@ -28,7 +28,7 @@
     <main id="inicio" class="main-content">
       <header class="topbar">
         <div class="breadcrumb">Administración <span>/</span> <b>Resumen</b></div>
-        <div class="top-actions"><span class="today" id="today"></span><button id="themeToggle" class="theme-toggle" type="button" aria-label="Activar modo oscuro" title="Activar modo oscuro"><span id="themeIcon" aria-hidden="true">☾</span></button><span class="avatar small-avatar">A</span></div>
+        <div class="top-actions"><span class="today" id="today"></span><label class="theme-toggle accent-picker" title="Personalizar color principal"><span class="accent-swatch" id="accentSwatch" aria-hidden="true"></span><input id="accentColorInput" type="color" value="#6856d9" aria-label="Personalizar color principal"></label><button id="themeToggle" class="theme-toggle" type="button" aria-label="Activar modo oscuro" title="Activar modo oscuro"><span id="themeIcon" aria-hidden="true">☾</span></button><span class="avatar small-avatar">A</span></div>
       </header>
       <section class="page-heading">
         <div><p class="eyebrow">TU NEGOCIO, EN ORDEN</p><h1>Resumen de ingresos</h1><p class="subheading">Controla tokens, conversiones y repartos en un solo lugar.</p></div>
@@ -123,6 +123,6 @@
       <div class="backup-confirm-actions"><button id="cancelBackupImport" class="button secondary" type="button">Cancelar</button><button id="confirmBackupImport" class="button primary" type="button">Importar y aplicar</button></div>
     </div>
   </div>
-  <script src="app.js"></script>
+  <script src="app.js?v=custom-accent-1"></script>
 </body>
 </html>
