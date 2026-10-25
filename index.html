@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f5f7fb">
   <title>GRUPODGH — ingresos por tokens</title>
-  <link rel="stylesheet" href="styles.css?v=model-sync-settings-3">
+  <link rel="stylesheet" href="styles.css?v=cloud-sync-1">
 </head>
 <body>
   <div class="shell">
@@ -20,8 +20,8 @@
         <a class="nav-link" href="#modelos"><span class="nav-icon">♙</span> Modelos</a>
       </nav>
       <div class="sidebar-bottom">
-        <div class="privacy-note"><span class="lock">▣</span><div><b>Datos en este dispositivo</b><p>Esta primera versión guarda la información en este navegador.</p></div></div>
-        <div class="user-badge"><span class="avatar">A</span><span><b>Administrador</b><small>Cuenta local</small></span><span class="dots">···</span></div>
+        <div class="privacy-note"><span class="lock">▣</span><div><b>Nube y sincronización</b><p>Inicia sesión en la nube para mantener tus cambios sincronizados entre dispositivos.</p></div></div>
+        <div class="user-badge"><span class="avatar">A</span><span><b>Estado de la cuenta</b><small id="cloudAccountLabel">Sin conectar</small></span><span class="dots">···</span></div>
       </div>
     </aside>
 
@@ -51,6 +51,19 @@
       <section class="backup-panel" aria-label="Respaldo y transferencia de datos">
         <div><b>Respaldo de datos</b><p>Transfiere modelos, ingresos y tasas entre la app local y la versión web.</p></div>
         <div class="backup-actions"><button id="exportBackup" class="button secondary" type="button">Descargar respaldo</button><label class="backup-import"><span>Importar respaldo</span><input id="backupFile" class="backup-file-input" type="file" accept=".json,application/json"></label></div>
+      </section>
+
+      <section class="cloud-panel" aria-label="Almacenamiento en la nube">
+        <div class="cloud-heading"><div><b>Almacenamiento en la nube</b><p id="cloudStatus" role="status">Configura Supabase para sincronizar tus datos entre dispositivos.</p></div><div class="cloud-actions"><button id="cloudRefresh" class="button secondary" type="button" hidden>Recargar desde la nube</button><button id="cloudOverwrite" class="button secondary" type="button" hidden>Subir datos de este dispositivo</button></div></div>
+        <details class="cloud-config"><summary>Configurar Supabase en este dispositivo</summary><div class="cloud-fields">
+          <label>URL del proyecto<input id="cloudProjectUrl" type="url" placeholder="https://tu-proyecto.supabase.co" autocomplete="url"></label>
+          <label>Publishable key<input id="cloudPublicKey" type="password" placeholder="sb_publishable_…" autocomplete="off"></label>
+        </div></details>
+        <div class="cloud-fields cloud-auth-fields">
+          <label>Correo electrónico<input id="cloudEmail" type="email" autocomplete="username"></label>
+          <label>Contraseña<input id="cloudPassword" type="password" autocomplete="current-password"></label>
+          <div class="cloud-auth-actions"><button id="cloudSignIn" class="button primary" type="button">Iniciar sesión</button><button id="cloudSignUp" class="button secondary" type="button">Crear cuenta</button><button id="cloudSignOut" class="button secondary" type="button" hidden>Cerrar sesión</button></div>
+        </div>
       </section>
 
       <section class="summary-grid" aria-label="Resumen de ingresos">
@@ -152,7 +165,6 @@
       <div class="backup-confirm-actions"><button id="cancelBackupImport" class="button secondary" type="button">Cancelar</button><button id="confirmBackupImport" class="button primary" type="button">Importar y aplicar</button></div>
     </div>
   </div>
-  <script src="app.js?v=model-sync-settings-3"></script>
+  <script src="app.js?v=cloud-sync-1"></script>
 </body>
 </html>
-
