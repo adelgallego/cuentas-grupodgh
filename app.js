@@ -2,6 +2,9 @@
   const STORAGE_KEY = 'cuenta-clara-v1';
   const CHATURBATE_CREDENTIALS_KEY = 'grupodgh-chaturbate-credentials-v1';
   const CHATURBATE_WORKER_KEY = 'grupodgh-chaturbate-worker-url-v1';
+  const STRIPCHAT_STUDIO_KEY = 'grupodgh-stripchat-studio-credentials-v1';
+  const STRIPCHAT_MODELS_KEY = 'grupodgh-stripchat-model-credentials-v1';
+  const STRIPCHAT_WORKER_KEY = 'grupodgh-stripchat-worker-url-v1';
   const THEME_KEY = 'cuenta-clara-theme';
   const TIFFANY_SHARE_MIGRATION_KEY = 'grupodgh-tiffany-share-80-v1';
   const TWL_OWNER_FEE_RATE = 0.10;
@@ -29,7 +32,7 @@
     ['Escribe el nombre de la modelo.', 'Enter the model name.'], ['Usa porcentajes entre 0 y 100 para ambas páginas.', 'Enter percentages from 0 to 100 for both platforms.'], ['Los descuentos en pesos deben ser números iguales o mayores a cero.', 'Deductions in pesos must be numbers greater than or equal to zero.'], ['Cada descuento debe ser menor que las tasas COP/USD configuradas.', 'Each deduction must be lower than the configured COP/USD rates.'], ['No se encontró la modelo para editar.', 'Could not find the model to edit.'], ['Modelo actualizada.', 'Model updated.'], ['Modelo agregada.', 'Model added.'], ['Selecciona una modelo e ingresa el acumulado semanal de tokens.', 'Select a model and enter its weekly token total.'], ['No se encontró el ingreso que estabas editando.', 'Could not find the income entry you were editing.'], ['Configura las tasas de conversión para esta página y monetizadora antes de registrar ingresos.', 'Set conversion rates for this platform and provider before recording income.'], ['Ya existe una lectura para esa modelo, página y fecha. Edita ese registro para evitar duplicados.', 'A reading already exists for this model, platform, and date. Edit that entry to avoid duplicates.'], ['El acumulado no puede ser menor que la última lectura de esta semana (', 'The total cannot be lower than this week’s previous reading ('], [' tokens).', ' tokens).'], ['El acumulado supera la lectura posterior del ', 'The total exceeds the later reading on '], ['Esta modelo no tiene un porcentaje configurado. Agrégala de nuevo con página y porcentaje.', 'This model has no share configured. Add it again with a platform and share.'], ['El descuento por dólar debe ser menor que la tasa COP/USD de esta monetizadora.', 'The deduction per dollar must be lower than this provider’s COP/USD rate.'], ['Ingreso actualizado', 'Income updated'], ['Ingreso guardado', 'Income saved'], [': ', ': '], [' tokens del día.', ' tokens today.'], ['No se puede eliminar una modelo con ingresos registrados.', 'Cannot delete a model with recorded income.'], ['No se encontró la modelo de este ingreso.', 'Could not find the model for this income entry.'], ['Modelo eliminada.', 'Model deleted.'], ['Respaldo descargado.', 'Backup downloaded.'], ['Ese archivo no es un respaldo válido de GRUPODGH.', 'That file is not a valid GRUPODGH backup.'], ['Archivo: ', 'File: '], ['. Se importarán ', '. The import will include '], [' modelos, ', ' models, '], [' ingresos y sus tasas.', ' income entries and their rates.'], ['No se pudo importar. Revisa que el archivo sea un respaldo válido.', 'Could not import. Check that the file is a valid backup.'], ['Respaldo importado. Recargando la app…', 'Backup imported. Reloading the app…'], ['Anterior', 'Legacy'], ['$5,94 semanal', '$5.94 weekly'], ['lunes', 'Monday'], ['martes', 'Tuesday'], ['miércoles', 'Wednesday'], ['jueves', 'Thursday'], ['viernes', 'Friday'], ['sábado', 'Saturday'], ['domingo', 'Sunday'], ['enero', 'January'], ['febrero', 'February'], ['marzo', 'March'], ['abril', 'April'], ['mayo', 'May'], ['junio', 'June'], ['julio', 'July'], ['agosto', 'August'], ['septiembre', 'September'], ['octubre', 'October'], ['noviembre', 'November'], ['diciembre', 'December'], ['No se pudo guardar el respaldo en este navegador.', 'Could not save the backup in this browser.'], ['Ej. 3.147', 'e.g. 3,147'], ['Ej. 25000', 'e.g. 25,000'], ['Ej. 100', 'e.g. 100'], ['Ej. 150', 'e.g. 150'], ['0,05', '0.05']
   ];
   translationPairs.push(['Información sobre descuentos', 'Deduction details'], ['BANTOKENS · $5,94/sem de la modelo', 'BANTOKENS · $5.94/wk deducted from the model'], [' de la parte que le corresponde a la modelo tras aplicar su porcentaje (', ' from the model share after applying her percentage ('], ['descontado de la parte de cada modelo', 'deducted from each model share']);
-  translationPairs.push(['Si la app se cierra, las ganancias desde la última lectura se sumarán al próximo día que se sincronice.', 'If the app closes, earnings since the last reading will be added to the next synced day.'], ['Despliega ', 'Deploy '], ['. Si la app se cierra, las ganancias desde la última lectura se sumarán al próximo día sincronizado; si atraviesa el reinicio del lunes, ese saldo semanal perdido no se puede recuperar desde la API.', '. If the app closes, earnings since the last reading will be added to the next synced day; if the Monday reset passes, that lost weekly balance cannot be recovered from the API.'], ['Sincronización de Chaturbate', 'Chaturbate sync'], ['Consulta el saldo semanal de cada cuenta y guarda una lectura diaria mientras la app esté abierta.', 'Checks each account’s weekly balance and saves a daily reading while the app is open.'], ['Sin configurar', 'Not configured'], ['El contador de Chaturbate se reinicia los lunes a las 00:00. La app consulta cada 5 minutos. Configura un proxy propio de Cloudflare Worker y las credenciales API de cada modelo. Los tokens API se guardan solo en este navegador y no se incluyen en respaldos.', 'Chaturbate’s counter resets Mondays at 00:00. The app checks every 5 minutes. Set up your own Cloudflare Worker proxy and each model’s API credentials. API tokens are stored only in this browser and are not included in backups.'], ['URL de tu Worker', 'Your Worker URL'], ['Selecciona un modelo', 'Select a model'], ['Usuario de Chaturbate', 'Chaturbate username'], ['API Auth Token', 'API Auth Token'], ['Monetizadora', 'Provider'], ['Guardar conexión', 'Save connection'], ['Sincronizar ahora', 'Sync now'], ['Desconectar modelo', 'Disconnect model'], ['Conectada', 'Connected'], ['Sincronizado', 'Synced'], ['Error de sincronización', 'Sync error'], ['Faltan las tasas USD/token o COP/USD para ', 'USD/token or COP/USD rates are missing for '], ['No hay una conexión guardada para esta modelo.', 'There is no saved connection for this model.'], ['El Worker debe usar una URL HTTPS terminada en /stats.', 'The Worker URL must use HTTPS and end in /stats.'], ['La API no devolvió token_balance válido.', 'The API did not return a valid token_balance.'], ['Conexión eliminada de este navegador.', 'Connection removed from this browser.'], ['Sincronización automática activa · cada 5 min', 'Automatic sync active · every 5 min'], ['La app debe estar abierta para registrar lecturas.', 'The app must stay open to record readings.']);  const compileTranslations = (pairs) => {
+  translationPairs.push(['Si la app se cierra, las ganancias desde la última lectura se sumarán al próximo día que se sincronice.', 'If the app closes, earnings since the last reading will be added to the next synced day.'], ['Despliega ', 'Deploy '], ['. Si la app se cierra, las ganancias desde la última lectura se sumarán al próximo día sincronizado; si atraviesa el reinicio del lunes, ese saldo semanal perdido no se puede recuperar desde la API.', '. If the app closes, earnings since the last reading will be added to the next synced day; if the Monday reset passes, that lost weekly balance cannot be recovered from the API.'], ['Sincronización de Chaturbate', 'Chaturbate sync'], ['Consulta el saldo semanal de cada cuenta y guarda una lectura diaria mientras la app esté abierta.', 'Checks each account’s weekly balance and saves a daily reading while the app is open.'], ['Sin configurar', 'Not configured'], ['El contador de Chaturbate se reinicia los lunes a las 00:00. La app consulta cada 5 minutos. Configura un proxy propio de Cloudflare Worker y las credenciales API de cada modelo. Los tokens API se guardan solo en este navegador y no se incluyen en respaldos.', 'Chaturbate’s counter resets Mondays at 00:00. The app checks every 5 minutes. Set up your own Cloudflare Worker proxy and each model’s API credentials. API tokens are stored only in this browser and are not included in backups.'], ['URL de tu Worker', 'Your Worker URL'], ['Selecciona un modelo', 'Select a model'], ['Usuario de Chaturbate', 'Chaturbate username'], ['API Auth Token', 'API Auth Token'], ['Monetizadora', 'Provider'], ['Guardar conexión', 'Save connection'], ['Sincronizar ahora', 'Sync now'], ['Desconectar modelo', 'Disconnect model'], ['Conectada', 'Connected'], ['Sincronizado', 'Synced'], ['Error de sincronización', 'Sync error'], ['Faltan las tasas USD/token o COP/USD para ', 'USD/token or COP/USD rates are missing for '], ['No hay una conexión guardada para esta modelo.', 'There is no saved connection for this model.'], ['El Worker debe usar una URL HTTPS terminada en /stats.', 'The Worker URL must use HTTPS and end in /stats.'], ['La API no devolvió token_balance válido.', 'The API did not return a valid token_balance.'], ['Conexión eliminada de este navegador.', 'Connection removed from this browser.'], ['Sincronización automática activa · cada 5 min', 'Automatic sync active · every 5 min'], ['La app debe estar abierta para registrar lecturas.', 'The app must stay open to record readings.']);  translationPairs.push(['Sincronización de Stripchat', 'Stripchat sync'], ['Consulta las ganancias semanales de las modelos de tu Studio y guarda lecturas diarias.', 'Checks your Studio models’ weekly earnings and saves daily readings.'], ['La API de Studio requiere una clave creada por Stripchat y que cada modelo pertenezca a tu Studio. La clave se guarda en este navegador y se envía por HTTPS a tu Worker; no se incluye en los respaldos. La app consulta cada 5 minutos mientras está abierta.', 'The Studio API requires a key issued by Stripchat and each model to belong to your Studio. The key is stored in this browser and sent over HTTPS to your Worker; it is not included in backups. The app checks every 5 minutes while open.'], ['Usuario de Studio', 'Studio username'], ['Modelo', 'Model'], ['Usuario de la modelo en Stripchat', 'Model username on Stripchat'], ['API-Key de Studio', 'Studio API key'], ['Guardar conexión', 'Save connection'], ['Sincronizar ahora', 'Sync now'], ['Desconectar modelo', 'Disconnect model'], ['Borrar clave del Studio', 'Clear Studio key'], ['Crea o consulta la API-Key en ', 'Create or view the API key at '], ['Stripchat Studio', 'Stripchat Studio'], ['. El Worker también debe actualizarse para habilitar la ruta ', '. The Worker also needs an update to enable the route '], ['. El Worker también debe actualizarse para habilitar la ruta ', '. The Worker also needs an update to enable the route '], ['. Necesitas una URL HTTPS terminada en /stripchat/stats.', '. You need an HTTPS URL ending in /stripchat/stats.'], ['La API-Key y el usuario de Studio son obligatorios.', 'The Studio API key and Studio username are required.'], ['Configura el rango USD/token o COP/USD para ', 'Set the USD/token or COP/USD rate for '], ['Conexión de Stripchat guardada en este navegador.', 'Stripchat connection saved in this browser.'], ['Conexión de Stripchat eliminada para esta modelo.', 'Stripchat connection removed for this model.'], ['Clave de Studio eliminada de este navegador.', 'Studio key removed from this browser.'], ['No hay modelos de Stripchat conectadas.', 'No Stripchat models are connected.'], ['Stripchat sincronizado ', 'Stripchat synced '], ['Error de sincronización de Stripchat · ', 'Stripchat sync error · '], ['Modelo de Stripchat no encontrada.', 'Stripchat model not found.'], ['La API no devolvió totalEarnings válido.', 'The API did not return a valid totalEarnings value.']);  const compileTranslations = (pairs) => {
     const values = new Map(pairs);
     const alternatives = [...values.keys()]
       .sort((a, b) => b.length - a.length)
@@ -508,7 +511,7 @@
     const feeDescription = feeEntry.provider === 'bantokens' ? `BANTOKENS descuenta ${usd(ownerFeeUsd)} de la parte que le corresponde a la modelo tras aplicar su porcentaje (${usd(modelGrossShare)}). ` : provider === 'twl' ? `TWL retiene ${usd(ownerFeeUsd)} (${cop(ownerFeeUsd * copRate)}) del total. ` : provider === 'usdt' && platform === 'stripchat' ? `USDT descuenta primero ${usd(ownerFeeUsd)} (1%); los ${usd(shareBase)} restantes se reparten ${fmt(sharePct, 1)}% para ella y ${fmt(100 - sharePct, 1)}% para ti. ` : '';
     preview.innerHTML = `${sameContext || sameDay ? 'Actualizando ingreso.' : 'Tokens del día estimados:'} <b>${fmt(dailyTokens, 0)}</b> · Acumulado: <b>${fmt(weeklyTokens, 0)}</b>. ${previousInfo}<br>Total del día: <b>${usd(gross)}</b> (${cop(totalCop)}). Modelo (${fmt(sharePct, 1)}%): <b>${usd(modelPart)}</b> · paga <b>${cop(modelPayoutCop)}</b>. ${feeDescription}Tu parte neta: <b>${usd(ownerNetUsd)}</b> · <b>${cop(ownerNetCop)}</b>.`;
   }
-  function render() { renderModels(); renderEntries(); renderPreview(); if (typeof renderChaturbateModelOptions === "function") renderChaturbateModelOptions(); }
+  function render() { renderModels(); renderEntries(); renderPreview(); if (typeof renderChaturbateModelOptions === "function") renderChaturbateModelOptions(); if (typeof renderStripchatModelOptions === "function") renderStripchatModelOptions(); }
   function updateThemeControl() {
     const dark = document.documentElement.dataset.theme === 'dark';
     $('#themeIcon').textContent = dark ? '☀' : '☾';
@@ -764,6 +767,7 @@
     if ($('#editingModelId').value === id) clearModelEdit();
     state.models = state.models.filter((m) => m.id !== id);
     if (chaturbateCredentials && chaturbateCredentials[id]) { delete chaturbateCredentials[id]; saveChaturbateCredentialMap(); }
+    if (stripchatModelCredentials && stripchatModelCredentials[id]) { delete stripchatModelCredentials[id]; saveStripchatModelMap(); }
     persist(); render(); flash('Modelo eliminada.');
   });
   $('#cancelModelEdit').addEventListener('click', clearModelEdit);
@@ -947,8 +951,169 @@
     setInterval(() => { if (!document.hidden) syncChaturbateAccounts(); }, 5 * 60 * 1000);
     document.addEventListener('visibilitychange', () => { if (!document.hidden) syncChaturbateAccounts(); });
   }
-  render();
+  let stripchatStudioCredentials = {};
+  let stripchatModelCredentials = {};
+  try { stripchatStudioCredentials = JSON.parse(localStorage.getItem(STRIPCHAT_STUDIO_KEY) || '{}') || {}; } catch { stripchatStudioCredentials = {}; }
+  try { stripchatModelCredentials = JSON.parse(localStorage.getItem(STRIPCHAT_MODELS_KEY) || '{}') || {}; } catch { stripchatModelCredentials = {}; }
+  const savedStripchatWorkerUrl = (() => { try { return localStorage.getItem(STRIPCHAT_WORKER_KEY) || ''; } catch { return ''; } })();
+  $('#stripchatWorkerUrl').value = savedStripchatWorkerUrl;
+  $('#stripchatStudioUsername').value = stripchatStudioCredentials.studioUsername || '';
+  $('#stripchatApiKey').value = stripchatStudioCredentials.apiKey || '';
+  function renderStripchatModelOptions() {
+    const select = $('#stripchatSyncModel');
+    if (!select) return;
+    const selected = select.value;
+    select.innerHTML = `<option value="">${escapeHtml(appLanguage === 'en' ? 'Select a model' : 'Selecciona un modelo')}</option>${state.models.map((model) => `<option value="${escapeHtml(model.id)}">${escapeHtml(model.name)}${stripchatModelCredentials[model.id] ? ' · ✓' : ''}</option>`).join('')}`;
+    if ([...select.options].some((option) => option.value === selected)) select.value = selected;
+  }
+  function setStripchatStatus(spanish, english = spanish) {
+    $('#stripchatSyncStatus').textContent = appLanguage === 'en' ? english : spanish;
+  }
+  function saveStripchatModelMap() {
+    localStorage.setItem(STRIPCHAT_MODELS_KEY, JSON.stringify(stripchatModelCredentials));
+  }
+  function stripchatWorkerUrl() {
+    const value = $('#stripchatWorkerUrl').value.trim();
+    try {
+      const url = new URL(value);
+      return url.protocol === 'https:' && url.pathname.replace(/\/$/, '') === '/stripchat/stats' ? url.href : '';
+    } catch { return ''; }
+  }
+  function loadStripchatModelForm() {
+    const credential = stripchatModelCredentials[$('#stripchatSyncModel').value];
+    $('#stripchatModelUsername').value = credential?.username || '';
+    $('#stripchatProvider').value = credential?.provider || 'bantokens';
+    $('#removeStripchatModel').disabled = !credential;
+    if (!credential) setStripchatStatus('Sin configurar');
+    else setStripchatStatus('Conectada', 'Connected');
+  }
+  $('#stripchatWorkerUrl').addEventListener('change', () => {
+    const workerUrl = stripchatWorkerUrl();
+    if (!workerUrl) { flash('Necesitas una URL HTTPS terminada en /stripchat/stats.'); return; }
+    localStorage.setItem(STRIPCHAT_WORKER_KEY, workerUrl);
+  });
+  $('#stripchatSyncModel').addEventListener('change', loadStripchatModelForm);
+  $('#stripchatSyncForm').addEventListener('submit', (event) => {
+    event.preventDefault();
+    const modelId = $('#stripchatSyncModel').value;
+    const studioUsername = $('#stripchatStudioUsername').value.trim();
+    const apiKey = $('#stripchatApiKey').value.trim();
+    const username = $('#stripchatModelUsername').value.trim();
+    const workerUrl = stripchatWorkerUrl();
+    if (!workerUrl) { flash('Necesitas una URL HTTPS terminada en /stripchat/stats.'); return; }
+    if (!modelById(modelId) || !studioUsername || !apiKey || !username) return;
+    try {
+      localStorage.setItem(STRIPCHAT_WORKER_KEY, workerUrl);
+      stripchatStudioCredentials = { studioUsername, apiKey };
+      stripchatModelCredentials[modelId] = { username, provider: $('#stripchatProvider').value };
+      localStorage.setItem(STRIPCHAT_STUDIO_KEY, JSON.stringify(stripchatStudioCredentials));
+      saveStripchatModelMap();
+      renderStripchatModelOptions();
+      $('#stripchatSyncModel').value = modelId;
+      $('#removeStripchatModel').disabled = false;
+      setStripchatStatus('Conectada', 'Connected');
+      flash('Conexión de Stripchat guardada en este navegador.');
+    } catch {
+      flash('No se pudo guardar la conexión de Stripchat en este navegador.');
+    }
+  });
+  $('#removeStripchatModel').addEventListener('click', () => {
+    const modelId = $('#stripchatSyncModel').value;
+    if (!modelId || !stripchatModelCredentials[modelId]) return;
+    delete stripchatModelCredentials[modelId];
+    saveStripchatModelMap();
+    $('#stripchatModelUsername').value = '';
+    renderStripchatModelOptions();
+    $('#stripchatSyncModel').value = modelId;
+    loadStripchatModelForm();
+    flash('Conexión de Stripchat eliminada para esta modelo.');
+  });
+  $('#clearStripchatStudioKey').addEventListener('click', () => {
+    stripchatStudioCredentials = {};
+    localStorage.removeItem(STRIPCHAT_STUDIO_KEY);
+    $('#stripchatStudioUsername').value = '';
+    $('#stripchatApiKey').value = '';
+    setStripchatStatus('Sin configurar');
+    flash('Clave de Studio eliminada de este navegador.');
+  });
+  let stripchatSyncActive = false;
+  async function fetchStripchatBalance(workerUrl, studioCredentials, modelCredential, periodStart, periodEnd) {
+    const response = await fetch(workerUrl, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ studioUsername: studioCredentials.studioUsername, modelUsername: modelCredential.username, apiKey: studioCredentials.apiKey, periodStart, periodEnd }),
+      cache: 'no-store',
+    });
+    let result;
+    try { result = await response.json(); } catch { throw new Error('La API no devolvió totalEarnings válido.'); }
+    if (!response.ok) throw new Error(result.error || `HTTP ${response.status}`);
+    const balance = Number(result.token_balance);
+    if (!Number.isFinite(balance) || balance < 0) throw new Error('La API no devolvió totalEarnings válido.');
+    return balance;
+  }
+  function stripchatApiDate(date) {
+    const pad = (value) => String(value).padStart(2, '0');
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+  }
+  async function syncStripchatModels(selectedModelId = '') {
+    if (stripchatSyncActive) return;
+    const workerUrl = (() => { try { return localStorage.getItem(STRIPCHAT_WORKER_KEY) || stripchatWorkerUrl(); } catch { return stripchatWorkerUrl(); } })();
+    if (!workerUrl || !stripchatWorkerUrlIsValid(workerUrl)) { setStripchatStatus('Necesitas una URL HTTPS terminada en /stripchat/stats.', 'You need an HTTPS URL ending in /stripchat/stats.'); return; }
+    if (!stripchatStudioCredentials.studioUsername || !stripchatStudioCredentials.apiKey) { setStripchatStatus('La API-Key y el usuario de Studio son obligatorios.', 'The Studio API key and Studio username are required.'); return; }
+    const connectedModels = state.models.filter((model) => stripchatModelCredentials[model.id] && (!selectedModelId || model.id === selectedModelId));
+    if (!connectedModels.length) { setStripchatStatus('No hay modelos de Stripchat conectadas.', 'No Stripchat models are connected.'); return; }
+    stripchatSyncActive = true;
+    $('#syncStripchatNow').disabled = true;
+    setStripchatStatus('Sincronizando…', 'Syncing…');
+    const errors = [];
+    const date = todayISO();
+    const weekStart = new Date(`${weekKey(date)}T00:00:00`);
+    const periodStart = stripchatApiDate(weekStart);
+    const periodEnd = stripchatApiDate(new Date());
+    for (const model of connectedModels) {
+      const credential = stripchatModelCredentials[model.id];
+      const provider = credential.provider || 'bantokens';
+      try {
+        if (!ratesReady('stripchat', provider)) throw new Error(`Configura el rango USD/token o COP/USD para ${model.name}.`);
+        const balance = await fetchStripchatBalance(workerUrl, stripchatStudioCredentials, credential, periodStart, periodEnd);
+        const reading = state.entries.find((entry) => entry.modelId === model.id && entry.platform === 'stripchat' && entry.date === date && entry.weeklyTokens !== undefined && entry.weeklyTokens !== null);
+        if (reading) {
+          reading.weeklyTokens = balance;
+          reading.modelName = model.name;
+        } else {
+          state.entries.push({
+            id: crypto.randomUUID ? crypto.randomUUID() : `sc-${model.id}-${date}`,
+            modelId: model.id, modelName: model.name, platform: 'stripchat', provider, date,
+            tokens: 0, weeklyTokens: balance, sharePct: Number(model.sharePctByPlatform.stripchat),
+            usdPerToken: number(state.rates.usdPerToken.stripchat),
+            copPerUsd: number(state.rates.copPerUsdByProvider[provider]),
+            copDiscountPerUsd: number(model.copDiscountByPlatform.stripchat) || 0,
+            source: 'stripchat-studio-api', createdAt: Date.now(),
+          });
+        }
+        persist();
+      } catch (error) { errors.push(`${model.name}: ${error.message}`); }
+    }
+    render();
+    if (!errors.length) {
+      const stamp = new Date().toLocaleTimeString(locale(), { hour: '2-digit', minute: '2-digit' });
+      setStripchatStatus(`Stripchat sincronizado ${stamp}`, `Stripchat synced ${stamp}`);
+    } else setStripchatStatus(`Error de sincronización de Stripchat · ${errors[0]}`, `Stripchat sync error · ${errors[0]}`);
+    stripchatSyncActive = false;
+    $('#syncStripchatNow').disabled = false;
+  }
+  function stripchatWorkerUrlIsValid(value) {
+    try { const url = new URL(value); return url.protocol === 'https:' && url.pathname.replace(/\/$/, '') === '/stripchat/stats'; } catch { return false; }
+  }
+  $('#syncStripchatNow').addEventListener('click', () => syncStripchatModels($('#stripchatSyncModel').value));
+  renderStripchatModelOptions();
+  loadStripchatModelForm();
+  if (['http:', 'https:'].includes(window.location.protocol)) {
+    syncStripchatModels();
+    setInterval(() => { if (!document.hidden) syncStripchatModels(); }, 5 * 60 * 1000);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) syncStripchatModels(); });
+  }  render();
   document.documentElement.lang = appLanguage;
   if (appLanguage === 'en') translatePage();
   languageObserver.takeRecords();
 })();
+
