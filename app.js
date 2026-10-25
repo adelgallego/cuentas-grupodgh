@@ -41,7 +41,7 @@
       .map((value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
     return { values, pattern: new RegExp(alternatives.join('|'), 'g') };
   };
-  translationPairs.push(['Almacenamiento en la nube', 'Cloud storage'], ['Configura Supabase para sincronizar tus datos entre dispositivos.', 'Set up Supabase to sync your data across devices.'], ['Configurar Supabase en este dispositivo', 'Configure Supabase on this device'], ['URL del proyecto', 'Project URL'], ['Publishable key', 'Publishable key'], ['Correo electrónico', 'Email address'], ['Contraseña', 'Password'], ['Iniciar sesión', 'Sign in'], ['Crear cuenta', 'Create account'], ['Cerrar sesión', 'Sign out'], ['Recargar desde la nube', 'Reload from cloud'], ['Subir datos de este dispositivo', 'Upload this device’s data'], ['Preparando conexión a la nube…', 'Connecting to cloud…'], ['Sesión iniciada como ', 'Signed in as '], [' · Sincronizado ', ' · Synced '], ['No se pudo conectar con la nube: ', 'Could not connect to cloud: '], ['Cuenta creada. Revisa tu correo para confirmar y luego inicia sesión.', 'Account created. Check your email to confirm, then sign in.'], ['Sesión cerrada. Los datos de este dispositivo siguen disponibles.', 'Signed out. This device’s data remains available.'], ['Hay cambios más recientes en la nube. Recarga la nube o sube explícitamente los datos de este dispositivo.', 'There are newer cloud changes. Reload from cloud or explicitly upload this device’s data.'], ['No se encontró una configuración para la nube. Primero conecta Supabase.', 'Cloud is not configured. Connect Supabase first.'], ['La sesión expiró. Inicia sesión nuevamente.', 'Your session expired. Please sign in again.'], ['Sin conectar', 'Not connected'], ['Ingresa tu correo y contraseña.', 'Enter your email and password.'], ['La cuenta debe confirmarse por correo antes de iniciar sesión.', 'Confirm your account by email before signing in.']);
+  translationPairs.push(['Almacenamiento en la nube', 'Cloud storage'], ['Configura Supabase para sincronizar tus datos entre dispositivos.', 'Set up Supabase to sync your data across devices.'], ['Configurar Supabase en este dispositivo', 'Configure Supabase on this device'], ['URL del proyecto', 'Project URL'], ['Publishable key', 'Publishable key'], ['Correo electrónico', 'Email address'], ['Contraseña', 'Password'], ['Iniciar sesión', 'Sign in'], ['Crear cuenta', 'Create account'], ['Cerrar sesión', 'Sign out'], ['Continuar con GitHub', 'Continue with GitHub'], ['GitHub debe habilitarse como proveedor en Supabase antes de usar esta opción.', 'GitHub must be enabled as a provider in Supabase before using this option.'], ['Recargar desde la nube', 'Reload from cloud'], ['Subir datos de este dispositivo', 'Upload this device’s data'], ['Preparando conexión a la nube…', 'Connecting to cloud…'], ['Sesión iniciada como ', 'Signed in as '], [' · Sincronizado ', ' · Synced '], ['No se pudo conectar con la nube: ', 'Could not connect to cloud: '], ['Cuenta creada. Revisa tu correo para confirmar y luego inicia sesión.', 'Account created. Check your email to confirm, then sign in.'], ['Sesión cerrada. Los datos de este dispositivo siguen disponibles.', 'Signed out. This device’s data remains available.'], ['Hay cambios más recientes en la nube. Recarga la nube o sube explícitamente los datos de este dispositivo.', 'There are newer cloud changes. Reload from cloud or explicitly upload this device’s data.'], ['No se encontró una configuración para la nube. Primero conecta Supabase.', 'Cloud is not configured. Connect Supabase first.'], ['La sesión expiró. Inicia sesión nuevamente.', 'Your session expired. Please sign in again.'], ['Sin conectar', 'Not connected'], ['Ingresa tu correo y contraseña.', 'Enter your email and password.'], ['La cuenta debe confirmarse por correo antes de iniciar sesión.', 'Confirm your account by email before signing in.'], ['Inicia sesión con GitHub desde la versión web publicada por HTTPS.', 'Sign in with GitHub from the published HTTPS app.'], ['La redirección de GitHub no incluyó un código de autorización.', 'The GitHub redirect did not include an authorization code.'], ['Esa cuenta de GRUPODGH aún no existe. Pulsa Crear cuenta o usa Continuar con GitHub.', 'That GRUPODGH account does not exist yet. Click Create account or use Continue with GitHub.']);
   translationPairs.push(['● Pendiente de nube', '● Cloud pending'], ['● Nube sincronizada', '● Cloud synced'], ['● Conflicto nube', '● Cloud conflict'], ['● Error en nube', '● Cloud error']);
   const translations = {
     en: compileTranslations(translationPairs),
@@ -340,6 +340,8 @@
   let cloudSyncing = false;
   let cloudMutationVersion = 0;
   let cloudLoading = false;
+  let cloudAuthClientInstance = null;
+  let cloudAuthClientTag = '';
   let cloudWorkerUrls = {
     chaturbate: localStorage.getItem(CHATURBATE_WORKER_KEY) || '',
     stripchat: localStorage.getItem(STRIPCHAT_WORKER_KEY) || '',
@@ -355,6 +357,7 @@
   function cloudSetButtons(signedIn) {
     $('#cloudSignIn').hidden = signedIn;
     $('#cloudSignUp').hidden = signedIn;
+    $('#cloudSignInGithub').hidden = signedIn;
     $('#cloudSignOut').hidden = !signedIn;
     $('#cloudEmail').disabled = signedIn;
     $('#cloudPassword').disabled = signedIn;
@@ -370,6 +373,18 @@
     cloudConfig = { projectUrl, publicKey };
     localStorage.setItem(CLOUD_CONFIG_KEY, JSON.stringify(cloudConfig));
     return cloudConfig;
+  }
+  function cloudAuthClient() {
+    const config = cloudConfiguration();
+    if (!window.supabase?.createClient) throw new Error('No se pudo cargar el cliente de autenticación de Supabase. Recarga la app e inténtalo de nuevo.');
+    const tag = `${config.projectUrl}|${config.publicKey}`;
+    if (!cloudAuthClientInstance || cloudAuthClientTag !== tag) {
+      cloudAuthClientInstance = window.supabase.createClient(config.projectUrl, config.publicKey, {
+        auth: { storageKey: CLOUD_SESSION_KEY, persistSession: true, autoRefreshToken: false, detectSessionInUrl: true, flowType: 'pkce' },
+      });
+      cloudAuthClientTag = tag;
+    }
+    return cloudAuthClientInstance;
   }
   function cloudSaveSession() {
     if (cloudSession) localStorage.setItem(CLOUD_SESSION_KEY, JSON.stringify(cloudSession));
@@ -532,7 +547,45 @@
       if (!cloudSession.access_token || !cloudSession.user?.id) throw new Error('La cuenta debe confirmarse por correo antes de iniciar sesión.');
       cloudSaveSession();
       await cloudLoadOrSeed();
+    } catch (error) {
+      const message = /invalid login credentials/i.test(error.message) ? 'Esa cuenta de GRUPODGH aún no existe. Pulsa Crear cuenta o usa Continuar con GitHub.' : error.message;
+      cloudStatus(`No se pudo conectar con la nube: ${message}`, true);
+    }
+  }
+  function clearCloudAuthCallbackParams() {
+    const url = new URL(window.location.href);
+    if (!url.searchParams.has('code') && !url.searchParams.has('error')) return;
+    url.searchParams.delete('code');
+    url.searchParams.delete('error');
+    url.searchParams.delete('error_description');
+    window.history.replaceState({}, document.title, url.toString());
+  }
+  async function cloudSignInWithGithub() {
+    try {
+      cloudConfiguration();
+      if (window.location.protocol !== 'https:') throw new Error('Inicia sesión con GitHub desde la versión web publicada por HTTPS.');
+      const redirectTo = `${window.location.origin}${window.location.pathname}`;
+      const { error } = await cloudAuthClient().auth.signInWithOAuth({ provider: 'github', options: { redirectTo } });
+      if (error) throw error;
     } catch (error) { cloudStatus(`No se pudo conectar con la nube: ${error.message}`, true); }
+  }
+  async function cloudInitializeSession() {
+    if (!cloudConfig.projectUrl || !cloudConfig.publicKey) { cloudSession = null; cloudSetButtons(false); return; }
+    try {
+      const url = new URL(window.location.href);
+      const callbackError = url.searchParams.get('error_description') || url.searchParams.get('error');
+      if (callbackError) throw new Error(callbackError);
+      const { data, error } = await cloudAuthClient().auth.getSession();
+      if (error) throw error;
+      if (data.session) { cloudSession = data.session; cloudSaveSession(); }
+      if (!cloudSession?.access_token) { cloudSession = null; cloudSetButtons(false); clearCloudAuthCallbackParams(); return; }
+      clearCloudAuthCallbackParams();
+      await cloudLoadOrSeed();
+    } catch (error) {
+      clearCloudAuthCallbackParams();
+      cloudStatus(`No se pudo conectar con la nube: ${error.message}`, true);
+      if (!cloudSession?.access_token) cloudSetButtons(false);
+    }
   }
   async function cloudRestore() {
     try {
@@ -547,11 +600,9 @@
   $('#cloudPublicKey').value = cloudConfig.publicKey || '';
   $('#cloudSignIn').addEventListener('click', () => cloudSignIn(false));
   $('#cloudSignUp').addEventListener('click', () => cloudSignIn(true));
+  $('#cloudSignInGithub').addEventListener('click', cloudSignInWithGithub);
   $('#cloudSignOut').addEventListener('click', async () => {
-    try {
-      const config = cloudConfiguration();
-      await fetch(`${config.projectUrl}/auth/v1/logout`, { method: 'POST', headers: { apikey: config.publicKey, Authorization: `Bearer ${cloudSession.access_token}` } });
-    } catch { /* Local sign-out still clears the stored session. */ }
+    try { if (cloudAuthClientInstance) await cloudAuthClientInstance.auth.signOut({ scope: 'local' }); } catch { /* Local sign-out still clears the stored session. */ }
     cloudSession = null; cloudUpdatedAt = null; cloudConflict = false; cloudSaveSession(); cloudSetButtons(false);
     cloudStatus('Sesión cerrada. Los datos de este dispositivo siguen disponibles.');
   });
@@ -560,11 +611,7 @@
   for (const id of ['cloudProjectUrl', 'cloudPublicKey']) $(`#${id}`).addEventListener('change', () => {
     try { cloudConfiguration(); cloudStatus('Configuración guardada en este dispositivo.'); } catch { /* The user may still be typing. */ }
   });
-  if (cloudSession?.access_token && cloudConfig.projectUrl && cloudConfig.publicKey) {
-    cloudLoadOrSeed().catch((error) => { cloudStatus(`No se pudo conectar con la nube: ${error.message}`, true); cloudSession = null; cloudSaveSession(); cloudSetButtons(false); });
-  } else {
-    cloudSession = null; cloudSetButtons(false);
-  }
+  cloudInitializeSession();
   setInterval(async () => {
     if (document.hidden || !cloudSession || cloudSyncing || cloudConflict) return;
     try {
