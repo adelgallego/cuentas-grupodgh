@@ -26,6 +26,7 @@
     ['Histórico completo', 'Full history'], ['Desde el inicio del mes', 'Since the start of this month'], ['Lunes a domingo', 'Monday through Sunday'], ['· TWL retiene 10% del total y luego se calcula tu restante.', '· TWL withholds 10% of the total before your share is calculated.'], ['Tasa editada manualmente; se sincroniza desde la TRM al abrir la versión web.', 'Rate edited manually; it syncs from the TRM when the web app opens.'], ['TRM ', 'TRM '], ['Usando la última tasa guardada; no se pudo actualizar la TRM.', 'Using the last saved rate; the TRM could not be updated.'], ['TRM − $50 · se actualizará en la versión web.', 'TRM − COP 50 · will update in the web version.'], ['Editar', 'Edit'], ['BANTOKENS · $5,94/sem por modelo', 'BANTOKENS · $5.94/wk per model'], ['Modelo actualizada. Los ingresos anteriores conservan sus valores.', 'Model updated. Previous income entries keep their saved values.'], ['Modelo agregada.', 'Model added.'], ['Ingreso eliminado.', 'Income entry deleted.'],
     ['Escribe el nombre de la modelo.', 'Enter the model name.'], ['Usa porcentajes entre 0 y 100 para ambas páginas.', 'Enter percentages from 0 to 100 for both platforms.'], ['Los descuentos en pesos deben ser números iguales o mayores a cero.', 'Deductions in pesos must be numbers greater than or equal to zero.'], ['Cada descuento debe ser menor que las tasas COP/USD configuradas.', 'Each deduction must be lower than the configured COP/USD rates.'], ['No se encontró la modelo para editar.', 'Could not find the model to edit.'], ['Modelo actualizada.', 'Model updated.'], ['Modelo agregada.', 'Model added.'], ['Selecciona una modelo e ingresa el acumulado semanal de tokens.', 'Select a model and enter its weekly token total.'], ['No se encontró el ingreso que estabas editando.', 'Could not find the income entry you were editing.'], ['Configura las tasas de conversión para esta página y monetizadora antes de registrar ingresos.', 'Set conversion rates for this platform and provider before recording income.'], ['Ya existe una lectura para esa modelo, página y fecha. Edita ese registro para evitar duplicados.', 'A reading already exists for this model, platform, and date. Edit that entry to avoid duplicates.'], ['El acumulado no puede ser menor que la última lectura de esta semana (', 'The total cannot be lower than this week’s previous reading ('], [' tokens).', ' tokens).'], ['El acumulado supera la lectura posterior del ', 'The total exceeds the later reading on '], ['Esta modelo no tiene un porcentaje configurado. Agrégala de nuevo con página y porcentaje.', 'This model has no share configured. Add it again with a platform and share.'], ['El descuento por dólar debe ser menor que la tasa COP/USD de esta monetizadora.', 'The deduction per dollar must be lower than this provider’s COP/USD rate.'], ['Ingreso actualizado', 'Income updated'], ['Ingreso guardado', 'Income saved'], [': ', ': '], [' tokens del día.', ' tokens today.'], ['No se puede eliminar una modelo con ingresos registrados.', 'Cannot delete a model with recorded income.'], ['No se encontró la modelo de este ingreso.', 'Could not find the model for this income entry.'], ['Modelo eliminada.', 'Model deleted.'], ['Respaldo descargado.', 'Backup downloaded.'], ['Ese archivo no es un respaldo válido de GRUPODGH.', 'That file is not a valid GRUPODGH backup.'], ['Archivo: ', 'File: '], ['. Se importarán ', '. The import will include '], [' modelos, ', ' models, '], [' ingresos y sus tasas.', ' income entries and their rates.'], ['No se pudo importar. Revisa que el archivo sea un respaldo válido.', 'Could not import. Check that the file is a valid backup.'], ['Respaldo importado. Recargando la app…', 'Backup imported. Reloading the app…'], ['Anterior', 'Legacy'], ['$5,94 semanal', '$5.94 weekly'], ['lunes', 'Monday'], ['martes', 'Tuesday'], ['miércoles', 'Wednesday'], ['jueves', 'Thursday'], ['viernes', 'Friday'], ['sábado', 'Saturday'], ['domingo', 'Sunday'], ['enero', 'January'], ['febrero', 'February'], ['marzo', 'March'], ['abril', 'April'], ['mayo', 'May'], ['junio', 'June'], ['julio', 'July'], ['agosto', 'August'], ['septiembre', 'September'], ['octubre', 'October'], ['noviembre', 'November'], ['diciembre', 'December'], ['No se pudo guardar el respaldo en este navegador.', 'Could not save the backup in this browser.'], ['Ej. 3.147', 'e.g. 3,147'], ['Ej. 25000', 'e.g. 25,000'], ['Ej. 100', 'e.g. 100'], ['Ej. 150', 'e.g. 150'], ['0,05', '0.05']
   ];
+  translationPairs.push(['BANTOKENS · $5,94/sem de la modelo', 'BANTOKENS · $5.94/wk deducted from the model'], [' de la parte que le corresponde a la modelo tras aplicar su porcentaje (', ' from the model share after applying her percentage ('], ['descontado de la parte de cada modelo', 'deducted from each model share']);
   const compileTranslations = (pairs) => {
     const values = new Map(pairs);
     const alternatives = [...values.keys()]
@@ -295,17 +296,17 @@
   const entryOwnerFeeRate = (provider, platform) => provider === 'twl' ? TWL_OWNER_FEE_RATE : provider === 'usdt' && platform === 'stripchat' ? USDT_STRIPCHAT_FEE_RATE : 0;
   const bantokensWeeklyGross = (modelId, date, excludeId = '') => state.entries
     .filter((entry) => entry.id !== excludeId && entry.modelId === modelId && entry.provider === 'bantokens' && weekKey(entry.date) === weekKey(date))
-    .reduce((sum, entry) => sum + entryUsd(entry), 0);
-  const bantokensWeeklyFeeShare = (entry, gross = entryUsd(entry), excludeId = '') => {
-    const cohortGross = bantokensWeeklyGross(entry.modelId, entry.date, excludeId) + gross;
-    return cohortGross > 0 ? Math.min(BANTOKENS_WEEKLY_FEE_USD, cohortGross) * gross / cohortGross : 0;
+    .reduce((sum, entry) => sum + entryUsd(entry) * entrySharePct(entry) / 100, 0);
+  const bantokensWeeklyFeeShare = (entry, modelGross = entryUsd(entry) * entrySharePct(entry) / 100, excludeId = '') => {
+    const cohortGross = bantokensWeeklyGross(entry.modelId, entry.date, excludeId) + modelGross;
+    return cohortGross > 0 ? Math.min(BANTOKENS_WEEKLY_FEE_USD, cohortGross) * modelGross / cohortGross : 0;
   };
-  const entryOwnerFeeLabel = (provider, platform) => provider === 'twl' ? 'TWL · 10%' : provider === 'usdt' && platform === 'stripchat' ? 'USDT Stripchat · 1%' : provider === 'bantokens' ? 'BANTOKENS · $5,94/sem por modelo' : '';
-  const entryOwnerFeeUsd = (entry) => entry.provider === 'bantokens' ? bantokensWeeklyFeeShare(entry, entryUsd(entry), entry.id) : entryUsd(entry) * entryOwnerFeeRate(entry.provider, entry.platform);
-  const entryOwnerFeeCop = (entry) => entryOwnerFeeUsd(entry) * entryCopRate(entry);
-  const entryShareBaseUsd = (entry, gross = entryUsd(entry), feeUsd = entryOwnerFeeUsd(entry)) => entry.provider === 'bantokens' ? Math.max(0, gross - feeUsd) : entry.provider === 'usdt' && entry.platform === 'stripchat' ? gross * (1 - USDT_STRIPCHAT_FEE_RATE) : gross;
+  const entryOwnerFeeLabel = (provider, platform) => provider === 'twl' ? 'TWL · 10%' : provider === 'usdt' && platform === 'stripchat' ? 'USDT Stripchat · 1%' : provider === 'bantokens' ? 'BANTOKENS · $5,94/sem de la modelo' : '';
+  const entryOwnerFeeUsd = (entry) => entry.provider === 'bantokens' ? bantokensWeeklyFeeShare(entry, entryUsd(entry) * entrySharePct(entry) / 100, entry.id) : entryUsd(entry) * entryOwnerFeeRate(entry.provider, entry.platform);
+  const entryOwnerFeeCop = (entry) => entryOwnerFeeUsd(entry) * (entry.provider === 'bantokens' ? entryModelCopRate(entry) : entryCopRate(entry));
+  const entryShareBaseUsd = (entry, gross = entryUsd(entry)) => entry.provider === 'usdt' && entry.platform === 'stripchat' ? gross * (1 - USDT_STRIPCHAT_FEE_RATE) : gross;
   const entrySharePct = (entry) => entry.provider === 'usdt' && entry.platform === 'stripchat' ? USDT_STRIPCHAT_MODEL_SHARE : number(entry.sharePct);
-  const entryModelUsd = (entry) => entryShareBaseUsd(entry) * entrySharePct(entry) / 100;
+  const entryModelUsd = (entry) => entry.provider === 'bantokens' ? Math.max(0, entryUsd(entry) * entrySharePct(entry) / 100 - entryOwnerFeeUsd(entry)) : entryShareBaseUsd(entry) * entrySharePct(entry) / 100;
   const entryModelCop = (entry) => entryModelUsd(entry) * entryModelCopRate(entry);
   const entryOwnerUsd = (entry) => entryUsd(entry) - entryModelUsd(entry) - entryOwnerFeeUsd(entry);
   const entryOwnerCop = (entry) => entryUsd(entry) * entryCopRate(entry) - entryModelCop(entry) - entryOwnerFeeCop(entry);
@@ -352,7 +353,7 @@
     $('#ownerUsd').innerHTML = `${usd(ownerTotal)} <small>USD</small>`;
     $('#ownerCop').textContent = entries.length && entries.every((e) => entryCopRate(e) > 0) ? `≈ ${cop(ownerCop)}` : 'Configura las tasas para convertir a COP';
     const feeCopText = entries.every((e) => entryCopRate(e) > 0) ? cop(ownerFeeCop) : 'COP pendiente de tasa';
-    $('#ownerFeeSummary').textContent = `Descuentos (TWL 10% / USDT Stripchat 1% / BANTOKENS $5,94 semanal por modelo): ${usd(ownerFeeUsd)} · ${feeCopText}`;
+    $('#ownerFeeSummary').textContent = `Descuentos (TWL 10% / USDT Stripchat 1% / BANTOKENS $5,94 semanal descontado de la parte de cada modelo): ${usd(ownerFeeUsd)} · ${feeCopText}`;
   }
   function renderWeekOptions() {
     const weeks = new Set([weekKey(todayISO()), ...state.entries.map((entry) => weekKey(entry.date))]);
@@ -486,20 +487,23 @@
     const gross = dailyTokens * previewUsdPerToken;
     const sharePct = provider === 'usdt' && platform === 'stripchat' ? USDT_STRIPCHAT_MODEL_SHARE : sameContext ? number(editingEntry.sharePct) : Number(model.sharePctByPlatform[platform]);
     if (!Number.isFinite(sharePct) || sharePct < 0 || sharePct > 100) { preview.textContent = 'Esta modelo no tiene un porcentaje configurado. Agrégala de nuevo con página y porcentaje.'; return; }
-    const feeEntry = { modelId: model.id, modelName: model.name, provider, platform, date };
+    const feeEntry = { modelId: model.id, modelName: model.name, provider, platform, date, sharePct };
     const replaceId = editingEntry?.id || sameDay?.id || '';
     const ownerFeeUsd = feeEntry.provider === 'bantokens'
-      ? bantokensWeeklyFeeShare(feeEntry, gross, replaceId)
+      ? bantokensWeeklyFeeShare(feeEntry, gross * sharePct / 100, replaceId)
       : gross * entryOwnerFeeRate(provider, platform);
     const shareBase = entryShareBaseUsd(feeEntry, gross, ownerFeeUsd);
-    const modelPart = shareBase * sharePct / 100;
+    const modelGrossShare = shareBase * sharePct / 100;
+    const modelPart = Math.max(0, modelGrossShare - (provider === 'bantokens' ? ownerFeeUsd : 0));
     const discount = sameContext ? number(editingEntry.copDiscountPerUsd) : number(model.copDiscountByPlatform[platform]);
     const copRate = previewCopRate;
     const modelPayoutCop = modelPart * Math.max(0, copRate - discount);
     const totalCop = gross * copRate;
     const ownerNetUsd = gross - modelPart - ownerFeeUsd;
-    const ownerNetCop = totalCop - modelPayoutCop - ownerFeeUsd * copRate;
-    const feeDescription = feeEntry.provider === 'bantokens' ? `BANTOKENS descuenta ${usd(ownerFeeUsd)} de la deducción semanal de ${usd(BANTOKENS_WEEKLY_FEE_USD)}; los ${usd(shareBase)} restantes se reparten según el porcentaje de ella. ` : provider === 'twl' ? `TWL retiene ${usd(ownerFeeUsd)} (${cop(ownerFeeUsd * copRate)}) del total. ` : provider === 'usdt' && platform === 'stripchat' ? `USDT descuenta primero ${usd(ownerFeeUsd)} (1%); los ${usd(shareBase)} restantes se reparten ${fmt(sharePct, 1)}% para ella y ${fmt(100 - sharePct, 1)}% para ti. ` : '';
+    const bantokensFeeCopRate = provider === 'bantokens' ? Math.max(0, copRate - discount) : copRate;
+
+    const ownerNetCop = totalCop - modelPayoutCop - ownerFeeUsd * bantokensFeeCopRate;
+    const feeDescription = feeEntry.provider === 'bantokens' ? `BANTOKENS descuenta ${usd(ownerFeeUsd)} de la parte que le corresponde a la modelo tras aplicar su porcentaje (${usd(modelGrossShare)}). ` : provider === 'twl' ? `TWL retiene ${usd(ownerFeeUsd)} (${cop(ownerFeeUsd * copRate)}) del total. ` : provider === 'usdt' && platform === 'stripchat' ? `USDT descuenta primero ${usd(ownerFeeUsd)} (1%); los ${usd(shareBase)} restantes se reparten ${fmt(sharePct, 1)}% para ella y ${fmt(100 - sharePct, 1)}% para ti. ` : '';
     preview.innerHTML = `${sameContext || sameDay ? 'Actualizando ingreso.' : 'Tokens del día estimados:'} <b>${fmt(dailyTokens, 0)}</b> · Acumulado: <b>${fmt(weeklyTokens, 0)}</b>. ${previousInfo}<br>Total del día: <b>${usd(gross)}</b> (${cop(totalCop)}). Modelo (${fmt(sharePct, 1)}%): <b>${usd(modelPart)}</b> · paga <b>${cop(modelPayoutCop)}</b>. ${feeDescription}Tu parte neta: <b>${usd(ownerNetUsd)}</b> · <b>${cop(ownerNetCop)}</b>.`;
   }
   function render() { renderModels(); renderEntries(); renderPreview(); }
