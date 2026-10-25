@@ -9,6 +9,65 @@
   const TRM_RATE_URL = './data/bantokens-trm.json';
   const ACCENT_KEY = 'grupodgh-accent-color';
   const TEXT_SIZE_KEY = 'grupodgh-text-size';
+  let appLanguage = 'es';
+  try { appLanguage = localStorage.getItem('grupodgh-language') === 'en' ? 'en' : 'es'; } catch { /* Keep Spanish when browser storage is unavailable. */ }
+  const translationPairs = [
+    ['GRUPODGH — ingresos por tokens', 'GRUPODGH — token income'], ['GRUPODGH, inicio', 'GRUPODGH, home'], ['Navegación principal', 'Main navigation'], ['Administración', 'Administration'], ['ADMINISTRACIÓN', 'ADMINISTRATION'], ['Resumen', 'Overview'], ['Registrar ingresos', 'Record income'], ['Modelos', 'Models'],
+    ['Datos en este dispositivo', 'Data on this device'], ['Esta primera versión guarda la información en este navegador.', 'This version stores information in this browser.'], ['Administrador', 'Administrator'], ['Cuenta local', 'Local account'],
+    ['Ajustar tamaño de letra', 'Adjust text size'], ['Tamaño de letra', 'Text size'], ['Amplía los textos y controles de la app.', 'Enlarge the app text and controls.'], ['Restablecer', 'Reset'], ['Personalizar color principal', 'Customize accent color'], ['Activar modo oscuro', 'Enable dark mode'], ['Desactivar modo oscuro', 'Disable dark mode'],
+    ['TU NEGOCIO, EN ORDEN', 'YOUR BUSINESS, ORGANIZED'], ['Resumen de ingresos', 'Income overview'], ['Controla tokens, conversiones y repartos en un solo lugar.', 'Track tokens, conversions, and payouts in one place.'], ['Tasas de conversión', 'Conversion rates'], ['USD que recibes por cada token', 'USD received per token'], ['Información sobre la tasa BANTOKENS', 'About the BANTOKENS rate'], ['La tasa usa la TRM de Wilkinsonpc menos $50 COP por USD.', 'The rate uses Wilkinsonpc’s TRM minus COP 50 per USD.'],
+    ['Esta tasa actualiza los ingresos BANTOKENS de la semana actual. Las semanas anteriores conservan su tasa.', 'This rate updates BANTOKENS income for the current week. Previous weeks keep their rate.'], ['Esta tasa actualiza los ingresos TWL de la semana actual. Las semanas anteriores conservan su tasa.', 'This rate updates TWL income for the current week. Previous weeks keep their rate.'], ['Esta tasa actualiza los ingresos USDT de la semana actual. Las semanas anteriores conservan su tasa.', 'This rate updates USDT income for the current week. Previous weeks keep their rate.'], ['● Guardado', '● Saved'],
+    ['Respaldo y transferencia de datos', 'Data backup and transfer'], ['Respaldo de datos', 'Data backup'], ['Transfiere modelos, ingresos y tasas entre la app local y la versión web.', 'Transfer models, income, and rates between the local app and web version.'], ['Descargar respaldo', 'Download backup'], ['Importar respaldo', 'Import backup'], ['Resumen de ingresos', 'Income summary'], ['INGRESOS REGISTRADOS', 'RECORDED INCOME'], ['tokens', 'tokens'], ['En la semana seleccionada', 'For the selected week'], ['VALOR TOTAL', 'TOTAL VALUE'], ['PARA LAS MODELOS', 'MODEL PAYOUTS'], ['TU PARTE NETA', 'YOUR NET SHARE'], ['Descuentos', 'Deductions'], ['semanal', 'weekly'],
+    ['Liquidación semanal por modelo', 'Weekly payout by model'], ['Semana actual · lunes a domingo', 'Current week · Monday to Sunday'], ['Consultar semana', 'Select week'], ['MODELO', 'MODEL'], ['PÁGINA', 'PLATFORM'], ['MONETIZADORA', 'PROVIDER'], ['TOKENS EN LA SEMANA', 'WEEKLY TOKENS'], ['MODELO · USD', 'MODEL · USD'], ['MODELO · COP', 'MODEL · COP'], ['RETENCIÓN MONETIZADORA · USD / COP', 'PROVIDER DEDUCTION · USD / COP'], ['TU NETO · USD', 'YOUR NET · USD'], ['TU NETO · COP', 'YOUR NET · COP'], ['Aún no hay ingresos esta semana', 'No income recorded this week yet'], ['Al registrar lecturas, aquí verás el pago por modelo, página y monetizadora.', 'Once you record readings, payouts by model, platform, and provider will appear here.'],
+    ['Histórico semanal', 'Weekly history'], ['Cada semana se conserva por separado; el total reúne todo el historial.', 'Each week is kept separate; the total combines the full history.'], ['SEMANA', 'WEEK'], ['TOKENS', 'TOKENS'], ['TOTAL · USD', 'TOTAL · USD'], ['Aún no hay semanas registradas', 'No weeks recorded yet'], ['Al ingresar ingresos, cada semana aparecerá aquí y se sumará al acumulado histórico.', 'Each week will appear here as you record income and will be added to the historical total.'],
+    ['Ingresos recientes', 'Recent income'], ['Detalle de los registros por modelo', 'Income entries by model'], ['Filtrar página', 'Filter by platform'], ['Todas las páginas', 'All platforms'], ['Filtrar monetizadora', 'Filter by provider'], ['Todas las monetizadoras', 'All providers'], ['Filtrar modelo', 'Filter by model'], ['Todas las modelos', 'All models'], ['Filtrar periodo', 'Filter by period'], ['Semana seleccionada', 'Selected week'], ['Todo el tiempo', 'All time'], ['Este mes', 'This month'], ['Últimos 7 días', 'Last 7 days'], ['FECHA', 'DATE'], ['TOKENS DEL DÍA', 'DAILY TOKENS'], ['ACUMULADO SEMANAL', 'WEEKLY TOTAL'], ['VALOR USD', 'VALUE · USD'], ['MODELO · USD / COP', 'MODEL · USD / COP'], ['RETENCIÓN MONETIZADORA · USD / COP', 'PROVIDER DEDUCTION · USD / COP'], ['TU NETO · USD / COP', 'YOUR NET · USD / COP'], ['Aún no hay ingresos', 'No income recorded yet'], ['Registra el acumulado semanal para calcular los tokens de cada día.', 'Enter the weekly total to calculate tokens earned each day.'], ['Registrar ingreso', 'Record income'], ['Gestionar', 'Manage'], ['Modelos registradas', 'Registered models'], ['Agrega tus modelos para comenzar.', 'Add models to get started.'], ['Agregar modelo', 'Add model'],
+    ['NUEVO MOVIMIENTO', 'NEW ENTRY'], ['Ingresa los tokens ganados por una modelo.', 'Enter the tokens earned by a model.'], ['Página', 'Platform'], ['Monetizadora', 'Provider'], ['Modelo', 'Model'], ['Selecciona un modelo', 'Select a model'], ['Fecha', 'Date'], ['Tokens acumulados en la semana', 'Weekly accumulated tokens'], ['Escribe el acumulado que muestra la página. Se resta la lectura anterior de esta modelo y página (semana de lunes a domingo).', 'Enter the total shown on the platform. The previous reading for this model and platform (Monday through Sunday) is subtracted.'], ['Configura las tasas de conversión para ver el cálculo estimado.', 'Set conversion rates to see the estimated calculation.'], ['Guardar ingreso', 'Save income'], ['Cancelar edición', 'Cancel editing'], ['EQUIPO', 'TEAM'], ['Agrega cada modelo una vez y define su porcentaje para cada página.', 'Add each model once and set its share for each platform.'], ['Nombre de la modelo', 'Model name'], ['Stripchat · COP menos/USD', 'Stripchat · COP deduction/USD'], ['Chaturbate · COP menos/USD', 'Chaturbate · COP deduction/USD'], ['La misma modelo estará disponible en ambas páginas. El registro usa los porcentajes y el descuento de la página elegida.', 'The model will be available on both platforms. Each entry uses the share and deduction set for the selected platform.'], ['Cancelar', 'Cancel'], ['Los valores son estimados según las tasas que configures.', 'Values are estimates based on the rates you set.'], ['Confirmar importación', 'Confirm import'], ['Esto reemplazará los datos guardados en esta versión de la app.', 'This will replace the data stored in this version of the app.'], ['Importar y aplicar', 'Import and apply'],
+    ['Guardar cambios', 'Save changes'], ['Editar modelo', 'Edit model'], ['Eliminar modelo', 'Delete model'], ['Editar ingreso', 'Edit income'], ['Eliminar ingreso', 'Delete income'], ['Tiene ingresos registrados', 'Has recorded income'], ['No se puede eliminar porque tiene ingresos registrados', 'Cannot delete because this model has recorded income'], ['· con movimientos', '· has entries'], ['Todas', 'All'], ['Configura las tasas', 'Set the rates'], ['Configura la tasa COP/USD', 'Set the COP/USD rate'], ['Configura la tasa COP/USD de esta monetizadora', 'Set this provider’s COP/USD rate'], ['Detalle', 'Details'], ['Ver semana →', 'View week →'], ['· actual', '· current'], ['ACUMULADO HISTÓRICO', 'HISTORICAL TOTAL'], ['TOTAL SEMANAL', 'WEEKLY TOTAL'], ['Primera lectura de esta modelo y página en la semana: el acumulado completo se contará como tokens del día.', 'First reading for this model and platform this week: the full total will count as today’s tokens.'], ['Tokens registrados antes', 'Previously recorded tokens'], ['Última lectura', 'Previous reading'], ['Actualizando ingreso.', 'Updating income.'], ['Tokens del día estimados:', 'Estimated tokens today:'], ['Acumulado semanal:', 'Weekly total:'], ['· Acumulado:', '· Weekly total:'], ['Configura las tasas para calcular el dinero.', 'Set the rates to calculate the payout.'], ['Total del día:', 'Daily total:'], ['Modelo (', 'Model ('], [' · paga ', ' · payout '], ['Tu parte neta:', 'Your net share:'], ['BANTOKENS descuenta ', 'BANTOKENS deducts '], [' de la deducción semanal de ', ' from Tiffany’s weekly deduction of '], [' de Tiffany; los ', ' for Tiffany; the remaining '], [' restantes se reparten según el porcentaje de ella.', ' is split according to her share.'], ['TWL retiene ', 'TWL withholds '], [' del total.', ' from the total.'], ['USDT descuenta primero ', 'USDT deducts '], [' (1%); los ', ' (1%) first; the remaining '], [' restantes se reparten ', ' is split '], [' para ella y ', ' to her and '], [' para ti.', ' to you.'], ['Los ', 'The '], ['tokens del día', 'tokens today'],
+    ['Histórico completo', 'Full history'], ['Desde el inicio del mes', 'Since the start of this month'], ['Lunes a domingo', 'Monday through Sunday'], ['· TWL retiene 10% del total y luego se calcula tu restante.', '· TWL withholds 10% of the total before your share is calculated.'], ['Tasa editada manualmente; se sincroniza desde la TRM al abrir la versión web.', 'Rate edited manually; it syncs from the TRM when the web app opens.'], ['TRM ', 'TRM '], ['Usando la última tasa guardada; no se pudo actualizar la TRM.', 'Using the last saved rate; the TRM could not be updated.'], ['TRM − $50 · se actualizará en la versión web.', 'TRM − COP 50 · will update in the web version.'], ['Editar', 'Edit'], ['BANTOKENS Tiffany · $5,94/sem', 'BANTOKENS Tiffany · $5.94/wk'], ['Modelo actualizada. Los ingresos anteriores conservan sus valores.', 'Model updated. Previous income entries keep their saved values.'], ['Modelo agregada.', 'Model added.'], ['Ingreso eliminado.', 'Income entry deleted.'],
+    ['Escribe el nombre de la modelo.', 'Enter the model name.'], ['Usa porcentajes entre 0 y 100 para ambas páginas.', 'Enter percentages from 0 to 100 for both platforms.'], ['Los descuentos en pesos deben ser números iguales o mayores a cero.', 'Deductions in pesos must be numbers greater than or equal to zero.'], ['Cada descuento debe ser menor que las tasas COP/USD configuradas.', 'Each deduction must be lower than the configured COP/USD rates.'], ['No se encontró la modelo para editar.', 'Could not find the model to edit.'], ['Modelo actualizada.', 'Model updated.'], ['Modelo agregada.', 'Model added.'], ['Selecciona una modelo e ingresa el acumulado semanal de tokens.', 'Select a model and enter its weekly token total.'], ['No se encontró el ingreso que estabas editando.', 'Could not find the income entry you were editing.'], ['Configura las tasas de conversión para esta página y monetizadora antes de registrar ingresos.', 'Set conversion rates for this platform and provider before recording income.'], ['Ya existe una lectura para esa modelo, página y fecha. Edita ese registro para evitar duplicados.', 'A reading already exists for this model, platform, and date. Edit that entry to avoid duplicates.'], ['El acumulado no puede ser menor que la última lectura de esta semana (', 'The total cannot be lower than this week’s previous reading ('], [' tokens).', ' tokens).'], ['El acumulado supera la lectura posterior del ', 'The total exceeds the later reading on '], ['Esta modelo no tiene un porcentaje configurado. Agrégala de nuevo con página y porcentaje.', 'This model has no share configured. Add it again with a platform and share.'], ['El descuento por dólar debe ser menor que la tasa COP/USD de esta monetizadora.', 'The deduction per dollar must be lower than this provider’s COP/USD rate.'], ['Ingreso actualizado', 'Income updated'], ['Ingreso guardado', 'Income saved'], [': ', ': '], [' tokens del día.', ' tokens today.'], ['No se puede eliminar una modelo con ingresos registrados.', 'Cannot delete a model with recorded income.'], ['No se encontró la modelo de este ingreso.', 'Could not find the model for this income entry.'], ['Modelo eliminada.', 'Model deleted.'], ['Respaldo descargado.', 'Backup downloaded.'], ['Ese archivo no es un respaldo válido de GRUPODGH.', 'That file is not a valid GRUPODGH backup.'], ['Archivo: ', 'File: '], ['. Se importarán ', '. The import will include '], [' modelos, ', ' models, '], [' ingresos y sus tasas.', ' income entries and their rates.'], ['No se pudo importar. Revisa que el archivo sea un respaldo válido.', 'Could not import. Check that the file is a valid backup.'], ['Respaldo importado. Recargando la app…', 'Backup imported. Reloading the app…'], ['Anterior', 'Legacy'], ['$5,94 semanal', '$5.94 weekly'], ['lunes', 'Monday'], ['martes', 'Tuesday'], ['miércoles', 'Wednesday'], ['jueves', 'Thursday'], ['viernes', 'Friday'], ['sábado', 'Saturday'], ['domingo', 'Sunday'], ['enero', 'January'], ['febrero', 'February'], ['marzo', 'March'], ['abril', 'April'], ['mayo', 'May'], ['junio', 'June'], ['julio', 'July'], ['agosto', 'August'], ['septiembre', 'September'], ['octubre', 'October'], ['noviembre', 'November'], ['diciembre', 'December'], ['No se pudo guardar el respaldo en este navegador.', 'Could not save the backup in this browser.'], ['Ej. 3.147', 'e.g. 3,147'], ['Ej. 25000', 'e.g. 25,000'], ['Ej. 100', 'e.g. 100'], ['Ej. 150', 'e.g. 150'], ['0,05', '0.05']
+  ];
+  const translationMap = new Map(translationPairs);
+  const reverseTranslationMap = new Map(translationPairs.map(([spanish, english]) => [english, spanish]));
+  const translateValue = (value) => {
+    const dictionary = appLanguage === 'en' ? translationMap : reverseTranslationMap;
+    let result = String(value);
+    if (appLanguage === 'en') result = result.replace(/Ya existe (.+) en el equipo\./g, 'The team already has $1.');
+    else result = result.replace(/The team already has (.+)\./g, 'Ya existe $1 en el equipo.');
+    for (const [source, target] of [...dictionary.entries()].sort((a, b) => b[0].length - a[0].length)) result = result.replaceAll(source, target);
+    return result;
+  };
+  const locale = () => appLanguage === 'en' ? 'en-US' : 'es-CO';
+  function translatePage() {
+    document.documentElement.lang = appLanguage;
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    let node;
+    while ((node = walker.nextNode())) { const translated = translateValue(node.nodeValue); if (translated !== node.nodeValue) node.nodeValue = translated; }
+    document.querySelectorAll('input,button,label,section,nav,a,[data-label]').forEach((element) => {
+      for (const attribute of ['aria-label', 'title', 'placeholder', 'data-label']) {
+        if (element.hasAttribute(attribute)) { const translated = translateValue(element.getAttribute(attribute)); if (translated !== element.getAttribute(attribute)) element.setAttribute(attribute, translated); }
+      }
+    });
+    const translatedTitle = translateValue('GRUPODGH — ingresos por tokens');
+    if (document.title !== translatedTitle) document.title = translatedTitle;
+    const toggle = document.querySelector('#languageToggle');
+    if (toggle) {
+      const label = appLanguage === 'en' ? 'ES' : 'EN';
+      const title = appLanguage === 'en' ? 'Cambiar a español' : 'Switch to English';
+      if (toggle.textContent !== label) toggle.textContent = label;
+      if (toggle.title !== title) toggle.title = title;
+      if (toggle.getAttribute('aria-label') !== title) toggle.setAttribute('aria-label', title);
+    }
+  }
+  const languageObserver = new MutationObserver(() => translatePage());
+  languageObserver.observe(document.body, { childList: true, characterData: true, subtree: true });
+  document.querySelector('#languageToggle')?.addEventListener('click', () => {
+    appLanguage = appLanguage === 'es' ? 'en' : 'es';
+    try { localStorage.setItem('grupodgh-language', appLanguage); } catch { /* Language remains active for this session. */ }
+    translatePage();
+    render();
+    translatePage();
+    $('#today').textContent = new Date().toLocaleDateString(locale(), { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+  });
   const $ = (selector) => document.querySelector(selector);
   let savedTheme = 'light';
   try { savedTheme = localStorage.getItem(THEME_KEY) || 'light'; } catch { /* Keep the default theme when browser storage is unavailable. */ }
@@ -125,7 +184,7 @@
   } catch { state = structuredClone(defaults); }
 
   const number = (v) => Number(v) || 0;
-  const fmt = (v, digits = 2) => new Intl.NumberFormat('es-CO', { maximumFractionDigits: digits }).format(number(v));
+  const fmt = (v, digits = 2) => new Intl.NumberFormat(locale(), { maximumFractionDigits: digits }).format(number(v));
   const usd = (v) => '$' + fmt(v, 2);
   const cop = (v) => '$' + fmt(v, 0) + ' COP';
   let lastTrmFetchedAt = '';
@@ -168,7 +227,7 @@
     const monday = new Date(`${key}T00:00:00`);
     const sunday = new Date(monday);
     sunday.setDate(sunday.getDate() + 6);
-    const dateLabel = (date) => date.toLocaleDateString('es-CO', { day: 'numeric', month: 'short' });
+    const dateLabel = (date) => date.toLocaleDateString(locale(), { day: 'numeric', month: 'short' });
     return `${dateLabel(monday)} – ${dateLabel(sunday)}, ${sunday.getFullYear()}`;
   };
   const escapeHtml = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
@@ -338,7 +397,7 @@
       const share = entrySharePct(e);
       const platform = e.platform === 'stripchat' ? 'Stripchat' : e.platform === 'chaturbate' ? 'Chaturbate' : 'Anterior';
       const provider = e.provider === 'bantokens' ? 'BANTOKENS' : e.provider === 'twl' ? 'TWL' : e.provider === 'usdt' ? 'USDT' : 'Anterior';
-      const d = new Date(`${e.date}T00:00:00`).toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' });
+      const d = new Date(`${e.date}T00:00:00`).toLocaleDateString(locale(), { day: '2-digit', month: 'short', year: 'numeric' });
       const dailyTokens = entryTokens(e);
       const weeklyTokens = e.weeklyTokens === undefined || e.weeklyTokens === null ? '—' : fmt(e.weeklyTokens, 0);
       const feeLabel = entryOwnerFeeLabel(e.provider, e.platform, e.modelId, name);
@@ -384,7 +443,7 @@
       return;
     }
     const dailyTokens = Math.max(0, weeklyTokens - previousTokens);
-    const previousInfo = previous ? `${previous.legacy ? 'Tokens registrados antes' : 'Última lectura'}: ${fmt(previousTokens, 0)} (${new Date(`${previous.date}T00:00:00`).toLocaleDateString('es-CO', { day: 'numeric', month: 'short' })}).` : 'Primera lectura de esta modelo y página en la semana: el acumulado completo se contará como tokens del día.';
+    const previousInfo = previous ? `${previous.legacy ? 'Tokens registrados antes' : 'Última lectura'}: ${fmt(previousTokens, 0)} (${new Date(`${previous.date}T00:00:00`).toLocaleDateString(locale(), { day: 'numeric', month: 'short' })}).` : 'Primera lectura de esta modelo y página en la semana: el acumulado completo se contará como tokens del día.';
     const previewUsdPerToken = sameContext ? number(editingEntry.usdPerToken) : number(state.rates.usdPerToken[platform]);
     const previewCopRate = sameContext ? entryCopRate(editingEntry) : number(state.rates.copPerUsdByProvider[provider]);
     if (!(previewUsdPerToken > 0 && previewCopRate > 0)) {
@@ -434,7 +493,7 @@
     renderPreview();
   }
 
-  $('#today').textContent = new Date().toLocaleDateString('es-CO', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+  $('#today').textContent = new Date().toLocaleDateString(locale(), { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
   const textSizeToggle = $('#textSizeToggle');
   const textSizePanel = $('#textSizePanel');
   const textSizeRange = $('#textSizeRange');
@@ -624,7 +683,7 @@
     const previousTokens = number(previous?.weeklyTokens);
     if (previous && weeklyTokens < previousTokens) { flash(`El acumulado no puede ser menor que la última lectura de esta semana (${fmt(previousTokens, 0)} tokens).`); return; }
     const nextReading = state.entries.filter((entry) => entry.id !== editingEntry?.id && entry.weeklyTokens !== undefined && entry.weeklyTokens !== null && entry.modelId === model.id && entry.platform === platform && entry.date > date && weekKey(entry.date) === weekKey(date)).sort((a, b) => a.date.localeCompare(b.date))[0];
-    if (nextReading && weeklyTokens > number(nextReading.weeklyTokens)) { flash(`El acumulado supera la lectura posterior del ${new Date(`${nextReading.date}T00:00:00`).toLocaleDateString('es-CO', { day: 'numeric', month: 'short' })} (${fmt(nextReading.weeklyTokens, 0)} tokens).`); return; }
+    if (nextReading && weeklyTokens > number(nextReading.weeklyTokens)) { flash(`El acumulado supera la lectura posterior del ${new Date(`${nextReading.date}T00:00:00`).toLocaleDateString(locale(), { day: 'numeric', month: 'short' })} (${fmt(nextReading.weeklyTokens, 0)} tokens).`); return; }
     const dailyTokens = Math.max(0, weeklyTokens - previousTokens);
     const sameContext = editingEntry && editingEntry.modelId === model.id && editingEntry.platform === platform && editingEntry.provider === provider;
     const sharePct = provider === 'usdt' && platform === 'stripchat' ? USDT_STRIPCHAT_MODEL_SHARE : sameContext ? number(editingEntry.sharePct) : Number(model.sharePctByPlatform[platform]);
@@ -696,4 +755,5 @@
     state.entries = state.entries.filter((e) => e.id !== id); persist(); renderEntries(); flash('Ingreso eliminado.');
   });
   render();
+  translatePage();
 })();
