@@ -1,12 +1,17 @@
-# Chaturbate Stats API proxy
+# Chaturbate and Stripchat Stats API proxy
 
-The app is a static GitHub Pages site, so it cannot safely call Chaturbate from the browser directly. This Worker relays one fixed Stats API request and enables browser CORS only for `https://adelgallego.github.io`. It does not store credentials or readings.
+This Worker keeps the API requests out of the GitHub Pages browser app and enables CORS only for `https://adelgallego.github.io`. It does not store API keys, Chaturbate tokens, or earnings data.
 
-## Deploy
+## Routes
 
-1. Install Node.js and Wrangler (`npm install --global wrangler`).
-2. In this folder, run `wrangler login` and then `wrangler deploy`.
-3. Copy the deployed URL and append `/stats` (for example, `https://grupodgh-chaturbate-proxy.<your-subdomain>.workers.dev/stats`) into the app.
-4. In Chaturbate, create a separate Stats API Auth Token for each model account. Add each username and token in the app.
+- `POST /stats`: forwards username and API Auth Token to the official Chaturbate Stats API and returns `token_balance`.
+- `POST /stripchat/stats`: forwards a Studio API key in the `API-Key` header to the official Stripchat Studio Stats API and returns `totalEarnings` as `token_balance`.
 
-The worker only accepts POST requests to `/stats`, forwards credentials to the fixed `https://chaturbate.com/statsapi/` endpoint, and returns `token_balance`. Credentials are sent over HTTPS and are not logged or persisted by this code. The app stores them locally in the browser; do not enter them on a shared device.
+## Deploy / update
+
+1. Open the Worker project directory and run `wrangler login` then `wrangler deploy`, or replace the code in Cloudflare Dashboard > Workers & Pages > your Worker > Edit code and select Deploy.
+2. For Chaturbate, use the deployed Worker URL ending in `/stats`.
+3. For Stripchat, use the same Worker URL ending in `/stripchat/stats`.
+4. In the GRUPODGH app, add the Chaturbate API Auth Token per model. For Stripchat, enter the Studio username, model username, and API-Key issued by Stripchat at `https://stripchat.com/studio/api`.
+
+Studio API keys and model usernames are stored in the app's local browser storage, are sent to this Worker over HTTPS when syncing, and are excluded from app backup files. This code does not log or persist them.
