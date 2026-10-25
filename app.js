@@ -36,6 +36,7 @@
   translationPairs.push(['Información sobre descuentos', 'Deduction details'], ['BANTOKENS · $5,94/sem de la modelo', 'BANTOKENS · $5.94/wk deducted from the model'], [' de la parte que le corresponde a la modelo tras aplicar su porcentaje (', ' from the model share after applying her percentage ('], ['descontado de la parte de cada modelo', 'deducted from each model share']);
   translationPairs.push(['Si la app se cierra, las ganancias desde la última lectura se sumarán al próximo día que se sincronice.', 'If the app closes, earnings since the last reading will be added to the next synced day.'], ['Despliega ', 'Deploy '], ['. Si la app se cierra, las ganancias desde la última lectura se sumarán al próximo día sincronizado; si atraviesa el reinicio del lunes, ese saldo semanal perdido no se puede recuperar desde la API.', '. If the app closes, earnings since the last reading will be added to the next synced day; if the Monday reset passes, that lost weekly balance cannot be recovered from the API.'], ['Sincronización de Chaturbate', 'Chaturbate sync'], ['Consulta el saldo semanal de cada cuenta y guarda una lectura diaria mientras la app esté abierta.', 'Checks each account’s weekly balance and saves a daily reading while the app is open.'], ['Sin configurar', 'Not configured'], ['El contador de Chaturbate se reinicia los lunes a las 00:00. La app consulta cada 5 minutos. Configura un proxy propio de Cloudflare Worker y las credenciales API de cada modelo. Las credenciales se guardan en este navegador y, al iniciar sesión, también se sincronizan con tu cuenta de nube. No se incluyen en respaldos.', 'Chaturbate’s counter resets Mondays at 00:00. The app checks every 5 minutes. Set up your own Cloudflare Worker proxy and each model’s API credentials. Credentials are stored in this browser and sync to your cloud account after you sign in. They are not included in backups.'], ['URL de tu Worker', 'Your Worker URL'], ['Selecciona un modelo', 'Select a model'], ['Usuario de Chaturbate', 'Chaturbate username'], ['API Auth Token', 'API Auth Token'], ['Monetizadora', 'Provider'], ['Guardar conexión', 'Save connection'], ['Sincronizar ahora', 'Sync now'], ['Desconectar modelo', 'Disconnect model'], ['Conectada', 'Connected'], ['Sincronizado', 'Synced'], ['Error de sincronización', 'Sync error'], ['Faltan las tasas USD/token o COP/USD para ', 'USD/token or COP/USD rates are missing for '], ['No hay una conexión guardada para esta modelo.', 'There is no saved connection for this model.'], ['El Worker debe usar una URL HTTPS terminada en /stats.', 'The Worker URL must use HTTPS and end in /stats.'], ['La API no devolvió token_balance válido.', 'The API did not return a valid token_balance.'], ['Conexión eliminada de este navegador.', 'Connection removed from this browser.'], ['Sincronización automática activa · cada 5 min', 'Automatic sync active · every 5 min'], ['La app debe estar abierta para registrar lecturas.', 'The app must stay open to record readings.']);  translationPairs.push(['Sincronización de Stripchat', 'Stripchat sync'], ['Consulta las ganancias semanales de las modelos de tu Studio y guarda lecturas diarias.', 'Checks your Studio models’ weekly earnings and saves daily readings.'], ['La API de Studio requiere una clave creada por Stripchat y que cada modelo pertenezca a tu Studio. La clave se guarda en este navegador y, al iniciar sesión, también se sincroniza con tu cuenta de nube; se envía por HTTPS a tu Worker y no se incluye en respaldos. La app consulta cada 5 minutos mientras está abierta.', 'The Studio API requires a key issued by Stripchat and each model to belong to your Studio. The key is stored in this browser and syncs to your cloud account after you sign in; it is sent over HTTPS to your Worker and is not included in backups. The app checks every 5 minutes while open.'], ['Usuario de Studio', 'Studio username'], ['Modelo', 'Model'], ['Usuario de la modelo en Stripchat', 'Model username on Stripchat'], ['API-Key de Studio', 'Studio API key'], ['Guardar conexión', 'Save connection'], ['Sincronizar ahora', 'Sync now'], ['Desconectar modelo', 'Disconnect model'], ['Borrar clave del Studio', 'Clear Studio key'], ['Crea o consulta la API-Key en ', 'Create or view the API key at '], ['Stripchat Studio', 'Stripchat Studio'], ['. El Worker también debe actualizarse para habilitar la ruta ', '. The Worker also needs an update to enable the route '], ['. El Worker también debe actualizarse para habilitar la ruta ', '. The Worker also needs an update to enable the route '], ['. Necesitas una URL HTTPS terminada en /stripchat/stats.', '. You need an HTTPS URL ending in /stripchat/stats.'], ['La API-Key y el usuario de Studio son obligatorios.', 'The Studio API key and Studio username are required.'], ['Configura el rango USD/token o COP/USD para ', 'Set the USD/token or COP/USD rate for '], ['Conexión de Stripchat guardada en este navegador.', 'Stripchat connection saved in this browser.'], ['Conexión de Stripchat eliminada para esta modelo.', 'Stripchat connection removed for this model.'], ['Clave de Studio eliminada de este navegador.', 'Studio key removed from this browser.'], ['No hay modelos de Stripchat conectadas.', 'No Stripchat models are connected.'], ['Stripchat sincronizado ', 'Stripchat synced '], ['Error de sincronización de Stripchat · ', 'Stripchat sync error · '], ['Modelo de Stripchat no encontrada.', 'Stripchat model not found.'], ['La API no devolvió totalEarnings válido.', 'The API did not return a valid totalEarnings value.']);  translationPairs.push(['Sincronizar esta modelo automáticamente', 'Automatically sync this model'], ['Sincronizada', 'Synced'], ['No sincronizada', 'Not synced'], ['Sincronizar modelos conectadas', 'Sync connected models'], ['La API requiere una clave de Studio y que cada modelo pertenezca al Studio indicado. Usuario de Stripchat, usuario de Studio y API-Key se guardan en este navegador y, al iniciar sesión, también se sincronizan con tu cuenta de nube. Se envían por HTTPS y no se incluyen en respaldos. La app consulta cada 5 minutos mientras está abierta.', 'The API requires a Studio key and each model to belong to the specified Studio. Stripchat username, Studio username, and API key are stored in this browser and sync to your cloud account after you sign in. They are sent over HTTPS and are not included in backups. The app checks every 5 minutes while open.'], ['Configura la conexión de cada modelo al agregarla o editarla. Crea o consulta la API-Key en ', 'Configure each model’s connection when adding or editing it. Create or view the API key at '], ['Completa el usuario de Stripchat, usuario de Studio y API-Key para activar la sincronización.', 'Enter the Stripchat username, Studio username, and API key to enable syncing.'], ['Falta usuario o API-Key del Studio.', 'Studio username or API key is missing.'], ['Deja en blanco para conservar la clave guardada', 'Leave blank to keep the saved key']);  translationPairs.push(['Pendiente', 'Pending'], ['Error', 'Error']);  translationPairs.push(['Actívala solo si tienes acceso al Studio de esta modelo. Si pertenece a otro Studio y no tienes su API-Key, deja la sincronización desactivada.', 'Enable it only if you have access to this model’s Studio. If she belongs to another Studio and you do not have its API key, leave syncing disabled.'], ['. El Worker debe tener habilitada la ruta ', '. The Worker must have the route enabled '], ['Consulta las ganancias semanales de los modelos en los Studios configurados y guarda lecturas diarias.', 'Checks weekly earnings for models in the configured Studios and saves daily readings.']);  translationPairs.push(['La conexión se guarda en este dispositivo y, al iniciar sesión, también en la nube. Configura un Worker de Cloudflare para habilitar la sincronización automática.', 'The connection is saved on this device and in the cloud after you sign in. Configure a Cloudflare Worker to enable automatic syncing.'], ['Completa la URL del Worker, el usuario y el API Auth Token de Chaturbate.', 'Enter the Worker URL, username, and Chaturbate API Auth Token.'], ['Completa la URL del Worker, el usuario, el Studio y el API-Key de Stripchat.', 'Enter the Worker URL, username, Studio, and Stripchat API key.']);  translationPairs.push(['El contador se reinicia los lunes a las 00:00; la app consulta cada 5 minutos mientras está abierta. Las credenciales se guardan en este dispositivo y en la nube al iniciar sesión; no se incluyen en los respaldos. Configura un Worker de Cloudflare.', 'The counter resets Mondays at 00:00; the app checks every 5 minutes while open. Credentials are stored on this device and in the cloud after you sign in; they are not included in backups. Configure a Cloudflare Worker.'], ['La API-Key se guarda en este dispositivo y en la nube al iniciar sesión, se envía por HTTPS y no se incluye en los respaldos. Crea o consulta tu clave en ', 'The API key is stored on this device and in the cloud after you sign in, sent over HTTPS, and not included in backups. Create or view your key at ']);  translationPairs.push(['El saldo semanal de Stripchat se reinicia cada lunes a las 00:00 UTC.', 'Stripchat’s weekly balance resets every Monday at 00:00 UTC.']);
   translationPairs.push(['Ajustes', 'Settings'], ['PREFERENCIAS', 'PREFERENCES'], ['Administra tasas, almacenamiento, respaldos y apariencia de la aplicación.', 'Manage rates, cloud storage, backups, and app appearance.'], ['Apariencia', 'Appearance'], ['Personaliza cómo se ve la aplicación en este dispositivo.', 'Customize how the app looks on this device.'], ['Tema', 'Theme'], ['Cambia entre modo claro y oscuro.', 'Switch between light and dark mode.'], ['Color principal', 'Accent color'], ['Elige el color de los controles y acentos.', 'Choose the color used for controls and accents.']);
+  translationPairs.push(['Semana actual', 'Current week'], ['Lunes 00:00 UTC – domingo 23:59 UTC', 'Monday 00:00 UTC – Sunday 23:59 UTC'], ['Escribe el acumulado que muestra la página. La app resta la lectura anterior de esta página.', 'Enter the total shown on the platform. The app subtracts the previous reading for this platform.']);
   const compileTranslations = (pairs) => {
     const values = new Map(pairs);
     const alternatives = [...values.keys()]
@@ -281,27 +282,29 @@
     if (entry.platform === 'stripchat' && entry.source === 'stripchat-studio-api' && entry.createdAt) return `sc:${stripchatWeekKey(new Date(entry.createdAt))}`;
     return weekKey(entry.date);
   };
+  const reportWeekKeyForDate = (date, instant) => stripchatWeekKey(instant || new Date(`${date}T12:00:00`));
+  const reportWeekKey = (entry) => entry.reportWeekKey || ((entry.source === 'stripchat-studio-api' || entry.source === 'chaturbate-api') && entry.createdAt
+    ? stripchatWeekKey(new Date(entry.createdAt))
+    : reportWeekKeyForDate(entry.date));
   let selectedWeek = 'current';
   const entryMatchesSelectedWeek = (entry) => selectedWeek === 'current'
-    ? entryWeekKey(entry) === (entryWeekKey(entry).startsWith('sc:') ? `sc:${stripchatWeekKey()}` : weekKey(todayISO()))
-    : entryWeekKey(entry) === selectedWeek;
+    ? reportWeekKey(entry) === stripchatWeekKey()
+    : reportWeekKey(entry) === selectedWeek;
   const weekRangeLabel = (key) => {
-    const isStripchat = key.startsWith('sc:');
-    const dateKey = isStripchat ? key.slice(3) : key;
-    const monday = new Date(`${dateKey}T00:00:00${isStripchat ? 'Z' : ''}`);
+    const monday = new Date(`${key}T00:00:00Z`);
     const sunday = new Date(monday);
-    if (isStripchat) sunday.setUTCDate(sunday.getUTCDate() + 6);
-    else sunday.setDate(sunday.getDate() + 6);
-    const dateLabel = (date) => date.toLocaleDateString(locale(), { day: 'numeric', month: 'short', ...(isStripchat ? { timeZone: 'UTC' } : {}) });
-    return `${isStripchat ? 'Stripchat · UTC · ' : ''}${dateLabel(monday)} – ${dateLabel(sunday)}, ${isStripchat ? sunday.getUTCFullYear() : sunday.getFullYear()}`;
+    sunday.setUTCDate(sunday.getUTCDate() + 6);
+    const dateLabel = (date) => date.toLocaleDateString(locale(), { day: 'numeric', month: 'short', timeZone: 'UTC' });
+    return `${dateLabel(monday)} – ${dateLabel(sunday)}, ${sunday.getUTCFullYear()}`;
   };
   const escapeHtml = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
   const modelById = (id) => state.models.find((m) => m.id === id);
   const ratesReady = (platform = $('#entryPlatform')?.value || 'stripchat', provider = $('#entryProvider')?.value || 'bantokens') => number(state.rates.usdPerToken[platform]) > 0 && number(state.rates.copPerUsdByProvider[provider]) > 0;
   const tokenUsd = (tokens, platform) => number(tokens) * number(state.rates.usdPerToken[platform]);
   const previousWeeklyReading = (modelId, platform, date, excludeId = '', targetWeek = weekKey(date)) => {
+    const currentReading = excludeId ? state.entries.find((entry) => entry.id === excludeId) : undefined;
     const snapshots = state.entries
-      .filter((entry) => entry.id !== excludeId && entry.weeklyTokens !== undefined && entry.weeklyTokens !== null && entry.modelId === modelId && entry.platform === platform && entry.date < date && entryWeekKey(entry) === targetWeek)
+      .filter((entry) => entry.id !== excludeId && entry.weeklyTokens !== undefined && entry.weeklyTokens !== null && entry.modelId === modelId && entry.platform === platform && (entry.date < date || (entry.date === date && currentReading && number(entry.createdAt) > number(currentReading.createdAt))) && entryWeekKey(entry) === targetWeek)
       .sort((a, b) => b.date.localeCompare(a.date) || (b.createdAt || 0) - (a.createdAt || 0));
     if (snapshots.length) return snapshots[0];
     const earlierDailyLogs = state.entries.filter((entry) => entry.id !== excludeId && (entry.weeklyTokens === undefined || entry.weeklyTokens === null) && entry.modelId === modelId && entry.platform === platform && entry.date <= date && entryWeekKey(entry) === targetWeek);
@@ -317,18 +320,16 @@
   const entryCopRate = (entry) => {
     const currentRate = number(state.rates.copPerUsdByProvider[entry.provider]);
     const recordedRate = number(entry.copPerUsd);
-    const usesUtcWeek = entry.platform === 'stripchat' && (entry.stripchatWeekKey || entry.source === 'stripchat-studio-api');
-    const currentWeek = usesUtcWeek ? `sc:${stripchatWeekKey()}` : weekKey(todayISO());
-    if (entryWeekKey(entry) === currentWeek && currentRate > 0) return currentRate;
+    if (reportWeekKey(entry) === stripchatWeekKey() && currentRate > 0) return currentRate;
     return recordedRate || currentRate || number(state.rates.copPerUsd);
   };
   const entryModelCopRate = (entry) => Math.max(0, entryCopRate(entry) - number(entry.copDiscountPerUsd));
   const entryOwnerFeeRate = (provider, platform) => provider === 'twl' ? TWL_OWNER_FEE_RATE : provider === 'usdt' && platform === 'stripchat' ? USDT_STRIPCHAT_FEE_RATE : 0;
-  const bantokensWeeklyGross = (modelId, date, excludeId = '') => state.entries
-    .filter((entry) => entry.id !== excludeId && entry.modelId === modelId && entry.provider === 'bantokens' && weekKey(entry.date) === weekKey(date))
+  const bantokensWeeklyGross = (modelId, targetWeek, excludeId = '') => state.entries
+    .filter((entry) => entry.id !== excludeId && entry.modelId === modelId && entry.provider === 'bantokens' && reportWeekKey(entry) === targetWeek)
     .reduce((sum, entry) => sum + entryUsd(entry) * entrySharePct(entry) / 100, 0);
   const bantokensWeeklyFeeShare = (entry, modelGross = entryUsd(entry) * entrySharePct(entry) / 100, excludeId = '') => {
-    const cohortGross = bantokensWeeklyGross(entry.modelId, entry.date, excludeId) + modelGross;
+    const cohortGross = bantokensWeeklyGross(entry.modelId, reportWeekKey(entry), excludeId) + modelGross;
     return cohortGross > 0 ? Math.min(BANTOKENS_WEEKLY_FEE_USD, cohortGross) * modelGross / cohortGross : 0;
   };
   const entryOwnerFeeLabel = (provider, platform) => provider === 'twl' ? 'TWL · 10%' : provider === 'usdt' && platform === 'stripchat' ? 'USDT Stripchat · 1%' : provider === 'bantokens' ? 'BANTOKENS · $5,94/sem de la modelo' : '';
@@ -677,16 +678,16 @@
     $('#ownerFeeSummary').textContent = `Descuentos (TWL 10% / USDT Stripchat 1% / BANTOKENS $5,94 semanal descontado de la parte de cada modelo): ${usd(ownerFeeUsd)} · ${feeCopText}`;
   }
   function renderWeekOptions() {
-    const currentLocalWeek = weekKey(todayISO());
-    const currentStripchatWeek = `sc:${stripchatWeekKey()}`;
-    const weeks = new Set([currentLocalWeek, currentStripchatWeek, ...state.entries.map(entryWeekKey), 'current']);
+    const currentWeek = stripchatWeekKey();
+    const weeks = new Set([currentWeek, ...state.entries.map(reportWeekKey), 'current']);
     if (!weeks.has(selectedWeek)) selectedWeek = 'current';
     const options = ['current', ...[...weeks].filter((week) => week !== 'current').sort((a, b) => b.localeCompare(a))];
-    $('#weekSelector').innerHTML = options.map((week) => `<option value="${week}">${week === 'current' ? 'Semana actual · cortes según cada página' : escapeHtml(weekRangeLabel(week))}</option>`).join('');
+    $('#weekSelector').innerHTML = options.map((week) => `<option value="${week}">${week === 'current' ? 'Semana actual' : escapeHtml(weekRangeLabel(week))}</option>`).join('');
     $('#weekSelector').value = selectedWeek;
   }
   function renderWeeklyPayouts() {
-    $('#weeklyDateRange').textContent = `${selectedWeek === 'current' ? 'Semana actual · Stripchat corta lunes 00:00 UTC' : selectedWeek.startsWith('sc:') ? 'Corte: lunes 00:00 UTC' : 'Lunes a domingo'}${selectedWeek === 'current' ? '' : ` · ${weekRangeLabel(selectedWeek)}`} · TWL retiene 10% del total y luego se calcula tu restante.`;
+    const payoutWeek = selectedWeek === 'current' ? stripchatWeekKey() : selectedWeek;
+    $('#weeklyDateRange').textContent = `Lunes 00:00 UTC – domingo 23:59 UTC · ${weekRangeLabel(payoutWeek)} · TWL retiene 10% del total y luego se calcula tu restante.`;
     const totals = new Map();
     state.entries.filter(entryMatchesSelectedWeek).forEach((entry) => {
       const key = JSON.stringify([entry.modelId, entry.platform, entry.provider]);
@@ -722,7 +723,7 @@
   function renderWeeklyHistory() {
     const totals = new Map();
     state.entries.forEach((entry) => {
-      const key = entryWeekKey(entry);
+      const key = reportWeekKey(entry);
       if (!totals.has(key)) totals.set(key, { week: key, tokens: 0, totalUsd: 0, modelUsd: 0, modelCop: 0, ownerUsd: 0, ownerCop: 0, hasCopRate: true });
       const week = totals.get(key);
       week.tokens += entryTokens(entry);
@@ -793,7 +794,8 @@
     const provider = $('#entryProvider').value;
     const date = $('#entryDate').value || todayISO();
     const editingEntry = state.entries.find((entry) => entry.id === $('#editingEntryId').value);
-    const sameDay = state.entries.find((entry) => entry.weeklyTokens !== undefined && entry.weeklyTokens !== null && entry.modelId === model.id && entry.platform === platform && entry.date === date);
+    const targetReportWeek = reportWeekKeyForDate(date, date === todayISO() ? new Date() : undefined);
+    const sameDay = state.entries.find((entry) => entry.weeklyTokens !== undefined && entry.weeklyTokens !== null && entry.modelId === model.id && entry.platform === platform && entry.date === date && reportWeekKey(entry) === targetReportWeek);
     const previous = previousWeeklyReading(model.id, platform, date, editingEntry?.id || sameDay?.id || '');
     const sameContext = editingEntry && editingEntry.modelId === model.id && editingEntry.platform === platform && editingEntry.provider === provider;
     const previousTokens = number(previous?.weeklyTokens);
@@ -812,7 +814,7 @@
     const gross = dailyTokens * previewUsdPerToken;
     const sharePct = provider === 'usdt' && platform === 'stripchat' ? USDT_STRIPCHAT_MODEL_SHARE : sameContext ? number(editingEntry.sharePct) : Number(model.sharePctByPlatform[platform]);
     if (!Number.isFinite(sharePct) || sharePct < 0 || sharePct > 100) { preview.textContent = 'Esta modelo no tiene un porcentaje configurado. Agrégala de nuevo con página y porcentaje.'; return; }
-    const feeEntry = { modelId: model.id, modelName: model.name, provider, platform, date, sharePct };
+    const feeEntry = { modelId: model.id, modelName: model.name, provider, platform, date, sharePct, reportWeekKey: targetReportWeek };
     const replaceId = editingEntry?.id || sameDay?.id || '';
     const ownerFeeUsd = feeEntry.provider === 'bantokens'
       ? bantokensWeeklyFeeShare(feeEntry, gross * sharePct / 100, replaceId)
@@ -1069,7 +1071,8 @@
     if (editingId && !editingEntry) { clearEntryEdit(); flash('No se encontró el ingreso que estabas editando.'); return; }
     const preservingRates = editingEntry && editingEntry.modelId === model.id && editingEntry.platform === platform && editingEntry.provider === provider;
     if (!preservingRates && (!ratesReady(platform, provider) || number(state.rates.usdPerToken[platform]) <= 0)) { flash('Configura las tasas de conversión para esta página y monetizadora antes de registrar ingresos.'); return; }
-    const existingReading = state.entries.find((entry) => entry.id !== editingId && entry.weeklyTokens !== undefined && entry.weeklyTokens !== null && entry.modelId === model.id && entry.platform === platform && entry.date === date);
+    const targetReportWeek = reportWeekKeyForDate(date, date === todayISO() ? new Date() : undefined);
+    const existingReading = state.entries.find((entry) => entry.id !== editingId && entry.weeklyTokens !== undefined && entry.weeklyTokens !== null && entry.modelId === model.id && entry.platform === platform && entry.date === date && reportWeekKey(entry) === targetReportWeek);
     if (editingEntry && existingReading) { flash('Ya existe una lectura para esa modelo, página y fecha. Edita ese registro para evitar duplicados.'); return; }
     const previous = previousWeeklyReading(model.id, platform, date, editingEntry?.id || existingReading?.id || '');
     const previousTokens = number(previous?.weeklyTokens);
@@ -1084,7 +1087,7 @@
     const copPerUsd = sameContext ? entryCopRate(editingEntry) : number(state.rates.copPerUsdByProvider[provider]);
     const usdPerToken = sameContext ? number(editingEntry.usdPerToken) : number(state.rates.usdPerToken[platform]);
     if (copDiscountPerUsd >= copPerUsd) { flash('El descuento por dólar debe ser menor que la tasa COP/USD de esta monetizadora.'); return; }
-    const reading = { id: editingEntry?.id || existingReading?.id || (crypto.randomUUID ? crypto.randomUUID() : String(Date.now())), modelId: model.id, modelName: model.name, platform, provider, date, tokens: dailyTokens, weeklyTokens, sharePct, usdPerToken, copPerUsd, copDiscountPerUsd, createdAt: editingEntry?.createdAt || existingReading?.createdAt || Date.now() };
+    const reading = { id: editingEntry?.id || existingReading?.id || (crypto.randomUUID ? crypto.randomUUID() : String(Date.now())), modelId: model.id, modelName: model.name, platform, provider, date, reportWeekKey: targetReportWeek, tokens: dailyTokens, weeklyTokens, sharePct, usdPerToken, copPerUsd, copDiscountPerUsd, createdAt: editingEntry?.createdAt || existingReading?.createdAt || Date.now() };
     if (editingEntry) Object.assign(editingEntry, reading);
     else if (existingReading) Object.assign(existingReading, reading);
     else state.entries.push(reading);
@@ -1225,20 +1228,22 @@
     chaturbateSyncActive = true;
     const errors = [];
     const date = todayISO();
+    const reportWeek = stripchatWeekKey(new Date());
     for (const model of connectedModels) {
       const credential = chaturbateCredentials[model.id];
       const provider = credential.provider || 'bantokens';
       try {
         if (!ratesReady('chaturbate', provider)) throw new Error(`Faltan las tasas USD/token o COP/USD para ${model.name}.`);
         const balance = await fetchChaturbateBalance(workerUrl, credential);
-        const reading = state.entries.find((entry) => entry.modelId === model.id && entry.platform === 'chaturbate' && entry.date === date && entry.weeklyTokens !== undefined && entry.weeklyTokens !== null);
+        const reading = state.entries.find((entry) => entry.modelId === model.id && entry.platform === 'chaturbate' && entry.date === date && reportWeekKey(entry) === reportWeek && entry.weeklyTokens !== undefined && entry.weeklyTokens !== null);
         if (reading) {
           reading.weeklyTokens = balance;
           reading.modelName = model.name;
+          reading.reportWeekKey = reportWeek;
         } else {
           state.entries.push({
-            id: crypto.randomUUID ? crypto.randomUUID() : `cb-${model.id}-${date}`,
-            modelId: model.id, modelName: model.name, platform: 'chaturbate', provider, date,
+            id: crypto.randomUUID ? crypto.randomUUID() : `cb-${model.id}-${date}-${reportWeek}`,
+            modelId: model.id, modelName: model.name, platform: 'chaturbate', provider, date, reportWeekKey: reportWeek,
             tokens: 0, weeklyTokens: balance,
             sharePct: Number(model.sharePctByPlatform.chaturbate),
             usdPerToken: number(state.rates.usdPerToken.chaturbate),
@@ -1375,10 +1380,11 @@
           reading.weeklyTokens = balance;
           reading.modelName = model.name;
           reading.stripchatWeekKey = apiWeekKey;
+          reading.reportWeekKey = apiWeekKey;
         } else {
           state.entries.push({
             id: crypto.randomUUID ? crypto.randomUUID() : `sc-${model.id}-${apiWeekKey}-${date}`,
-            modelId: model.id, modelName: model.name, platform: 'stripchat', provider, date, stripchatWeekKey: apiWeekKey,
+            modelId: model.id, modelName: model.name, platform: 'stripchat', provider, date, stripchatWeekKey: apiWeekKey, reportWeekKey: apiWeekKey,
             tokens: 0, weeklyTokens: balance, sharePct: Number(model.sharePctByPlatform.stripchat),
             usdPerToken: number(state.rates.usdPerToken.stripchat),
             copPerUsd: number(state.rates.copPerUsdByProvider[provider]),
@@ -1411,6 +1417,14 @@
     setInterval(() => { if (!document.hidden) syncStripchatModels(); }, 5 * 60 * 1000);
     document.addEventListener('visibilitychange', () => { if (!document.hidden) syncStripchatModels(); });
   }
+  let observedReportWeek = stripchatWeekKey();
+  setInterval(() => {
+    const currentReportWeek = stripchatWeekKey();
+    if (currentReportWeek !== observedReportWeek) {
+      observedReportWeek = currentReportWeek;
+      if (selectedWeek === 'current') render();
+    }
+  }, 60 * 1000);
   render();
   function updateAppPage() {
     const isSettings = location.hash === '#ajustes';
