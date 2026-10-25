@@ -44,7 +44,7 @@ export default {
     apiUrl.searchParams.set("token", token);
     let upstream;
     try {
-      upstream = await fetch(apiUrl, { headers: { Accept: "application/json" }, redirect: "error" });
+      upstream = await fetch(apiUrl, { headers: { Accept: "application/json" }, redirect: "follow" });
     } catch {
       return json({ error: "Could not reach Chaturbate Stats API" }, 502, origin);
     }
