@@ -1,0 +1,60 @@
+const allowedOrigins = new Set(["https://adelgallego.github.io"]);
+
+function corsHeaders(origin) {
+  return {
+    "Access-Control-Allow-Origin": origin,
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Max-Age": "86400",
+    "Vary": "Origin",
+  };
+}
+
+function json(body, status, origin) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { ...corsHeaders(origin), "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" },
+  });
+}
+
+export default {
+  async fetch(request) {
+    const url = new URL(request.url);
+    const origin = request.headers.get("Origin") || "";
+    if (!allowedOrigins.has(origin)) return new Response("Forbidden origin", { status: 403 });
+    if (url.pathname !== "/stats") return json({ error: "Not found" }, 404, origin);
+    if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: corsHeaders(origin) });
+    if (request.method !== "POST") return json({ error: "Use POST" }, 405, origin);
+
+    let credentials;
+    try {
+      if (Number(request.headers.get("content-length") || 0) > 4096) return json({ error: "Request too large" }, 413, origin);
+      credentials = await request.json();
+    } catch {
+      return json({ error: "Invalid JSON" }, 400, origin);
+    }
+    const username = String(credentials?.username || "").trim();
+    const token = String(credentials?.token || "").trim();
+    if (!/^[a-zA-Z0-9_]{1,30}$/.test(username) || !/^[a-zA-Z0-9]{24}$/.test(token)) {
+      return json({ error: "Enter a valid Chaturbate username and 24-character API Auth Token" }, 400, origin);
+    }
+
+    const apiUrl = new URL("https://chaturbate.com/statsapi/");
+    apiUrl.searchParams.set("username", username);
+    apiUrl.searchParams.set("token", token);
+    let upstream;
+    try {
+      upstream = await fetch(apiUrl, { headers: { Accept: "application/json" }, redirect: "error" });
+    } catch {
+      return json({ error: "Could not reach Chaturbate Stats API" }, 502, origin);
+    }
+    let data;
+    try { data = await upstream.json(); } catch { return json({ error: "Chaturbate returned an unreadable response" }, 502, origin); }
+    if (!upstream.ok) return json({ error: `Chaturbate Stats API returned HTTP ${upstream.status}` }, 502, origin);
+    const balance = Number(data?.token_balance);
+    if (!Number.isFinite(balance) || balance < 0) {
+      return json({ error: String(data?.error || "The API response did not contain a valid token_balance") }, 502, origin);
+    }
+    return json({ token_balance: balance, fetched_at: new Date().toISOString() }, 200, origin);
+  },
+};
