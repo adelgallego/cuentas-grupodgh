@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f5f7fb">
   <title>GRUPODGH — ingresos por tokens</title>
-  <link rel="stylesheet" href="styles.css?v=stripchat-sync-1">
+  <link rel="stylesheet" href="styles.css?v=stripchat-model-connection-1">
 </head>
 <body>
   <div class="shell">
@@ -67,18 +67,13 @@
         <small class="sync-footnote">Despliega <code>worker/chaturbate-proxy.js</code>. Si la app se cierra, las ganancias desde la última lectura se sumarán al próximo día sincronizado; si atraviesa el reinicio del lunes, ese saldo semanal perdido no se puede recuperar desde la API.</small>
       </section>
       <section class="panel stripchat-sync-panel" id="stripchatSyncPanel" aria-labelledby="stripchatSyncTitle">
-        <div class="panel-heading"><div><h2 id="stripchatSyncTitle">Sincronización de Stripchat</h2><p>Consulta las ganancias semanales de las modelos de tu Studio y guarda lecturas diarias.</p></div><span class="sync-status" id="stripchatSyncStatus" role="status">Sin configurar</span></div>
-        <div class="sync-notice">La API de Studio requiere una clave creada por Stripchat y que cada modelo pertenezca a tu Studio. La clave se guarda en este navegador y se envía por HTTPS a tu Worker; no se incluye en los respaldos. La app consulta cada 5 minutos mientras está abierta.</div>
-        <form id="stripchatSyncForm" class="sync-form">
-          <label>URL de tu Worker<input id="stripchatWorkerUrl" type="url" placeholder="https://tu-worker.workers.dev/stripchat/stats" required></label>
-          <label>Usuario de Studio<input id="stripchatStudioUsername" type="text" autocomplete="off" required></label>
-          <label>Modelo<select id="stripchatSyncModel" required><option value="">Selecciona un modelo</option></select></label>
-          <label>Usuario de la modelo en Stripchat<input id="stripchatModelUsername" type="text" autocomplete="off" required></label>
-          <label>API-Key de Studio<input id="stripchatApiKey" type="password" autocomplete="new-password" required></label>
-          <label>Monetizadora<select id="stripchatProvider"><option value="bantokens">BANTOKENS</option><option value="twl">TWL</option><option value="usdt">USDT</option></select></label>
-          <div class="sync-actions"><button class="button secondary" id="saveStripchatCredentials" type="submit">Guardar conexión</button><button class="button primary" id="syncStripchatNow" type="button">Sincronizar ahora</button><button class="button secondary" id="removeStripchatModel" type="button">Desconectar modelo</button><button class="button secondary" id="clearStripchatStudioKey" type="button">Borrar clave del Studio</button></div>
-        </form>
-        <small class="sync-footnote">Crea o consulta la API-Key en <a href="https://stripchat.com/studio/api" target="_blank" rel="noopener">Stripchat Studio</a>. El Worker también debe actualizarse para habilitar la ruta <code>/stripchat/stats</code>.</small>
+        <div class="panel-heading"><div><h2 id="stripchatSyncTitle">Sincronización de Stripchat</h2><p>Consulta las ganancias semanales de los modelos en los Studios configurados y guarda lecturas diarias.</p></div><span class="sync-status" id="stripchatSyncStatus" role="status">Sin configurar</span></div>
+        <div class="sync-notice">La API requiere una clave de Studio y que cada modelo pertenezca al Studio indicado. Usuario de Stripchat, usuario de Studio y API-Key se guardan en este navegador y se envían por HTTPS; no se incluyen en respaldos. La app consulta cada 5 minutos mientras está abierta.</div>
+        <div class="sync-form stripchat-controls">
+          <label>URL de tu Worker<input id="stripchatWorkerUrl" type="url" placeholder="https://tu-worker.workers.dev/stripchat/stats"></label>
+          <div class="sync-actions"><button class="button primary" id="syncStripchatNow" type="button">Sincronizar modelos conectadas</button></div>
+        </div>
+        <small class="sync-footnote">Configura la conexión de cada modelo al agregarla o editarla. Crea o consulta la API-Key en <a href="https://stripchat.com/studio/api" target="_blank" rel="noopener">Stripchat Studio</a>. El Worker debe tener habilitada la ruta <code>/stripchat/stats</code>.</small>
       </section>
       <section class="summary-grid" aria-label="Resumen de ingresos">
         <article class="summary-card"><div class="card-top"><span class="card-label">INGRESOS REGISTRADOS</span><span class="card-icon violet">↗</span></div><strong id="totalTokens">0 <small>tokens</small></strong><div class="card-foot" id="summaryPeriodLabel">En la semana seleccionada</div></article>
@@ -137,6 +132,17 @@
               <label>Stripchat · COP menos/USD<span class="input-suffix"><input id="modelCopStripchat" type="number" min="0" step="1" placeholder="Ej. 100" required inputmode="numeric"><i>COP</i></span></label>
               <label>Chaturbate · COP menos/USD<span class="input-suffix"><input id="modelCopChaturbate" type="number" min="0" step="1" placeholder="Ej. 150" required inputmode="numeric"><i>COP</i></span></label>
             </div>
+            <fieldset class="model-stripchat-settings">
+              <legend>Sincronización de Stripchat</legend>
+              <label class="model-stripchat-toggle"><input id="modelStripchatSync" type="checkbox"> Sincronizar esta modelo automáticamente</label>
+              <div class="model-split-fields" id="modelStripchatFields" hidden>
+                <label>Usuario de la modelo en Stripchat<input id="modelStripchatUsername" type="text" autocomplete="off"></label>
+                <label>Usuario de Studio<input id="modelStripchatStudioUsername" type="text" autocomplete="off"></label>
+                <label>API-Key de Studio<input id="modelStripchatApiKey" type="password" autocomplete="new-password"></label>
+                <label>Monetizadora<select id="modelStripchatProvider"><option value="bantokens">BANTOKENS</option><option value="twl">TWL</option><option value="usdt">USDT</option></select></label>
+              </div>
+              <small class="split-note">Actívala solo si tienes acceso al Studio de esta modelo. Si pertenece a otro Studio y no tienes su API-Key, deja la sincronización desactivada.</small>
+            </fieldset>
             <small class="split-note">La misma modelo estará disponible en ambas páginas. El registro usa los porcentajes y el descuento de la página elegida.</small>
             <div class="model-form-actions"><button class="button secondary" id="modelSubmitButton" type="submit"><span>＋</span> Agregar modelo</button><button class="button cancel-edit" id="cancelModelEdit" type="button" hidden>Cancelar</button></div>
           </form>
@@ -155,7 +161,7 @@
       <div class="backup-confirm-actions"><button id="cancelBackupImport" class="button secondary" type="button">Cancelar</button><button id="confirmBackupImport" class="button primary" type="button">Importar y aplicar</button></div>
     </div>
   </div>
-  <script src="app.js?v=stripchat-sync-1"></script>
+  <script src="app.js?v=stripchat-model-connection-1"></script>
 </body>
 </html>
 
