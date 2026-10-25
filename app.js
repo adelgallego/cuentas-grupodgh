@@ -26,27 +26,57 @@
     ['Histórico completo', 'Full history'], ['Desde el inicio del mes', 'Since the start of this month'], ['Lunes a domingo', 'Monday through Sunday'], ['· TWL retiene 10% del total y luego se calcula tu restante.', '· TWL withholds 10% of the total before your share is calculated.'], ['Tasa editada manualmente; se sincroniza desde la TRM al abrir la versión web.', 'Rate edited manually; it syncs from the TRM when the web app opens.'], ['TRM ', 'TRM '], ['Usando la última tasa guardada; no se pudo actualizar la TRM.', 'Using the last saved rate; the TRM could not be updated.'], ['TRM − $50 · se actualizará en la versión web.', 'TRM − COP 50 · will update in the web version.'], ['Editar', 'Edit'], ['BANTOKENS Tiffany · $5,94/sem', 'BANTOKENS Tiffany · $5.94/wk'], ['Modelo actualizada. Los ingresos anteriores conservan sus valores.', 'Model updated. Previous income entries keep their saved values.'], ['Modelo agregada.', 'Model added.'], ['Ingreso eliminado.', 'Income entry deleted.'],
     ['Escribe el nombre de la modelo.', 'Enter the model name.'], ['Usa porcentajes entre 0 y 100 para ambas páginas.', 'Enter percentages from 0 to 100 for both platforms.'], ['Los descuentos en pesos deben ser números iguales o mayores a cero.', 'Deductions in pesos must be numbers greater than or equal to zero.'], ['Cada descuento debe ser menor que las tasas COP/USD configuradas.', 'Each deduction must be lower than the configured COP/USD rates.'], ['No se encontró la modelo para editar.', 'Could not find the model to edit.'], ['Modelo actualizada.', 'Model updated.'], ['Modelo agregada.', 'Model added.'], ['Selecciona una modelo e ingresa el acumulado semanal de tokens.', 'Select a model and enter its weekly token total.'], ['No se encontró el ingreso que estabas editando.', 'Could not find the income entry you were editing.'], ['Configura las tasas de conversión para esta página y monetizadora antes de registrar ingresos.', 'Set conversion rates for this platform and provider before recording income.'], ['Ya existe una lectura para esa modelo, página y fecha. Edita ese registro para evitar duplicados.', 'A reading already exists for this model, platform, and date. Edit that entry to avoid duplicates.'], ['El acumulado no puede ser menor que la última lectura de esta semana (', 'The total cannot be lower than this week’s previous reading ('], [' tokens).', ' tokens).'], ['El acumulado supera la lectura posterior del ', 'The total exceeds the later reading on '], ['Esta modelo no tiene un porcentaje configurado. Agrégala de nuevo con página y porcentaje.', 'This model has no share configured. Add it again with a platform and share.'], ['El descuento por dólar debe ser menor que la tasa COP/USD de esta monetizadora.', 'The deduction per dollar must be lower than this provider’s COP/USD rate.'], ['Ingreso actualizado', 'Income updated'], ['Ingreso guardado', 'Income saved'], [': ', ': '], [' tokens del día.', ' tokens today.'], ['No se puede eliminar una modelo con ingresos registrados.', 'Cannot delete a model with recorded income.'], ['No se encontró la modelo de este ingreso.', 'Could not find the model for this income entry.'], ['Modelo eliminada.', 'Model deleted.'], ['Respaldo descargado.', 'Backup downloaded.'], ['Ese archivo no es un respaldo válido de GRUPODGH.', 'That file is not a valid GRUPODGH backup.'], ['Archivo: ', 'File: '], ['. Se importarán ', '. The import will include '], [' modelos, ', ' models, '], [' ingresos y sus tasas.', ' income entries and their rates.'], ['No se pudo importar. Revisa que el archivo sea un respaldo válido.', 'Could not import. Check that the file is a valid backup.'], ['Respaldo importado. Recargando la app…', 'Backup imported. Reloading the app…'], ['Anterior', 'Legacy'], ['$5,94 semanal', '$5.94 weekly'], ['lunes', 'Monday'], ['martes', 'Tuesday'], ['miércoles', 'Wednesday'], ['jueves', 'Thursday'], ['viernes', 'Friday'], ['sábado', 'Saturday'], ['domingo', 'Sunday'], ['enero', 'January'], ['febrero', 'February'], ['marzo', 'March'], ['abril', 'April'], ['mayo', 'May'], ['junio', 'June'], ['julio', 'July'], ['agosto', 'August'], ['septiembre', 'September'], ['octubre', 'October'], ['noviembre', 'November'], ['diciembre', 'December'], ['No se pudo guardar el respaldo en este navegador.', 'Could not save the backup in this browser.'], ['Ej. 3.147', 'e.g. 3,147'], ['Ej. 25000', 'e.g. 25,000'], ['Ej. 100', 'e.g. 100'], ['Ej. 150', 'e.g. 150'], ['0,05', '0.05']
   ];
-  const translationMap = new Map(translationPairs);
-  const reverseTranslationMap = new Map(translationPairs.map(([spanish, english]) => [english, spanish]));
+  const compileTranslations = (pairs) => {
+    const values = new Map(pairs);
+    const alternatives = [...values.keys()]
+      .sort((a, b) => b.length - a.length)
+      .map((value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+    return { values, pattern: new RegExp(alternatives.join('|'), 'g') };
+  };
+  const translations = {
+    en: compileTranslations(translationPairs),
+    es: compileTranslations(translationPairs.map(([spanish, english]) => [english, spanish])),
+  };
   const translateValue = (value) => {
-    const dictionary = appLanguage === 'en' ? translationMap : reverseTranslationMap;
     let result = String(value);
     if (appLanguage === 'en') result = result.replace(/Ya existe (.+) en el equipo\./g, 'The team already has $1.');
     else result = result.replace(/The team already has (.+)\./g, 'Ya existe $1 en el equipo.');
-    for (const [source, target] of [...dictionary.entries()].sort((a, b) => b[0].length - a[0].length)) result = result.replaceAll(source, target);
-    return result;
+    const { values, pattern } = translations[appLanguage];
+    return result.replace(pattern, (match) => values.get(match));
   };
   const locale = () => appLanguage === 'en' ? 'en-US' : 'es-CO';
+  const translateTextNode = (node) => {
+    const translated = translateValue(node.nodeValue);
+    if (translated !== node.nodeValue) node.nodeValue = translated;
+  };
+  const translatableElements = 'input,button,label,section,nav,a,[data-label]';
+  const translateAttributes = (root) => {
+    const elements = [];
+    if (root.nodeType === Node.ELEMENT_NODE && root.matches(translatableElements)) elements.push(root);
+    if (root.querySelectorAll) elements.push(...root.querySelectorAll(translatableElements));
+    for (const element of elements) {
+      for (const attribute of ['aria-label', 'title', 'placeholder', 'data-label']) {
+        if (!element.hasAttribute(attribute)) continue;
+        const current = element.getAttribute(attribute);
+        const translated = translateValue(current);
+        if (translated !== current) element.setAttribute(attribute, translated);
+      }
+    }
+  };
+  const translateSubtree = (root) => {
+    if (root.nodeType === Node.TEXT_NODE) {
+      translateTextNode(root);
+      return;
+    }
+    if (!root.querySelectorAll) return;
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    let node;
+    while ((node = walker.nextNode())) translateTextNode(node);
+    translateAttributes(root);
+  };
   function translatePage() {
     document.documentElement.lang = appLanguage;
-    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
-    let node;
-    while ((node = walker.nextNode())) { const translated = translateValue(node.nodeValue); if (translated !== node.nodeValue) node.nodeValue = translated; }
-    document.querySelectorAll('input,button,label,section,nav,a,[data-label]').forEach((element) => {
-      for (const attribute of ['aria-label', 'title', 'placeholder', 'data-label']) {
-        if (element.hasAttribute(attribute)) { const translated = translateValue(element.getAttribute(attribute)); if (translated !== element.getAttribute(attribute)) element.setAttribute(attribute, translated); }
-      }
-    });
+    translateSubtree(document.body);
     const translatedTitle = translateValue('GRUPODGH — ingresos por tokens');
     if (document.title !== translatedTitle) document.title = translatedTitle;
     const toggle = document.querySelector('#languageToggle');
@@ -58,14 +88,20 @@
       if (toggle.getAttribute('aria-label') !== title) toggle.setAttribute('aria-label', title);
     }
   }
-  const languageObserver = new MutationObserver(() => translatePage());
+  const languageObserver = new MutationObserver((records) => {
+    if (appLanguage !== 'en') return;
+    for (const record of records) {
+      if (record.type === 'characterData') translateTextNode(record.target);
+      else for (const addedNode of record.addedNodes) translateSubtree(addedNode);
+    }
+  });
   languageObserver.observe(document.body, { childList: true, characterData: true, subtree: true });
   document.querySelector('#languageToggle')?.addEventListener('click', () => {
     appLanguage = appLanguage === 'es' ? 'en' : 'es';
     try { localStorage.setItem('grupodgh-language', appLanguage); } catch { /* Language remains active for this session. */ }
-    translatePage();
     render();
     translatePage();
+    languageObserver.takeRecords();
     $('#today').textContent = new Date().toLocaleDateString(locale(), { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
   });
   const $ = (selector) => document.querySelector(selector);
@@ -755,5 +791,7 @@
     state.entries = state.entries.filter((e) => e.id !== id); persist(); renderEntries(); flash('Ingreso eliminado.');
   });
   render();
-  translatePage();
+  document.documentElement.lang = appLanguage;
+  if (appLanguage === 'en') translatePage();
+  languageObserver.takeRecords();
 })();
