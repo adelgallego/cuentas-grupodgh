@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f5f7fb">
   <title>GRUPODGH — ingresos por tokens</title>
-  <link rel="stylesheet" href="styles.css?v=fee-info-1">
+  <link rel="stylesheet" href="styles.css?v=chaturbate-sync-1">
 </head>
 <body>
   <div class="shell">
@@ -53,6 +53,19 @@
         <div class="backup-actions"><button id="exportBackup" class="button secondary" type="button">Descargar respaldo</button><label class="backup-import"><span>Importar respaldo</span><input id="backupFile" class="backup-file-input" type="file" accept=".json,application/json"></label></div>
       </section>
 
+      <section class="panel chaturbate-sync-panel" id="chaturbateSyncPanel" aria-labelledby="chaturbateSyncTitle">
+        <div class="panel-heading"><div><h2 id="chaturbateSyncTitle">Sincronización de Chaturbate</h2><p>Consulta el saldo semanal de cada cuenta y guarda una lectura diaria mientras la app esté abierta.</p></div><span class="sync-status" id="chaturbateSyncStatus" role="status">Sin configurar</span></div>
+        <div class="sync-notice">El contador de Chaturbate se reinicia los lunes a las 00:00. La app consulta cada 5 minutos. Configura un proxy propio de Cloudflare Worker y las credenciales API de cada modelo. Los tokens API se guardan solo en este navegador y no se incluyen en respaldos. Si la app se cierra, las ganancias desde la última lectura se sumarán al próximo día que se sincronice.</div>
+        <form id="chaturbateSyncForm" class="sync-form">
+          <label>URL de tu Worker<input id="chaturbateWorkerUrl" type="url" placeholder="https://tu-worker.workers.dev/stats" required></label>
+          <label>Modelo<select id="chaturbateSyncModel" required><option value="">Selecciona un modelo</option></select></label>
+          <label>Usuario de Chaturbate<input id="chaturbateUsername" type="text" autocomplete="off" required></label>
+          <label>API Auth Token<input id="chaturbateApiToken" type="password" autocomplete="new-password" required></label>
+          <label>Monetizadora<select id="chaturbateProvider"><option value="bantokens">BANTOKENS</option><option value="twl">TWL</option><option value="usdt">USDT</option></select></label>
+          <div class="sync-actions"><button class="button secondary" id="saveChaturbateCredentials" type="submit">Guardar conexión</button><button class="button primary" id="syncChaturbateNow" type="button">Sincronizar ahora</button><button class="button secondary" id="removeChaturbateCredentials" type="button">Desconectar modelo</button></div>
+        </form>
+        <small class="sync-footnote">Despliega <code>worker/chaturbate-proxy.js</code>. Si la app se cierra, las ganancias desde la última lectura se sumarán al próximo día sincronizado; si atraviesa el reinicio del lunes, ese saldo semanal perdido no se puede recuperar desde la API.</small>
+      </section>
       <section class="summary-grid" aria-label="Resumen de ingresos">
         <article class="summary-card"><div class="card-top"><span class="card-label">INGRESOS REGISTRADOS</span><span class="card-icon violet">↗</span></div><strong id="totalTokens">0 <small>tokens</small></strong><div class="card-foot" id="summaryPeriodLabel">En la semana seleccionada</div></article>
         <article class="summary-card"><div class="card-top"><span class="card-label">VALOR TOTAL</span><span class="card-icon blue">＄</span></div><strong id="totalUsd">$0.00 <small>USD</small></strong><div class="card-foot" id="totalCop">≈ $0 COP</div></article>
@@ -128,6 +141,6 @@
       <div class="backup-confirm-actions"><button id="cancelBackupImport" class="button secondary" type="button">Cancelar</button><button id="confirmBackupImport" class="button primary" type="button">Importar y aplicar</button></div>
     </div>
   </div>
-  <script src="app.js?v=bantokens-fee-info-1"></script>
+  <script src="app.js?v=chaturbate-sync-1"></script>
 </body>
 </html>
