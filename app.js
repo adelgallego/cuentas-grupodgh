@@ -1416,8 +1416,9 @@
     const isSettings = location.hash === '#ajustes';
     $('#dashboardView').hidden = isSettings;
     $('#ajustes').hidden = !isSettings;
-    if (isSettings) window.scrollTo(0, 0);
     const activeHref = isSettings ? '#ajustes' : ['#registro', '#modelos'].includes(location.hash) ? location.hash : '#inicio';
+    if (isSettings || activeHref === '#inicio') window.scrollTo(0, 0);
+    else requestAnimationFrame(() => document.querySelector(activeHref)?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
     document.querySelectorAll('.sidebar nav .nav-link').forEach((link) => {
       const active = link.getAttribute('href') === activeHref;
       link.classList.toggle('active', active);
