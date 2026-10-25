@@ -1,5 +1,7 @@
 (() => {
   const STORAGE_KEY = 'cuenta-clara-v1';
+  const CHATURBATE_CREDENTIALS_KEY = 'grupodgh-chaturbate-credentials-v1';
+  const CHATURBATE_WORKER_KEY = 'grupodgh-chaturbate-worker-url-v1';
   const THEME_KEY = 'cuenta-clara-theme';
   const TIFFANY_SHARE_MIGRATION_KEY = 'grupodgh-tiffany-share-80-v1';
   const TWL_OWNER_FEE_RATE = 0.10;
@@ -27,7 +29,7 @@
     ['Escribe el nombre de la modelo.', 'Enter the model name.'], ['Usa porcentajes entre 0 y 100 para ambas páginas.', 'Enter percentages from 0 to 100 for both platforms.'], ['Los descuentos en pesos deben ser números iguales o mayores a cero.', 'Deductions in pesos must be numbers greater than or equal to zero.'], ['Cada descuento debe ser menor que las tasas COP/USD configuradas.', 'Each deduction must be lower than the configured COP/USD rates.'], ['No se encontró la modelo para editar.', 'Could not find the model to edit.'], ['Modelo actualizada.', 'Model updated.'], ['Modelo agregada.', 'Model added.'], ['Selecciona una modelo e ingresa el acumulado semanal de tokens.', 'Select a model and enter its weekly token total.'], ['No se encontró el ingreso que estabas editando.', 'Could not find the income entry you were editing.'], ['Configura las tasas de conversión para esta página y monetizadora antes de registrar ingresos.', 'Set conversion rates for this platform and provider before recording income.'], ['Ya existe una lectura para esa modelo, página y fecha. Edita ese registro para evitar duplicados.', 'A reading already exists for this model, platform, and date. Edit that entry to avoid duplicates.'], ['El acumulado no puede ser menor que la última lectura de esta semana (', 'The total cannot be lower than this week’s previous reading ('], [' tokens).', ' tokens).'], ['El acumulado supera la lectura posterior del ', 'The total exceeds the later reading on '], ['Esta modelo no tiene un porcentaje configurado. Agrégala de nuevo con página y porcentaje.', 'This model has no share configured. Add it again with a platform and share.'], ['El descuento por dólar debe ser menor que la tasa COP/USD de esta monetizadora.', 'The deduction per dollar must be lower than this provider’s COP/USD rate.'], ['Ingreso actualizado', 'Income updated'], ['Ingreso guardado', 'Income saved'], [': ', ': '], [' tokens del día.', ' tokens today.'], ['No se puede eliminar una modelo con ingresos registrados.', 'Cannot delete a model with recorded income.'], ['No se encontró la modelo de este ingreso.', 'Could not find the model for this income entry.'], ['Modelo eliminada.', 'Model deleted.'], ['Respaldo descargado.', 'Backup downloaded.'], ['Ese archivo no es un respaldo válido de GRUPODGH.', 'That file is not a valid GRUPODGH backup.'], ['Archivo: ', 'File: '], ['. Se importarán ', '. The import will include '], [' modelos, ', ' models, '], [' ingresos y sus tasas.', ' income entries and their rates.'], ['No se pudo importar. Revisa que el archivo sea un respaldo válido.', 'Could not import. Check that the file is a valid backup.'], ['Respaldo importado. Recargando la app…', 'Backup imported. Reloading the app…'], ['Anterior', 'Legacy'], ['$5,94 semanal', '$5.94 weekly'], ['lunes', 'Monday'], ['martes', 'Tuesday'], ['miércoles', 'Wednesday'], ['jueves', 'Thursday'], ['viernes', 'Friday'], ['sábado', 'Saturday'], ['domingo', 'Sunday'], ['enero', 'January'], ['febrero', 'February'], ['marzo', 'March'], ['abril', 'April'], ['mayo', 'May'], ['junio', 'June'], ['julio', 'July'], ['agosto', 'August'], ['septiembre', 'September'], ['octubre', 'October'], ['noviembre', 'November'], ['diciembre', 'December'], ['No se pudo guardar el respaldo en este navegador.', 'Could not save the backup in this browser.'], ['Ej. 3.147', 'e.g. 3,147'], ['Ej. 25000', 'e.g. 25,000'], ['Ej. 100', 'e.g. 100'], ['Ej. 150', 'e.g. 150'], ['0,05', '0.05']
   ];
   translationPairs.push(['Información sobre descuentos', 'Deduction details'], ['BANTOKENS · $5,94/sem de la modelo', 'BANTOKENS · $5.94/wk deducted from the model'], [' de la parte que le corresponde a la modelo tras aplicar su porcentaje (', ' from the model share after applying her percentage ('], ['descontado de la parte de cada modelo', 'deducted from each model share']);
-  const compileTranslations = (pairs) => {
+  translationPairs.push(['Si la app se cierra, las ganancias desde la última lectura se sumarán al próximo día que se sincronice.', 'If the app closes, earnings since the last reading will be added to the next synced day.'], ['Despliega ', 'Deploy '], ['. Si la app se cierra, las ganancias desde la última lectura se sumarán al próximo día sincronizado; si atraviesa el reinicio del lunes, ese saldo semanal perdido no se puede recuperar desde la API.', '. If the app closes, earnings since the last reading will be added to the next synced day; if the Monday reset passes, that lost weekly balance cannot be recovered from the API.'], ['Sincronización de Chaturbate', 'Chaturbate sync'], ['Consulta el saldo semanal de cada cuenta y guarda una lectura diaria mientras la app esté abierta.', 'Checks each account’s weekly balance and saves a daily reading while the app is open.'], ['Sin configurar', 'Not configured'], ['El contador de Chaturbate se reinicia los lunes a las 00:00. La app consulta cada 5 minutos. Configura un proxy propio de Cloudflare Worker y las credenciales API de cada modelo. Los tokens API se guardan solo en este navegador y no se incluyen en respaldos.', 'Chaturbate’s counter resets Mondays at 00:00. The app checks every 5 minutes. Set up your own Cloudflare Worker proxy and each model’s API credentials. API tokens are stored only in this browser and are not included in backups.'], ['URL de tu Worker', 'Your Worker URL'], ['Selecciona un modelo', 'Select a model'], ['Usuario de Chaturbate', 'Chaturbate username'], ['API Auth Token', 'API Auth Token'], ['Monetizadora', 'Provider'], ['Guardar conexión', 'Save connection'], ['Sincronizar ahora', 'Sync now'], ['Desconectar modelo', 'Disconnect model'], ['Conectada', 'Connected'], ['Sincronizado', 'Synced'], ['Error de sincronización', 'Sync error'], ['Faltan las tasas USD/token o COP/USD para ', 'USD/token or COP/USD rates are missing for '], ['No hay una conexión guardada para esta modelo.', 'There is no saved connection for this model.'], ['El Worker debe usar una URL HTTPS terminada en /stats.', 'The Worker URL must use HTTPS and end in /stats.'], ['La API no devolvió token_balance válido.', 'The API did not return a valid token_balance.'], ['Conexión eliminada de este navegador.', 'Connection removed from this browser.'], ['Sincronización automática activa · cada 5 min', 'Automatic sync active · every 5 min'], ['La app debe estar abierta para registrar lecturas.', 'The app must stay open to record readings.']);  const compileTranslations = (pairs) => {
     const values = new Map(pairs);
     const alternatives = [...values.keys()]
       .sort((a, b) => b.length - a.length)
@@ -506,7 +508,7 @@
     const feeDescription = feeEntry.provider === 'bantokens' ? `BANTOKENS descuenta ${usd(ownerFeeUsd)} de la parte que le corresponde a la modelo tras aplicar su porcentaje (${usd(modelGrossShare)}). ` : provider === 'twl' ? `TWL retiene ${usd(ownerFeeUsd)} (${cop(ownerFeeUsd * copRate)}) del total. ` : provider === 'usdt' && platform === 'stripchat' ? `USDT descuenta primero ${usd(ownerFeeUsd)} (1%); los ${usd(shareBase)} restantes se reparten ${fmt(sharePct, 1)}% para ella y ${fmt(100 - sharePct, 1)}% para ti. ` : '';
     preview.innerHTML = `${sameContext || sameDay ? 'Actualizando ingreso.' : 'Tokens del día estimados:'} <b>${fmt(dailyTokens, 0)}</b> · Acumulado: <b>${fmt(weeklyTokens, 0)}</b>. ${previousInfo}<br>Total del día: <b>${usd(gross)}</b> (${cop(totalCop)}). Modelo (${fmt(sharePct, 1)}%): <b>${usd(modelPart)}</b> · paga <b>${cop(modelPayoutCop)}</b>. ${feeDescription}Tu parte neta: <b>${usd(ownerNetUsd)}</b> · <b>${cop(ownerNetCop)}</b>.`;
   }
-  function render() { renderModels(); renderEntries(); renderPreview(); }
+  function render() { renderModels(); renderEntries(); renderPreview(); if (typeof renderChaturbateModelOptions === "function") renderChaturbateModelOptions(); }
   function updateThemeControl() {
     const dark = document.documentElement.dataset.theme === 'dark';
     $('#themeIcon').textContent = dark ? '☀' : '☾';
@@ -760,7 +762,9 @@
     if (!id) return;
     if (state.entries.some((e) => e.modelId === id)) { flash('No se puede eliminar una modelo con ingresos registrados.'); return; }
     if ($('#editingModelId').value === id) clearModelEdit();
-    state.models = state.models.filter((m) => m.id !== id); persist(); render(); flash('Modelo eliminada.');
+    state.models = state.models.filter((m) => m.id !== id);
+    if (chaturbateCredentials && chaturbateCredentials[id]) { delete chaturbateCredentials[id]; saveChaturbateCredentialMap(); }
+    persist(); render(); flash('Modelo eliminada.');
   });
   $('#cancelModelEdit').addEventListener('click', clearModelEdit);
   $('#cancelEntryEdit').addEventListener('click', clearEntryEdit);
@@ -791,6 +795,158 @@
     if ($('#editingEntryId').value === id) clearEntryEdit();
     state.entries = state.entries.filter((e) => e.id !== id); persist(); renderEntries(); flash('Ingreso eliminado.');
   });
+  let chaturbateCredentials = {};
+  try { chaturbateCredentials = JSON.parse(localStorage.getItem(CHATURBATE_CREDENTIALS_KEY) || '{}') || {}; } catch { chaturbateCredentials = {}; }
+  const storedWorkerUrl = (() => { try { return localStorage.getItem(CHATURBATE_WORKER_KEY) || ''; } catch { return ''; } })();
+  $('#chaturbateWorkerUrl').value = storedWorkerUrl;
+  function renderChaturbateModelOptions() {
+    const select = $('#chaturbateSyncModel');
+    if (!select) return;
+    const selected = select.value;
+    select.innerHTML = `<option value="">${escapeHtml(appLanguage === 'en' ? 'Select a model' : 'Selecciona un modelo')}</option>${state.models.map((model) => `<option value="${escapeHtml(model.id)}">${escapeHtml(model.name)}${chaturbateCredentials[model.id] ? ' · ✓' : ''}</option>`).join('')}`;
+    if ([...select.options].some((option) => option.value === selected)) select.value = selected;
+  }
+  function setChaturbateStatus(spanish, english = spanish) {
+    $('#chaturbateSyncStatus').textContent = appLanguage === 'en' ? english : spanish;
+  }
+  function saveChaturbateCredentialMap() {
+    localStorage.setItem(CHATURBATE_CREDENTIALS_KEY, JSON.stringify(chaturbateCredentials));
+  }
+  function chaturbateWorkerUrl() {
+    const value = $('#chaturbateWorkerUrl').value.trim();
+    let url;
+    try { url = new URL(value); } catch { return ''; }
+    return url.protocol === 'https:' && url.pathname.replace(/\/$/, '') === '/stats' ? url.href : '';
+  }
+  function loadChaturbateCredentialForm() {
+    const credential = chaturbateCredentials[$('#chaturbateSyncModel').value];
+    $('#chaturbateUsername').value = credential?.username || '';
+    $('#chaturbateApiToken').value = credential?.token || '';
+    $('#chaturbateProvider').value = credential?.provider || 'bantokens';
+    $('#removeChaturbateCredentials').disabled = !credential;
+    if (!credential) setChaturbateStatus('Sin configurar');
+    else setChaturbateStatus('Conectada', 'Connected');
+  }
+  $('#chaturbateWorkerUrl').addEventListener('change', () => {
+    const url = chaturbateWorkerUrl();
+    if (!url) { flash('El Worker debe usar una URL HTTPS terminada en /stats.'); return; }
+    localStorage.setItem(CHATURBATE_WORKER_KEY, url);
+  });
+  $('#chaturbateSyncModel').addEventListener('change', loadChaturbateCredentialForm);
+  $('#chaturbateSyncForm').addEventListener('submit', (event) => {
+    event.preventDefault();
+    const modelId = $('#chaturbateSyncModel').value;
+    const username = $('#chaturbateUsername').value.trim();
+    const token = $('#chaturbateApiToken').value.trim();
+    const workerUrl = chaturbateWorkerUrl();
+    if (!workerUrl) { flash('El Worker debe usar una URL HTTPS terminada en /stats.'); return; }
+    if (!modelById(modelId) || !username || !token) return;
+    try {
+      localStorage.setItem(CHATURBATE_WORKER_KEY, workerUrl);
+      chaturbateCredentials[modelId] = { username, token, provider: $('#chaturbateProvider').value };
+      saveChaturbateCredentialMap();
+      renderChaturbateModelOptions();
+      $('#chaturbateSyncModel').value = modelId;
+      $('#removeChaturbateCredentials').disabled = false;
+      setChaturbateStatus('Conectada', 'Connected');
+      flash('Conexión guardada en este navegador.');
+    } catch {
+      flash('No se pudo guardar la conexión en este navegador.');
+    }
+  });
+  $('#removeChaturbateCredentials').addEventListener('click', () => {
+    const modelId = $('#chaturbateSyncModel').value;
+    if (!modelId || !chaturbateCredentials[modelId]) return;
+    delete chaturbateCredentials[modelId];
+    saveChaturbateCredentialMap();
+    $('#chaturbateUsername').value = '';
+    $('#chaturbateApiToken').value = '';
+    renderChaturbateModelOptions();
+    $('#chaturbateSyncModel').value = modelId;
+    loadChaturbateCredentialForm();
+    flash('Conexión eliminada de este navegador.');
+  });
+  let chaturbateSyncActive = false;
+  async function fetchChaturbateBalance(workerUrl, credential) {
+    const response = await fetch(workerUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: credential.username, token: credential.token }),
+      cache: 'no-store',
+    });
+    let result;
+    try { result = await response.json(); } catch { throw new Error('La API no devolvió token_balance válido.'); }
+    if (!response.ok) throw new Error(result.error || `HTTP ${response.status}`);
+    const balance = Number(result.token_balance);
+    if (!Number.isFinite(balance) || balance < 0) throw new Error('La API no devolvió token_balance válido.');
+    return balance;
+  }
+  async function syncChaturbateAccounts(selectedModelId = '') {
+    if (chaturbateSyncActive) return;
+    const workerUrl = (() => { try { return localStorage.getItem(CHATURBATE_WORKER_KEY) || chaturbateWorkerUrl(); } catch { return chaturbateWorkerUrl(); } })();
+    if (!workerUrl || !chaturbateWorkerUrlIsValid(workerUrl)) {
+      setChaturbateStatus('Configura la URL de tu Worker', 'Set your Worker URL');
+      return;
+    }
+    const connectedModels = state.models.filter((model) => chaturbateCredentials[model.id] && (!selectedModelId || model.id === selectedModelId));
+    if (!connectedModels.length) {
+      setChaturbateStatus('No hay cuentas conectadas', 'No accounts connected');
+      return;
+    }
+    chaturbateSyncActive = true;
+    $('#syncChaturbateNow').disabled = true;
+    setChaturbateStatus('Sincronizando…', 'Syncing…');
+    const errors = [];
+    const date = todayISO();
+    for (const model of connectedModels) {
+      const credential = chaturbateCredentials[model.id];
+      const provider = credential.provider || 'bantokens';
+      try {
+        if (!ratesReady('chaturbate', provider)) throw new Error(`Faltan las tasas USD/token o COP/USD para ${model.name}.`);
+        const balance = await fetchChaturbateBalance(workerUrl, credential);
+        const reading = state.entries.find((entry) => entry.modelId === model.id && entry.platform === 'chaturbate' && entry.date === date && entry.weeklyTokens !== undefined && entry.weeklyTokens !== null);
+        if (reading) {
+          reading.weeklyTokens = balance;
+          reading.modelName = model.name;
+        } else {
+          state.entries.push({
+            id: crypto.randomUUID ? crypto.randomUUID() : `cb-${model.id}-${date}`,
+            modelId: model.id, modelName: model.name, platform: 'chaturbate', provider, date,
+            tokens: 0, weeklyTokens: balance,
+            sharePct: provider === 'usdt' ? Number(model.sharePctByPlatform.chaturbate) : Number(model.sharePctByPlatform.chaturbate),
+            usdPerToken: number(state.rates.usdPerToken.chaturbate),
+            copPerUsd: number(state.rates.copPerUsdByProvider[provider]),
+            copDiscountPerUsd: number(model.copDiscountByPlatform.chaturbate) || 0,
+            source: 'chaturbate-api', createdAt: Date.now(),
+          });
+        }
+        persist();
+      } catch (error) {
+        errors.push(`${model.name}: ${error.message}`);
+      }
+    }
+    if (!errors.length) {
+      render();
+      const stamp = new Date().toLocaleTimeString(locale(), { hour: '2-digit', minute: '2-digit' });
+      setChaturbateStatus(`Sincronizado ${stamp}`, `Synced ${stamp}`);
+    } else {
+      render();
+      setChaturbateStatus(`Error de sincronización · ${errors[0]}`, `Sync error · ${errors[0]}`);
+    }
+    chaturbateSyncActive = false;
+    $('#syncChaturbateNow').disabled = false;
+  }
+  function chaturbateWorkerUrlIsValid(value) {
+    try { const url = new URL(value); return url.protocol === 'https:' && url.pathname.replace(/\/$/, '') === '/stats'; } catch { return false; }
+  }
+  $('#syncChaturbateNow').addEventListener('click', () => syncChaturbateAccounts($('#chaturbateSyncModel').value));
+  renderChaturbateModelOptions();
+  loadChaturbateCredentialForm();
+  if (['http:', 'https:'].includes(window.location.protocol)) {
+    syncChaturbateAccounts();
+    setInterval(() => { if (!document.hidden) syncChaturbateAccounts(); }, 5 * 60 * 1000);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) syncChaturbateAccounts(); });
+  }
   render();
   document.documentElement.lang = appLanguage;
   if (appLanguage === 'en') translatePage();
