@@ -81,7 +81,7 @@
             <label>Monetizadora<select id="entryProvider" required><option value="bantokens">BANTOKENS</option><option value="twl">TWL</option><option value="usdt">USDT</option></select></label>
             <label>Modelo<select id="entryModel" required><option value="">Selecciona un modelo</option></select></label>
             <label>Fecha<input id="entryDate" type="date" required></label>
-            <label>Tokens acumulados en la semana<input id="entryWeeklyTokens" type="number" min="0" step="any" placeholder="Ej. 25000" required inputmode="decimal"><small>Escribe el acumulado que muestra la página. Se resta la lectura anterior de esta modelo y página (semana de lunes a domingo).</small></label>
+            <label>Tokens acumulados en la semana<input id="entryWeeklyTokens" type="number" min="0" step="any" placeholder="Ej. 25000" required inputmode="decimal"><small>Escribe el acumulado que muestra la página. La app resta la lectura anterior de esta página.</small></label>
             <div class="form-calculation" id="entryPreview">Configura las tasas de conversión para ver el cálculo estimado.</div>
             <div class="entry-form-actions"><button id="entrySubmitButton" class="button primary" type="submit">Guardar ingreso <span>→</span></button><button id="cancelEntryEdit" class="button secondary" type="button" hidden>Cancelar edición</button></div>
           </form>
@@ -186,6 +186,6 @@
     </div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="app.js?v=settings-page-1"></script>
+  <script src="app.js?v=unified-week-utc-1"></script>
 </body>
 </html>
