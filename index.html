@@ -18,9 +18,9 @@
         <a class="nav-link active" href="#inicio"><span class="nav-icon">▦</span> Resumen</a>
         <a class="nav-link" href="#registro"><span class="nav-icon">＋</span> Registrar ingresos</a>
         <a class="nav-link" href="#modelos"><span class="nav-icon">♙</span> Modelos</a>
+        <a class="nav-link" href="#ajustes"><span class="nav-icon">⚙</span> Ajustes</a>
       </nav>
       <div class="sidebar-bottom">
-        <div class="privacy-note"><span class="lock">▣</span><div><b>Nube y sincronización</b><p>Inicia sesión en la nube para mantener tus cambios sincronizados entre dispositivos.</p></div></div>
         <div class="user-badge"><span class="avatar">A</span><span><b>Estado de la cuenta</b><small id="cloudAccountLabel">Sin conectar</small></span><span class="dots">···</span></div>
       </div>
     </aside>
@@ -28,44 +28,19 @@
     <main id="inicio" class="main-content">
       <header class="topbar">
         <div class="breadcrumb">Administración <span>/</span> <b>Resumen</b></div>
-        <div class="top-actions"><button id="languageToggle" class="language-toggle" type="button" aria-label="Switch to English" title="Switch to English">EN</button><span class="today" id="today"></span><div class="text-size-control"><button id="textSizeToggle" class="theme-toggle text-size-toggle" type="button" aria-label="Ajustar tamaño de letra" aria-expanded="false" aria-controls="textSizePanel" title="Ajustar tamaño de letra">Aa</button><div id="textSizePanel" class="text-size-panel" hidden><label for="textSizeRange">Tamaño de letra <output id="textSizeValue" for="textSizeRange">100%</output></label><input id="textSizeRange" type="range" min="100" max="140" step="10" value="100"><small>Amplía los textos y controles de la app.</small><button id="textSizeReset" type="button">Restablecer</button></div></div><label class="theme-toggle accent-picker" title="Personalizar color principal"><span class="accent-swatch" id="accentSwatch" aria-hidden="true"></span><input id="accentColorInput" type="color" value="#6856d9" aria-label="Personalizar color principal"></label><button id="themeToggle" class="theme-toggle" type="button" aria-label="Activar modo oscuro" title="Activar modo oscuro"><span id="themeIcon" aria-hidden="true">☾</span></button><span class="avatar small-avatar">A</span></div>
+        <div class="top-actions"><button id="languageToggle" class="language-toggle" type="button" aria-label="Switch to English" title="Switch to English">EN</button><span class="today" id="today"></span><span class="avatar small-avatar">A</span></div>
       </header>
+      <div id="dashboardView" class="app-view">
       <section class="page-heading">
         <div><p class="eyebrow">TU NEGOCIO, EN ORDEN</p><h1>Resumen de ingresos</h1><p class="subheading">Controla tokens, conversiones y repartos en un solo lugar.</p></div>
         <a class="button primary" href="#registro"><span>＋</span> Registrar ingresos</a>
       </section>
 
-      <section class="rate-strip" aria-label="Tasas de conversión">
-        <div class="rate-title"><span class="rate-icon">↗</span><div><b>Tasas de conversión</b><small>USD que recibes por cada token</small></div></div>
-        <div class="rate-field"><div class="rate-heading"><label for="rateStripchat">Stripchat · USD/token</label></div><span class="input-suffix"><input id="rateStripchat" type="number" min="0.0001" step="any" placeholder="0,05" inputmode="decimal"><i>USD</i></span></div>
-        <div class="rate-field"><div class="rate-heading"><label for="rateChaturbate">Chaturbate · USD/token</label></div><span class="input-suffix"><input id="rateChaturbate" type="number" min="0.0001" step="any" placeholder="0,05" inputmode="decimal"><i>USD</i></span></div>
-        <div class="rate-field">
-          <div class="rate-heading"><label for="copPerUsdBantokens">BANTOKENS · COP por USD</label><button class="info-trigger" type="button" aria-label="Información sobre la tasa BANTOKENS" aria-describedby="bantokensRateNote">i</button><span class="rate-tooltip" id="bantokensRateNote" role="tooltip">La tasa usa la TRM de Wilkinsonpc menos $50 COP por USD.</span></div>
-          <span class="input-suffix"><input id="copPerUsdBantokens" type="number" min="0.0001" step="any" placeholder="Ej. 3.147" inputmode="decimal" title="Esta tasa actualiza los ingresos BANTOKENS de la semana actual. Las semanas anteriores conservan su tasa."><i>COP</i></span>
-        </div>
-        <div class="rate-field"><div class="rate-heading"><label for="copPerUsdTwl">TWL · COP por USD</label></div><span class="input-suffix"><input id="copPerUsdTwl" type="number" min="0.0001" step="any" placeholder="Ej. 3.147" inputmode="decimal" title="Esta tasa actualiza los ingresos TWL de la semana actual. Las semanas anteriores conservan su tasa."><i>COP</i></span></div>
-        <div class="rate-field"><div class="rate-heading"><label for="copPerUsdUsdt">USDT · COP por USDT</label></div><span class="input-suffix"><input id="copPerUsdUsdt" type="number" min="0.0001" step="any" placeholder="Ej. 3.147" inputmode="decimal" title="Esta tasa actualiza los ingresos USDT de la semana actual. Las semanas anteriores conservan su tasa."><i>COP</i></span></div>
-        <span class="saved-indicator" id="saveIndicator">● Guardado</span>
-      </section>
+      
 
-      <section class="backup-panel" aria-label="Respaldo y transferencia de datos">
-        <div><b>Respaldo de datos</b><p>Transfiere modelos, ingresos y tasas entre la app local y la versión web.</p></div>
-        <div class="backup-actions"><button id="exportBackup" class="button secondary" type="button">Descargar respaldo</button><label class="backup-import"><span>Importar respaldo</span><input id="backupFile" class="backup-file-input" type="file" accept=".json,application/json"></label></div>
-      </section>
+      
 
-      <section class="cloud-panel" aria-label="Almacenamiento en la nube">
-        <div class="cloud-heading"><div><b>Almacenamiento en la nube</b><p id="cloudStatus" role="status">Configura Supabase para sincronizar tus datos entre dispositivos.</p></div><div class="cloud-actions"><button id="cloudRefresh" class="button secondary" type="button" hidden>Recargar desde la nube</button><button id="cloudOverwrite" class="button secondary" type="button" hidden>Subir datos de este dispositivo</button></div></div>
-        <details class="cloud-config"><summary>Configurar Supabase en este dispositivo</summary><div class="cloud-fields">
-          <label>URL del proyecto<input id="cloudProjectUrl" type="url" placeholder="https://tu-proyecto.supabase.co" autocomplete="url"></label>
-          <label>Publishable key<input id="cloudPublicKey" type="password" placeholder="sb_publishable_…" autocomplete="off"></label>
-        </div></details>
-        <div class="cloud-fields cloud-auth-fields">
-          <label>Correo electrónico<input id="cloudEmail" type="email" autocomplete="username"></label>
-          <label>Contraseña<input id="cloudPassword" type="password" autocomplete="current-password"></label>
-          <div class="cloud-auth-actions"><button id="cloudSignIn" class="button primary" type="button">Iniciar sesión</button><button id="cloudSignUp" class="button secondary" type="button">Crear cuenta</button><button id="cloudSignInGithub" class="button secondary" type="button">Continuar con GitHub</button><button id="cloudSignOut" class="button secondary" type="button" hidden>Cerrar sesión</button></div>
-        </div>
-        <small class="cloud-provider-note">GitHub debe habilitarse como proveedor en Supabase antes de usar esta opción.</small>
-      </section>
+      
 
       <section class="summary-grid" aria-label="Resumen de ingresos">
         <article class="summary-card"><div class="card-top"><span class="card-label">INGRESOS REGISTRADOS</span><span class="card-icon violet">↗</span></div><strong id="totalTokens">0 <small>tokens</small></strong><div class="card-foot" id="summaryPeriodLabel">En la semana seleccionada</div></article>
@@ -156,6 +131,49 @@
         </article>
       </section>
       <footer class="footer-note">GRUPODGH <span>·</span> Los valores son estimados según las tasas que configures.</footer>
+          </div>
+      <div id="ajustes" class="app-view settings-view" hidden>
+        <section class="page-heading"><div><p class="eyebrow">PREFERENCIAS</p><h1>Ajustes</h1><p class="subheading">Administra tasas, almacenamiento, respaldos y apariencia de la aplicación.</p></div></section>
+        <div class="settings-layout">
+<section class="rate-strip" aria-label="Tasas de conversión">
+        <div class="rate-title"><span class="rate-icon">↗</span><div><b>Tasas de conversión</b><small>USD que recibes por cada token</small></div></div>
+        <div class="rate-field"><div class="rate-heading"><label for="rateStripchat">Stripchat · USD/token</label></div><span class="input-suffix"><input id="rateStripchat" type="number" min="0.0001" step="any" placeholder="0,05" inputmode="decimal"><i>USD</i></span></div>
+        <div class="rate-field"><div class="rate-heading"><label for="rateChaturbate">Chaturbate · USD/token</label></div><span class="input-suffix"><input id="rateChaturbate" type="number" min="0.0001" step="any" placeholder="0,05" inputmode="decimal"><i>USD</i></span></div>
+        <div class="rate-field">
+          <div class="rate-heading"><label for="copPerUsdBantokens">BANTOKENS · COP por USD</label><button class="info-trigger" type="button" aria-label="Información sobre la tasa BANTOKENS" aria-describedby="bantokensRateNote">i</button><span class="rate-tooltip" id="bantokensRateNote" role="tooltip">La tasa usa la TRM de Wilkinsonpc menos $50 COP por USD.</span></div>
+          <span class="input-suffix"><input id="copPerUsdBantokens" type="number" min="0.0001" step="any" placeholder="Ej. 3.147" inputmode="decimal" title="Esta tasa actualiza los ingresos BANTOKENS de la semana actual. Las semanas anteriores conservan su tasa."><i>COP</i></span>
+        </div>
+        <div class="rate-field"><div class="rate-heading"><label for="copPerUsdTwl">TWL · COP por USD</label></div><span class="input-suffix"><input id="copPerUsdTwl" type="number" min="0.0001" step="any" placeholder="Ej. 3.147" inputmode="decimal" title="Esta tasa actualiza los ingresos TWL de la semana actual. Las semanas anteriores conservan su tasa."><i>COP</i></span></div>
+        <div class="rate-field"><div class="rate-heading"><label for="copPerUsdUsdt">USDT · COP por USDT</label></div><span class="input-suffix"><input id="copPerUsdUsdt" type="number" min="0.0001" step="any" placeholder="Ej. 3.147" inputmode="decimal" title="Esta tasa actualiza los ingresos USDT de la semana actual. Las semanas anteriores conservan su tasa."><i>COP</i></span></div>
+        <span class="saved-indicator" id="saveIndicator">● Guardado</span>
+      </section>
+<section class="cloud-panel" aria-label="Almacenamiento en la nube">
+        <div class="cloud-heading"><div><b>Almacenamiento en la nube</b><p id="cloudStatus" role="status">Configura Supabase para sincronizar tus datos entre dispositivos.</p></div><div class="cloud-actions"><button id="cloudRefresh" class="button secondary" type="button" hidden>Recargar desde la nube</button><button id="cloudOverwrite" class="button secondary" type="button" hidden>Subir datos de este dispositivo</button></div></div>
+        <details class="cloud-config"><summary>Configurar Supabase en este dispositivo</summary><div class="cloud-fields">
+          <label>URL del proyecto<input id="cloudProjectUrl" type="url" placeholder="https://tu-proyecto.supabase.co" autocomplete="url"></label>
+          <label>Publishable key<input id="cloudPublicKey" type="password" placeholder="sb_publishable_…" autocomplete="off"></label>
+        </div></details>
+        <div class="cloud-fields cloud-auth-fields">
+          <label>Correo electrónico<input id="cloudEmail" type="email" autocomplete="username"></label>
+          <label>Contraseña<input id="cloudPassword" type="password" autocomplete="current-password"></label>
+          <div class="cloud-auth-actions"><button id="cloudSignIn" class="button primary" type="button">Iniciar sesión</button><button id="cloudSignUp" class="button secondary" type="button">Crear cuenta</button><button id="cloudSignInGithub" class="button secondary" type="button">Continuar con GitHub</button><button id="cloudSignOut" class="button secondary" type="button" hidden>Cerrar sesión</button></div>
+        </div>
+        <small class="cloud-provider-note">GitHub debe habilitarse como proveedor en Supabase antes de usar esta opción.</small>
+      </section>
+<section class="backup-panel" aria-label="Respaldo y transferencia de datos">
+        <div><b>Respaldo de datos</b><p>Transfiere modelos, ingresos y tasas entre la app local y la versión web.</p></div>
+        <div class="backup-actions"><button id="exportBackup" class="button secondary" type="button">Descargar respaldo</button><label class="backup-import"><span>Importar respaldo</span><input id="backupFile" class="backup-file-input" type="file" accept=".json,application/json"></label></div>
+      </section>
+      <section class="panel appearance-panel">
+        <div class="panel-heading"><div><h2>Apariencia</h2><p>Personaliza cómo se ve la aplicación en este dispositivo.</p></div></div>
+        <div class="appearance-controls">
+          <div class="appearance-option"><span><b>Tema</b><small>Cambia entre modo claro y oscuro.</small></span><button id="themeToggle" class="theme-toggle" type="button" aria-label="Activar modo oscuro" title="Activar modo oscuro"><span id="themeIcon" aria-hidden="true">☾</span></button></div>
+          <div class="appearance-option"><span><b>Color principal</b><small>Elige el color de los controles y acentos.</small></span><label class="theme-toggle accent-picker" title="Personalizar color principal"><span class="accent-swatch" id="accentSwatch" aria-hidden="true"></span><input id="accentColorInput" type="color" value="#6856d9" aria-label="Personalizar color principal"></label></div>
+          <div class="appearance-option"><span><b>Tamaño de letra</b><small>Amplía los textos y controles de la app.</small></span><div class="text-size-control"><button id="textSizeToggle" class="theme-toggle text-size-toggle" type="button" aria-label="Ajustar tamaño de letra" aria-expanded="false" aria-controls="textSizePanel" title="Ajustar tamaño de letra">Aa</button><div id="textSizePanel" class="text-size-panel" hidden><label for="textSizeRange"><span>Tamaño de letra</span><output id="textSizeValue" for="textSizeRange">100%</output></label><input id="textSizeRange" type="range" min="100" max="140" step="10" value="100"><small>Amplía los textos y controles de la app.</small><button id="textSizeReset" type="button">Restablecer</button></div></div></div>
+        </div>
+      </section>
+        </div>
+      </div>
     </main>
   </div>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
