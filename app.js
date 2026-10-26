@@ -1203,7 +1203,7 @@
   function modelSyncBadge(platform, credential) {
     const pageName = platform === 'chaturbate' ? 'Chaturbate' : 'Stripchat';
     if (!credential?.username) return `<small class="model-sync-badge">${pageName} · No sincronizada</small>`;
-    if (credential.lastSyncError) return `<small class="model-sync-badge is-error">${pageName} · Error</small>`;
+    if (credential.lastSyncError) return `<small class="model-sync-badge is-error" title="${escapeHtml(typeof credential.lastSyncError === 'string' ? credential.lastSyncError : 'Error de sincronización')}">${pageName} · Error</small>`;
     if (credential.lastSyncAt) return `<small class="model-sync-badge is-synced">${pageName} · Sincronizada</small>`;
     return `<small class="model-sync-badge is-pending">${pageName} · Pendiente</small>`;
   }
@@ -1260,7 +1260,7 @@
     const connectedModels = state.models.filter((model) => chaturbateCredentials[model.id]?.username);
     if (!connectedModels.length) return;
     if (!workerUrl) {
-      for (const model of connectedModels) chaturbateCredentials[model.id].lastSyncError = true;
+      for (const model of connectedModels) chaturbateCredentials[model.id].lastSyncError = 'Falta configurar la URL HTTPS del Worker terminada en /stats.';
       saveChaturbateCredentialMap(); render(); return;
     }
     chaturbateSyncActive = true;
@@ -1297,11 +1297,13 @@
         persist();
       } catch (error) {
         setLiveStatus('chaturbate', model.id, 'unknown');
-        credential.lastSyncError = true;
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        if (credential.lastSyncError !== errorMessage) errors.push(`${model.name}: ${errorMessage}`);
+        credential.lastSyncError = errorMessage;
         saveChaturbateCredentialMap();
-        errors.push(`${model.name}: ${error.message}`);
       }
     }
+    if (errors.length) flash(`Error de Chaturbate: ${errors[0]}`);
     render();
     chaturbateSyncActive = false;
   }
