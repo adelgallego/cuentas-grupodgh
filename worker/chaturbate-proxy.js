@@ -55,9 +55,12 @@ async function fetchChaturbate(credentials, origin) {
   } catch {
     return json({ error: "Could not reach Chaturbate Stats API" }, 502, origin);
   }
+  const contentType = upstream.headers.get("content-type") || "unknown content type";
+  let responseText;
+  try { responseText = await upstream.text(); } catch { return json({ error: `Could not read Chaturbate response (HTTP ${upstream.status})` }, 502, origin); }
+  if (!upstream.ok) return json({ error: `Chaturbate Stats API returned HTTP ${upstream.status} (${contentType})` }, 502, origin);
   let data;
-  try { data = await upstream.json(); } catch { return json({ error: "Chaturbate returned an unreadable response" }, 502, origin); }
-  if (!upstream.ok) return json({ error: `Chaturbate Stats API returned HTTP ${upstream.status}` }, 502, origin);
+  try { data = JSON.parse(responseText); } catch { return json({ error: `Chaturbate returned a non-JSON response (HTTP ${upstream.status}; ${contentType})` }, 502, origin); }
   const balance = Number(data?.token_balance);
   if (!Number.isFinite(balance) || balance < 0) return json({ error: String(data?.error || "The API response did not contain a valid token_balance") }, 502, origin);
   const timeOnline = Number(data?.time_online);
