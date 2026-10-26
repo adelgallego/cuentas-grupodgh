@@ -279,14 +279,14 @@
     return monday.toISOString().slice(0, 10);
   };
   const entryWeekKey = (entry) => {
-    if (entry.platform === 'stripchat' && entry.stripchatWeekKey) return `sc:${entry.stripchatWeekKey}`;
+    if (entry.platform === 'stripchat' && (entry.stripchatWeekKey || entry.reportWeekKey)) return `sc:${entry.stripchatWeekKey || entry.reportWeekKey}`;
     if (entry.platform === 'stripchat' && entry.source === 'stripchat-studio-api' && entry.createdAt) return `sc:${stripchatWeekKey(new Date(entry.createdAt))}`;
     return weekKey(entry.date);
   };
   const reportWeekKeyForDate = (date, instant, platform = 'chaturbate') => platform === 'stripchat'
     ? stripchatWeekKey(instant || new Date(`${date}T12:00:00`))
     : weekKey(date);
-  const reportWeekKey = (entry) => entry.reportWeekKey || (entry.source === 'stripchat-studio-api' && entry.createdAt
+  const reportWeekKey = (entry) => entry.reportWeekKey || (entry.platform === 'stripchat' && entry.createdAt
     ? stripchatWeekKey(new Date(entry.createdAt))
     : reportWeekKeyForDate(entry.date, undefined, entry.platform));
   const currentReportWeekKey = (platform) => platform === 'stripchat' ? stripchatWeekKey() : weekKey(todayISO());
