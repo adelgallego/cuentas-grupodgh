@@ -19,7 +19,7 @@
   let appLanguage = 'es';
   try { appLanguage = localStorage.getItem('grupodgh-language') === 'en' ? 'en' : 'es'; } catch { /* Keep Spanish when browser storage is unavailable. */ }
   const translationPairs = [
-    ['GRUPODGH — ingresos por tokens', 'GRUPODGH — token income'], ['GRUPODGH, inicio', 'GRUPODGH, home'], ['Navegación principal', 'Main navigation'], ['Administración', 'Administration'], ['ADMINISTRACIÓN', 'ADMINISTRATION'], ['Resumen', 'Overview'], ['Registrar ingresos', 'Record income'], ['Modelos', 'Models'],
+    ['GRUPODGH — ingresos por tokens', 'GRUPODGH — token income'], ['GRUPODGH, inicio', 'GRUPODGH, home'], ['Navegación principal', 'Main navigation'], ['Administración', 'Administration'], ['ADMINISTRACIÓN', 'ADMINISTRATION'], ['Resumen', 'Overview'], ['Registrar ingresos', 'Record income'], ['Modelos', 'Models'], ['Equipo', 'Team'], ['TU EQUIPO', 'YOUR TEAM'], ['Administra tus modelos, porcentajes y sincronizaciones.', 'Manage your models, shares, and sync connections.'], ['Modelos registradas', 'Registered models'], ['Gestiona perfiles, porcentajes y accesos sincronizados.', 'Manage profiles, shares, and synced accounts.'],
     ['Nube y sincronización', 'Cloud and sync'], ['Inicia sesión en la nube para mantener tus cambios sincronizados entre dispositivos.', 'Sign in to the cloud to keep your changes synced across devices.'], ['Administrador', 'Administrator'], ['Estado de la cuenta', 'Account status'], ['Sin conectar', 'Not connected'],
     ['Ajustar tamaño de letra', 'Adjust text size'], ['Tamaño de letra', 'Text size'], ['Amplía los textos y controles de la app.', 'Enlarge the app text and controls.'], ['Restablecer', 'Reset'], ['Personalizar color principal', 'Customize accent color'], ['Activar modo oscuro', 'Enable dark mode'], ['Desactivar modo oscuro', 'Disable dark mode'],
     ['TU NEGOCIO, EN ORDEN', 'YOUR BUSINESS, ORGANIZED'], ['Resumen de ingresos', 'Income overview'], ['Controla tokens, conversiones y repartos en un solo lugar.', 'Track tokens, conversions, and payouts in one place.'], ['Tasas de conversión', 'Conversion rates'], ['USD que recibes por cada token', 'USD received per token'], ['Información sobre la tasa BANTOKENS', 'About the BANTOKENS rate'], ['La tasa usa la TRM de Wilkinsonpc menos $50 COP por USD.', 'The rate uses Wilkinsonpc’s TRM minus COP 50 per USD.'],
@@ -790,11 +790,6 @@
     const options = state.models.map((m) => `<option value="${escapeHtml(m.id)}">${escapeHtml(m.name)}</option>`).join('');
     $('#entryModel').innerHTML = `<option value="">Selecciona un modelo</option>${options}`;
     if ([...$('#entryModel').options].some((option) => option.value === currentSelection)) $('#entryModel').value = currentSelection;
-    $('#modelList').innerHTML = state.models.map((m) => {
-      const share = `SC ${fmt(m.sharePctByPlatform.stripchat, 1)}% · -${fmt(m.copDiscountByPlatform.stripchat, 0)} COP/USD · CB ${fmt(m.sharePctByPlatform.chaturbate, 1)}% · -${fmt(m.copDiscountByPlatform.chaturbate, 0)} COP/USD`;
-      const syncBadge = `${modelSyncBadge('chaturbate', chaturbateCredentials[m.id])} ${modelSyncBadge('stripchat', stripchatModelCredentials[m.id])}`;
-      return `<div class="model-row"><span class="model-dot">${escapeHtml(m.name.trim().charAt(0).toUpperCase() || '?')}</span><span class="model-info"><b>${escapeHtml(m.name)} ${syncBadge}</b><small>${share}</small></span></div>`;
-    }).join('');
     $('#noModels').hidden = state.models.length > 0;
     $('#modelManageList').innerHTML = state.models.map((m) => {
       const locked = state.entries.some((e) => e.modelId === m.id);
@@ -1130,7 +1125,7 @@
       $('#modelFormTitle').textContent = 'Editar modelo';
       $('#modelSubmitButton').innerHTML = 'Guardar cambios <span>→</span>';
       $('#cancelModelEdit').hidden = false;
-      $('#modelos').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      $('#modelForm').scrollIntoView({ behavior: 'smooth', block: 'center' });
       $('#modelName').focus();
       return;
     }
@@ -1447,10 +1442,12 @@
   render();
   function updateAppPage() {
     const isSettings = location.hash === '#ajustes';
-    $('#dashboardView').hidden = isSettings;
+    const isTeam = ['#equipo', '#modelos'].includes(location.hash);
+    $('#dashboardView').hidden = isSettings || isTeam;
+    $('#equipoView').hidden = !isTeam;
     $('#ajustes').hidden = !isSettings;
-    const activeHref = isSettings ? '#ajustes' : ['#registro', '#modelos'].includes(location.hash) ? location.hash : '#inicio';
-    if (isSettings || activeHref === '#inicio') window.scrollTo(0, 0);
+    const activeHref = isSettings ? '#ajustes' : isTeam ? '#equipo' : location.hash === '#registro' ? '#registro' : '#inicio';
+    if (isSettings || isTeam || activeHref === '#inicio') window.scrollTo(0, 0);
     else requestAnimationFrame(() => document.querySelector(activeHref)?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
     document.querySelectorAll('.sidebar nav .nav-link').forEach((link) => {
       const active = link.getAttribute('href') === activeHref;
@@ -1458,7 +1455,7 @@
       if (active) link.setAttribute('aria-current', 'page');
       else link.removeAttribute('aria-current');
     });
-    const labels = { '#inicio': 'Resumen', '#registro': 'Registrar ingresos', '#modelos': 'Modelos', '#ajustes': 'Ajustes' };
+    const labels = { '#inicio': 'Resumen', '#registro': 'Registrar ingresos', '#equipo': 'Equipo', '#ajustes': 'Ajustes' };
     document.querySelector('.breadcrumb b').textContent = translateValue(labels[activeHref] || 'Resumen');
   }
   window.addEventListener('hashchange', updateAppPage);
