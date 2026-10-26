@@ -1,8 +1,8 @@
-name: Actualizar TRM de BANTOKENS
+name: Actualizar tasa de compra del dólar
 
 on:
   schedule:
-    - cron: '15 11 * * *'
+    - cron: '30 1 * * *'
   workflow_dispatch:
 
 permissions:
@@ -18,7 +18,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 24
-      - name: Leer TRM y descontar 50 COP
+      - name: Leer promedio “Te lo compran” de casas de cambio
         run: node .github/scripts/update-bantokens-trm.mjs
       - name: Guardar la nueva tasa
         run: |
@@ -29,5 +29,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/bantokens-trm.json
-          git commit -m "Actualizar TRM diaria de BANTOKENS"
+          git commit -m "Actualizar promedio diario de compra del dólar"
           git push
