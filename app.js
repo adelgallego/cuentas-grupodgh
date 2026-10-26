@@ -724,8 +724,8 @@
     $('#weekSelector').value = selectedWeek;
   }
   const liveStatuses = new Map();
-  function setLiveStatus(platform, modelId, state) {
-    liveStatuses.set(`${platform}:${modelId}`, { state, checkedAt: Date.now() });
+  function setLiveStatus(platform, modelId, state, detail = '') {
+    liveStatuses.set(`${platform}:${modelId}`, { state, detail, checkedAt: Date.now() });
   }
   function renderWeeklyPayouts() {
     const payoutWeek = selectedWeek === 'current' ? weekKey(todayISO()) : selectedWeek;
@@ -750,10 +750,12 @@
       const platform = row.platform === 'stripchat' ? 'Stripchat' : row.platform === 'chaturbate' ? 'Chaturbate' : 'Anterior';
       const provider = row.provider === 'bantokens' ? 'BANTOKENS' : row.provider === 'twl' ? 'TWL' : row.provider === 'usdt' ? 'USDT' : 'Anterior';
       const feeLabel = entryOwnerFeeLabel(row.provider, row.platform, row.modelId, row.modelName);
-      const liveState = liveStatuses.get(`${row.platform}:${row.modelId}`)?.state || 'unknown';
+      const liveStatus = liveStatuses.get(`${row.platform}:${row.modelId}`);
+      const liveState = liveStatus?.state || 'unknown';
       const liveClass = liveState === 'online' ? 'is-online' : liveState === 'offline' ? 'is-offline' : 'is-unknown';
       const liveLabel = liveState === 'online' ? (appLanguage === 'en' ? 'Live now' : 'En línea ahora') : liveState === 'offline' ? (appLanguage === 'en' ? 'Offline' : 'Fuera de línea') : (appLanguage === 'en' ? 'Status unavailable' : 'Estado no disponible');
-      const connectionIndicator = `<span class="connection-indicator ${liveClass}" role="img" aria-label="${liveLabel}" title="${liveLabel}"></span>`;
+      const liveTitle = liveStatus?.detail ? `${liveLabel} · ${liveStatus.detail}` : liveLabel;
+      const connectionIndicator = `<span class="connection-indicator ${liveClass}" role="img" aria-label="${escapeHtml(liveTitle)}" title="${escapeHtml(liveTitle)}"></span>`;
       return `<tr><td data-label="Modelo"><span class="model-cell"><span class="model-dot">${escapeHtml(row.modelName.trim().charAt(0).toUpperCase() || '?')}</span>${escapeHtml(row.modelName)}${connectionIndicator}</span></td><td data-label="Página">${platform}</td><td data-label="Monetizadora">${provider}</td><td class="token-cell" data-label="Tokens en la semana">${fmt(row.tokens, 0)}</td><td class="amount-cell" data-label="Modelo · USD">${usd(row.modelUsd)}</td><td class="share-cell" data-label="Modelo · COP">${row.hasCopRate ? cop(row.modelCop) : 'Configura la tasa COP/USD'}</td><td class="fee-cell" data-label="Retención monetizadora">${row.ownerFeeUsd > 0 ? `${usd(row.ownerFeeUsd)}<small>${row.hasCopRate ? cop(row.ownerFeeCop) : 'Configura tasa COP/USD'}</small><small>${feeLabel}</small>` : '—'}</td><td class="amount-cell" data-label="Tu neto · USD">${usd(row.ownerUsd)}</td><td class="owner-cell" data-label="Tu neto · COP">${row.hasCopRate ? cop(row.ownerCop) : 'Configura la tasa COP/USD'}</td></tr>`;
     }).join('');
     const totalTokens = rows.reduce((sum, row) => sum + row.tokens, 0);
@@ -1396,7 +1398,8 @@
     let result;
     try { result = await response.json(); } catch { throw new Error('Stripchat devolvió una respuesta ilegible.'); }
     if (!response.ok) throw new Error(result.error || `HTTP ${response.status}`);
-    return typeof result.is_online === 'boolean' ? result.is_online : null;
+    if (typeof result.is_online !== 'boolean') throw new Error('Stripchat no devolvió un estado en línea válido.');
+    return result.is_online;
   }
   function stripchatStatusWorkerUrl() {
     const configuredUrl = cloudWorkerUrls.stripchat || cloudWorkerUrls.chaturbate || '';
@@ -1411,7 +1414,7 @@
   async function syncStripchatLiveStatuses() {
     if (stripchatLiveStatusActive || !state.models.length) return;
     const workerUrl = stripchatStatusWorkerUrl();
-    if (!workerUrl) { state.models.forEach((model) => setLiveStatus('stripchat', model.id, 'unknown')); render(); return; }
+    if (!workerUrl) { state.models.forEach((model) => setLiveStatus('stripchat', model.id, 'unknown', 'Falta configurar el Worker de Stripchat.')); render(); return; }
     stripchatLiveStatusActive = true;
     try {
       await Promise.all(state.models.map(async (model) => {
@@ -1419,7 +1422,7 @@
         try {
           const isOnline = await fetchStripchatLiveStatus(workerUrl, username);
           setLiveStatus('stripchat', model.id, isOnline === null ? 'unknown' : isOnline ? 'online' : 'offline');
-        } catch { setLiveStatus('stripchat', model.id, 'unknown'); }
+        } catch (error) { setLiveStatus('stripchat', model.id, 'unknown', error instanceof Error ? error.message : String(error)); }
       }));
     } finally { stripchatLiveStatusActive = false; render(); }
   }
