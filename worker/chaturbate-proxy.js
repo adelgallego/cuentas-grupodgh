@@ -22,7 +22,7 @@ export default {
     const url = new URL(request.url);
     const origin = request.headers.get("Origin") || "";
     if (!allowedOrigins.has(origin)) return new Response("Forbidden origin", { status: 403 });
-    if (!["/stats", "/stripchat/stats"].includes(url.pathname)) return json({ error: "Not found" }, 404, origin);
+    if (!["/stats", "/stripchat/stats", "/stripchat/status"].includes(url.pathname)) return json({ error: "Not found" }, 404, origin);
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: corsHeaders(origin) });
     if (request.method !== "POST") return json({ error: "Use POST" }, 405, origin);
 
@@ -35,6 +35,7 @@ export default {
     }
 
     if (url.pathname === "/stats") return fetchChaturbate(credentials, origin);
+    if (url.pathname === "/stripchat/status") return fetchStripchatLiveStatus(credentials, origin);
     return fetchStripchat(credentials, origin);
   },
 };
@@ -59,7 +60,31 @@ async function fetchChaturbate(credentials, origin) {
   if (!upstream.ok) return json({ error: `Chaturbate Stats API returned HTTP ${upstream.status}` }, 502, origin);
   const balance = Number(data?.token_balance);
   if (!Number.isFinite(balance) || balance < 0) return json({ error: String(data?.error || "The API response did not contain a valid token_balance") }, 502, origin);
-  return json({ token_balance: balance, fetched_at: new Date().toISOString() }, 200, origin);
+  const timeOnline = Number(data?.time_online);
+  return json({ token_balance: balance, time_online: Number.isFinite(timeOnline) ? timeOnline : null, num_viewers: Number.isFinite(Number(data?.num_viewers)) ? Number(data.num_viewers) : null, last_broadcast: data?.last_broadcast ?? null, fetched_at: new Date().toISOString() }, 200, origin);
+}
+
+async function fetchStripchatLiveStatus(credentials, origin) {
+  const username = String(credentials?.username || "").trim();
+  if (!/^[a-zA-Z0-9_]{1,80}$/.test(username)) return json({ error: "Enter a valid Stripchat username" }, 400, origin);
+  const apiUrl = new URL("https://stripchat.com/api/front/v4/models/search/suggestion");
+  apiUrl.searchParams.set("query", username);
+  apiUrl.searchParams.set("limit", "10");
+  apiUrl.searchParams.set("primaryTag", "girls");
+  apiUrl.searchParams.set("uniq", String(Date.now()));
+  let upstream;
+  try {
+    upstream = await fetch(apiUrl, { headers: { Accept: "application/json", Referer: "https://stripchat.com/" }, cache: "no-store" });
+  } catch {
+    return json({ error: "Could not reach Stripchat live status API" }, 502, origin);
+  }
+  let data;
+  try { data = await upstream.json(); } catch { return json({ error: "Stripchat status API returned an unreadable response" }, 502, origin); }
+  if (!upstream.ok) return json({ error: `Stripchat status API returned HTTP ${upstream.status}` }, 502, origin);
+  const model = Array.isArray(data?.models) ? data.models.find((item) => String(item?.username || "").toLowerCase() === username.toLowerCase()) : null;
+  if (!model) return json({ error: "Stripchat model was not found in public search" }, 404, origin);
+  if (typeof model.isOnline !== "boolean") return json({ error: "Stripchat did not return a valid live status" }, 502, origin);
+  return json({ is_online: model.isOnline, fetched_at: new Date().toISOString() }, 200, origin);
 }
 
 async function fetchStripchat(credentials, origin) {
