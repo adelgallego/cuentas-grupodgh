@@ -238,6 +238,16 @@
   const fmt = (v, digits = 2) => new Intl.NumberFormat(locale(), { maximumFractionDigits: digits }).format(number(v));
   const usd = (v) => '$' + fmt(v, 2);
   const cop = (v) => '$' + fmt(v, 0) + ' COP';
+  const updateDollarIndicator = (rate) => {
+    const indicator = $('#dollarIndicator');
+    const value = $('#dollarIndicatorValue');
+    if (!indicator || !value) return;
+    const copPerUsd = number(rate);
+    value.textContent = copPerUsd > 0 ? fmt(copPerUsd, 2) : '—';
+    indicator.title = appLanguage === 'en'
+      ? 'Exchange-house average purchase rate per US dollar'
+      : 'Promedio de compra de casas de cambio por cada dólar estadounidense';
+  };
   let lastWilkinsonFetchedAt = '';
   const syncWilkinsonBuyRate = async () => {
     const note = $('#bantokensRateNote');
@@ -248,6 +258,7 @@
       const rate = await response.json();
       const buyRate = Number(rate.purchaseRateCopPerUsd);
       if (!Number.isFinite(buyRate) || buyRate < 1000 || buyRate > 10000) throw new Error('La tasa de compra recibida no es válida.');
+      updateDollarIndicator(buyRate);
       const dateText = rate.validDate ? ` · ${rate.validDate}` : '';
       note.textContent = appLanguage === 'en'
         ? `Exchange-house buy average: COP ${fmt(buyRate, 2)} per USD${dateText}.`
@@ -264,6 +275,7 @@
     } catch {
       const savedRate = ['bantokens', 'twl', 'usdt'].map((provider) => number(state.rates.copPerUsdByProvider[provider])).find((value) => value > 0) || 0;
       if (savedRate) $('#copPerUsdMarketBuy').value = savedRate;
+      updateDollarIndicator(savedRate);
       note.textContent = savedRate
         ? (appLanguage === 'en' ? 'Using the last saved exchange-house buy rate; it could not be refreshed.' : 'Usando la última tasa de compra guardada; no se pudo actualizar.')
         : (appLanguage === 'en' ? 'Wilkinsonpc exchange-house buy rate will sync in the web version.' : 'La tasa “te lo compran” de Wilkinsonpc se sincroniza en la versión web.');
@@ -985,6 +997,7 @@
   $('#rateStripchat').value = state.rates.usdPerToken.stripchat;
   $('#rateChaturbate').value = state.rates.usdPerToken.chaturbate;
   $('#copPerUsdMarketBuy').value = ['bantokens', 'twl', 'usdt'].map((provider) => number(state.rates.copPerUsdByProvider[provider])).find((value) => value > 0) || '';
+  updateDollarIndicator(state.rates.copPerUsdByProvider.bantokens || state.rates.copPerUsdByProvider.twl || state.rates.copPerUsdByProvider.usdt);
   for (const [id, platform] of [['rateStripchat', 'stripchat'], ['rateChaturbate', 'chaturbate']]) {
     $(`#${id}`).addEventListener('change', (event) => {
       const value = event.target.value;
