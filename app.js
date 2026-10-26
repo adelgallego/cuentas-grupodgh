@@ -47,6 +47,7 @@
   };
   translationPairs.push(['Almacenamiento en la nube', 'Cloud storage'], ['Configura Supabase para sincronizar tus datos entre dispositivos.', 'Set up Supabase to sync your data across devices.'], ['Configurar Supabase en este dispositivo', 'Configure Supabase on this device'], ['URL del proyecto', 'Project URL'], ['Publishable key', 'Publishable key'], ['Correo electrónico', 'Email address'], ['Contraseña', 'Password'], ['Iniciar sesión', 'Sign in'], ['Crear cuenta', 'Create account'], ['Cerrar sesión', 'Sign out'], ['Continuar con GitHub', 'Continue with GitHub'], ['GitHub debe habilitarse como proveedor en Supabase antes de usar esta opción.', 'GitHub must be enabled as a provider in Supabase before using this option.'], ['Recargar desde la nube', 'Reload from cloud'], ['Subir datos de este dispositivo', 'Upload this device’s data'], ['Preparando conexión a la nube…', 'Connecting to cloud…'], ['Sesión iniciada como ', 'Signed in as '], [' · Sincronizado ', ' · Synced '], ['No se pudo conectar con la nube: ', 'Could not connect to cloud: '], ['Cuenta creada. Revisa tu correo para confirmar y luego inicia sesión.', 'Account created. Check your email to confirm, then sign in.'], ['Sesión cerrada. Los datos de este dispositivo siguen disponibles.', 'Signed out. This device’s data remains available.'], ['Hay cambios más recientes en la nube. Recarga la nube o sube explícitamente los datos de este dispositivo.', 'There are newer cloud changes. Reload from cloud or explicitly upload this device’s data.'], ['No se encontró una configuración para la nube. Primero conecta Supabase.', 'Cloud is not configured. Connect Supabase first.'], ['La sesión expiró. Inicia sesión nuevamente.', 'Your session expired. Please sign in again.'], ['Sin conectar', 'Not connected'], ['Ingresa tu correo y contraseña.', 'Enter your email and password.'], ['La cuenta debe confirmarse por correo antes de iniciar sesión.', 'Confirm your account by email before signing in.'], ['Inicia sesión con GitHub desde la versión web publicada por HTTPS.', 'Sign in with GitHub from the published HTTPS app.'], ['La redirección de GitHub no incluyó un código de autorización.', 'The GitHub redirect did not include an authorization code.'], ['Esa cuenta de GRUPODGH aún no existe. Pulsa Crear cuenta o usa Continuar con GitHub.', 'That GRUPODGH account does not exist yet. Click Create account or use Continue with GitHub.']);
   translationPairs.push(['● Pendiente de nube', '● Cloud pending'], ['● Nube sincronizada', '● Cloud synced'], ['● Conflicto nube', '● Cloud conflict'], ['● Error en nube', '● Cloud error']);
+  translationPairs.push(['La semana nueva se muestra el lunes a las 00:00 hora local', 'The new week is shown at 12:00 a.m. local time on Monday']);
   const translations = {
     en: compileTranslations(translationPairs),
     es: compileTranslations(translationPairs.map(([spanish, english]) => [english, spanish])),
@@ -290,7 +291,7 @@
   const currentReportWeekKey = (platform) => platform === 'stripchat' ? stripchatWeekKey() : weekKey(todayISO());
   let selectedWeek = 'current';
   const entryMatchesSelectedWeek = (entry) => selectedWeek === 'current'
-    ? reportWeekKey(entry) === currentReportWeekKey(entry.platform)
+    ? reportWeekKey(entry) === weekKey(todayISO())
     : reportWeekKey(entry) === selectedWeek;
   const weekRangeLabel = (key) => {
     const monday = new Date(`${key}T00:00:00Z`);
@@ -694,17 +695,16 @@
     $('#ownerFeeSummary').textContent = `Descuentos (TWL 10% / USDT Stripchat 1% / BANTOKENS $5,94 semanal descontado de la parte de cada modelo): ${usd(ownerFeeUsd)} · ${feeCopText}`;
   }
   function renderWeekOptions() {
-    const currentWeek = stripchatWeekKey();
-    const currentLocalWeek = weekKey(todayISO());
-    const weeks = new Set([currentWeek, currentLocalWeek, ...state.entries.map(reportWeekKey), 'current']);
+    const currentWeek = weekKey(todayISO());
+    const weeks = new Set([currentWeek, ...state.entries.map(reportWeekKey).filter((week) => week <= currentWeek), 'current']);
     if (!weeks.has(selectedWeek)) selectedWeek = 'current';
     const options = ['current', ...[...weeks].filter((week) => week !== 'current').sort((a, b) => b.localeCompare(a))];
     $('#weekSelector').innerHTML = options.map((week) => `<option value="${week}">${week === 'current' ? 'Semana actual' : escapeHtml(weekRangeLabel(week))}</option>`).join('');
     $('#weekSelector').value = selectedWeek;
   }
   function renderWeeklyPayouts() {
-    const payoutWeek = selectedWeek === 'current' ? stripchatWeekKey() : selectedWeek;
-    $('#weeklyDateRange').textContent = `Stripchat: lunes 00:00 UTC · Chaturbate: lunes 00:00 hora local · ${weekRangeLabel(payoutWeek)} · TWL retiene 10% del total y luego se calcula tu restante.`;
+    const payoutWeek = selectedWeek === 'current' ? weekKey(todayISO()) : selectedWeek;
+    $('#weeklyDateRange').textContent = `Stripchat: lunes 00:00 UTC · Chaturbate: lunes 00:00 hora local · ${weekRangeLabel(payoutWeek)} · La semana nueva se muestra el lunes a las 00:00 hora local · TWL retiene 10% del total y luego se calcula tu restante.`;
     const totals = new Map();
     state.entries.filter(entryMatchesSelectedWeek).forEach((entry) => {
       const key = JSON.stringify([entry.modelId, entry.platform, entry.provider]);
@@ -739,8 +739,10 @@
   }
   function renderWeeklyHistory() {
     const totals = new Map();
+    const visibleThroughWeek = weekKey(todayISO());
     state.entries.forEach((entry) => {
       const key = reportWeekKey(entry);
+      if (key > visibleThroughWeek) return;
       if (!totals.has(key)) totals.set(key, { week: key, tokens: 0, totalUsd: 0, modelUsd: 0, modelCop: 0, ownerUsd: 0, ownerCop: 0, hasCopRate: true });
       const week = totals.get(key);
       week.tokens += entryTokens(entry);
