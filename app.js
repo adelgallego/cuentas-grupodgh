@@ -278,11 +278,9 @@
     monday.setUTCDate(monday.getUTCDate() - ((monday.getUTCDay() + 6) % 7));
     return monday.toISOString().slice(0, 10);
   };
-  const entryWeekKey = (entry) => {
-    if (entry.platform === 'stripchat' && (entry.stripchatWeekKey || entry.reportWeekKey)) return `sc:${entry.stripchatWeekKey || entry.reportWeekKey}`;
-    if (entry.platform === 'stripchat' && entry.source === 'stripchat-studio-api' && entry.createdAt) return `sc:${stripchatWeekKey(new Date(entry.createdAt))}`;
-    return weekKey(entry.date);
-  };
+  const entryWeekKey = (entry) => entry.platform === 'stripchat'
+    ? `sc:${entry.stripchatWeekKey || entry.reportWeekKey || reportWeekKey(entry)}`
+    : weekKey(entry.date);
   const reportWeekKeyForDate = (date, instant, platform = 'chaturbate') => platform === 'stripchat'
     ? stripchatWeekKey(instant || new Date(`${date}T12:00:00`))
     : weekKey(date);
