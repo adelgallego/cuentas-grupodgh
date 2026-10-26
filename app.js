@@ -310,7 +310,7 @@
     const snapshots = state.entries
       .filter((entry) => entry.id !== excludeId && entry.weeklyTokens !== undefined && entry.weeklyTokens !== null && entry.modelId === modelId && entry.platform === platform && (entry.date < date || (entry.date === date && currentReading && number(entry.createdAt) < number(currentReading.createdAt))) && entryWeekKey(entry) === targetWeek)
       .sort((a, b) => b.date.localeCompare(a.date) || (b.createdAt || 0) - (a.createdAt || 0));
-    if (snapshots.length) return snapshots[0];
+    if (snapshots.length) return snapshots.reduce((highest, reading) => !highest || number(reading.weeklyTokens) > number(highest.weeklyTokens) ? reading : highest, undefined);
     const earlierDailyLogs = state.entries.filter((entry) => entry.id !== excludeId && (entry.weeklyTokens === undefined || entry.weeklyTokens === null) && entry.modelId === modelId && entry.platform === platform && entry.date <= date && entryWeekKey(entry) === targetWeek);
     if (!earlierDailyLogs.length) return undefined;
     return { weeklyTokens: earlierDailyLogs.reduce((sum, entry) => sum + number(entry.tokens), 0), date: earlierDailyLogs.map((entry) => entry.date).sort().at(-1), legacy: true };
