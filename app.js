@@ -511,7 +511,7 @@
     $('#saveIndicator').textContent = '● Nube sincronizada';
     render();
     if (appLanguage === 'en') translatePage();
-    if (['http:', 'https:'].includes(window.location.protocol)) setTimeout(() => { syncChaturbateAccounts(); syncStripchatModels(); }, 250);
+    if (['http:', 'https:'].includes(window.location.protocol)) setTimeout(() => { syncChaturbateAccounts(); syncStripchatModels(); syncStripchatLiveStatuses(); }, 250);
   }
   async function cloudRead() {
     return cloudRequest(`user_app_state?select=data,revision&user_id=eq.${encodeURIComponent(cloudSession.user.id)}&limit=1`, { method: 'GET' });
@@ -723,6 +723,10 @@
     $('#weekSelector').innerHTML = options.map((week) => `<option value="${week}">${week === 'current' ? 'Semana actual' : escapeHtml(weekRangeLabel(week))}</option>`).join('');
     $('#weekSelector').value = selectedWeek;
   }
+  const liveStatuses = new Map();
+  function setLiveStatus(platform, modelId, state) {
+    liveStatuses.set(`${platform}:${modelId}`, { state, checkedAt: Date.now() });
+  }
   function renderWeeklyPayouts() {
     const payoutWeek = selectedWeek === 'current' ? weekKey(todayISO()) : selectedWeek;
     $('#weeklyDateRange').textContent = `Stripchat: lunes 00:00 UTC · Chaturbate: lunes 00:00 hora local · ${weekRangeLabel(payoutWeek)} · La semana nueva se muestra el lunes a las 00:00 hora local · TWL retiene 10% del total y luego se calcula tu restante.`;
@@ -746,10 +750,10 @@
       const platform = row.platform === 'stripchat' ? 'Stripchat' : row.platform === 'chaturbate' ? 'Chaturbate' : 'Anterior';
       const provider = row.provider === 'bantokens' ? 'BANTOKENS' : row.provider === 'twl' ? 'TWL' : row.provider === 'usdt' ? 'USDT' : 'Anterior';
       const feeLabel = entryOwnerFeeLabel(row.provider, row.platform, row.modelId, row.modelName);
-      const credentials = row.platform === 'chaturbate' ? chaturbateCredentials[row.modelId] : row.platform === 'stripchat' ? stripchatModelCredentials[row.modelId] : null;
-      const isConnected = Boolean(credentials?.username && credentials?.lastSyncAt && !credentials?.lastSyncError);
-      const connectionLabel = isConnected ? (appLanguage === 'en' ? 'Connected' : 'Conectada') : (appLanguage === 'en' ? 'Not connected' : 'No conectada');
-      const connectionIndicator = `<span class="connection-indicator ${isConnected ? 'is-connected' : 'is-disconnected'}" role="img" aria-label="${connectionLabel}" title="${connectionLabel}"></span>`;
+      const liveState = liveStatuses.get(`${row.platform}:${row.modelId}`)?.state || 'unknown';
+      const liveClass = liveState === 'online' ? 'is-online' : liveState === 'offline' ? 'is-offline' : 'is-unknown';
+      const liveLabel = liveState === 'online' ? (appLanguage === 'en' ? 'Live now' : 'En línea ahora') : liveState === 'offline' ? (appLanguage === 'en' ? 'Offline' : 'Fuera de línea') : (appLanguage === 'en' ? 'Status unavailable' : 'Estado no disponible');
+      const connectionIndicator = `<span class="connection-indicator ${liveClass}" role="img" aria-label="${liveLabel}" title="${liveLabel}"></span>`;
       return `<tr><td data-label="Modelo"><span class="model-cell"><span class="model-dot">${escapeHtml(row.modelName.trim().charAt(0).toUpperCase() || '?')}</span>${escapeHtml(row.modelName)}${connectionIndicator}</span></td><td data-label="Página">${platform}</td><td data-label="Monetizadora">${provider}</td><td class="token-cell" data-label="Tokens en la semana">${fmt(row.tokens, 0)}</td><td class="amount-cell" data-label="Modelo · USD">${usd(row.modelUsd)}</td><td class="share-cell" data-label="Modelo · COP">${row.hasCopRate ? cop(row.modelCop) : 'Configura la tasa COP/USD'}</td><td class="fee-cell" data-label="Retención monetizadora">${row.ownerFeeUsd > 0 ? `${usd(row.ownerFeeUsd)}<small>${row.hasCopRate ? cop(row.ownerFeeCop) : 'Configura tasa COP/USD'}</small><small>${feeLabel}</small>` : '—'}</td><td class="amount-cell" data-label="Tu neto · USD">${usd(row.ownerUsd)}</td><td class="owner-cell" data-label="Tu neto · COP">${row.hasCopRate ? cop(row.ownerCop) : 'Configura la tasa COP/USD'}</td></tr>`;
     }).join('');
     const totalTokens = rows.reduce((sum, row) => sum + row.tokens, 0);
@@ -1247,7 +1251,8 @@
     if (!response.ok) throw new Error(result.error || `HTTP ${response.status}`);
     const balance = Number(result.token_balance);
     if (!Number.isFinite(balance) || balance < 0) throw new Error('La API no devolvió token_balance válido.');
-    return balance;
+    const timeOnline = result.time_online === null || result.time_online === undefined ? null : Number(result.time_online);
+    return { balance, timeOnline: Number.isFinite(timeOnline) ? timeOnline : null };
   }
   async function syncChaturbateAccounts() {
     if (chaturbateSyncActive) return;
@@ -1266,8 +1271,9 @@
       const credential = chaturbateCredentials[model.id];
       const provider = credential.provider || 'bantokens';
       try {
+        const { balance, timeOnline } = await fetchChaturbateBalance(workerUrl, credential);
+        setLiveStatus('chaturbate', model.id, timeOnline === null ? 'unknown' : timeOnline >= 0 ? 'online' : 'offline');
         if (!ratesReady('chaturbate', provider)) throw new Error(`Faltan las tasas USD/token o COP/USD para ${model.name}.`);
-        const balance = await fetchChaturbateBalance(workerUrl, credential);
         const reading = state.entries.find((entry) => entry.modelId === model.id && entry.platform === 'chaturbate' && entry.date === date && reportWeekKey(entry) === reportWeek && entry.weeklyTokens !== undefined && entry.weeklyTokens !== null);
         if (reading) {
           reading.weeklyTokens = balance;
@@ -1290,6 +1296,7 @@
         saveChaturbateCredentialMap();
         persist();
       } catch (error) {
+        setLiveStatus('chaturbate', model.id, 'unknown');
         credential.lastSyncError = true;
         saveChaturbateCredentialMap();
         errors.push(`${model.name}: ${error.message}`);
@@ -1379,6 +1386,41 @@
     if (!Number.isFinite(balance) || balance < 0) throw new Error('La API no devolvió totalEarnings válido.');
     return balance;
   }
+  async function fetchStripchatLiveStatus(workerUrl, username) {
+    const response = await fetch(workerUrl, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username }), cache: 'no-store',
+    });
+    let result;
+    try { result = await response.json(); } catch { throw new Error('Stripchat devolvió una respuesta ilegible.'); }
+    if (!response.ok) throw new Error(result.error || `HTTP ${response.status}`);
+    return typeof result.is_online === 'boolean' ? result.is_online : null;
+  }
+  function stripchatStatusWorkerUrl() {
+    const configuredUrl = cloudWorkerUrls.stripchat || cloudWorkerUrls.chaturbate || '';
+    try {
+      const url = new URL(configuredUrl);
+      if (url.protocol !== 'https:') return '';
+      url.pathname = '/stripchat/status'; url.search = ''; url.hash = '';
+      return url.href;
+    } catch { return ''; }
+  }
+  let stripchatLiveStatusActive = false;
+  async function syncStripchatLiveStatuses() {
+    if (stripchatLiveStatusActive || !state.models.length) return;
+    const workerUrl = stripchatStatusWorkerUrl();
+    if (!workerUrl) { state.models.forEach((model) => setLiveStatus('stripchat', model.id, 'unknown')); render(); return; }
+    stripchatLiveStatusActive = true;
+    try {
+      await Promise.all(state.models.map(async (model) => {
+        const username = stripchatModelCredentials[model.id]?.username || model.name;
+        try {
+          const isOnline = await fetchStripchatLiveStatus(workerUrl, username);
+          setLiveStatus('stripchat', model.id, isOnline === null ? 'unknown' : isOnline ? 'online' : 'offline');
+        } catch { setLiveStatus('stripchat', model.id, 'unknown'); }
+      }));
+    } finally { stripchatLiveStatusActive = false; render(); }
+  }
   function stripchatApiDate(date) {
     const pad = (value) => String(value).padStart(2, '0');
     return `${date.getUTCFullYear()}-${pad(date.getUTCMonth() + 1)}-${pad(date.getUTCDate())} ${pad(date.getUTCHours())}:${pad(date.getUTCMinutes())}:${pad(date.getUTCSeconds())}`;
@@ -1447,8 +1489,11 @@
     setInterval(() => { if (!document.hidden) syncChaturbateAccounts(); }, 5 * 60 * 1000);
     document.addEventListener('visibilitychange', () => { if (!document.hidden) syncChaturbateAccounts(); });
     syncStripchatModels();
+    syncStripchatLiveStatuses();
     setInterval(() => { if (!document.hidden) syncStripchatModels(); }, 5 * 60 * 1000);
     document.addEventListener('visibilitychange', () => { if (!document.hidden) syncStripchatModels(); });
+    setInterval(() => { if (!document.hidden) syncStripchatLiveStatuses(); }, 5 * 60 * 1000);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) syncStripchatLiveStatuses(); });
   }
   let observedReportWeek = `${stripchatWeekKey()}|${weekKey(todayISO())}`;
   setInterval(() => {
