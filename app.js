@@ -993,7 +993,9 @@
       persist(); render();
     });
   }
-  syncWilkinsonBuyRate();\n  if (['http:', 'https:'].includes(window.location.protocol)) setInterval(syncWilkinsonBuyRate, 30 * 60 * 1000);\n  $('#period').addEventListener('change', renderEntries);
+  syncWilkinsonBuyRate();
+  if (['http:', 'https:'].includes(window.location.protocol)) setInterval(syncWilkinsonBuyRate, 30 * 60 * 1000);
+  $('#period').addEventListener('change', renderEntries);
   $('#platformFilter').addEventListener('change', renderEntries);
   $('#providerFilter').addEventListener('change', renderEntries);
   $('#modelFilter').addEventListener('change', renderEntries);
