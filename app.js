@@ -826,7 +826,13 @@
       const locked = state.entries.some((e) => e.modelId === m.id);
       const share = `SC ${fmt(m.sharePctByPlatform.stripchat, 1)}% · -${fmt(m.copDiscountByPlatform.stripchat, 0)} COP/USD · CB ${fmt(m.sharePctByPlatform.chaturbate, 1)}% · -${fmt(m.copDiscountByPlatform.chaturbate, 0)} COP/USD`;
       const syncBadge = `${modelSyncBadge('chaturbate', chaturbateCredentials[m.id])} ${modelSyncBadge('stripchat', stripchatModelCredentials[m.id])}`;
-      return `<div class="manage-row"><span class="manage-name">${escapeHtml(m.name)} ${syncBadge}<small style="color:#8b94a3">· ${share}</small> ${locked ? '<small title="Tiene ingresos registrados" style="color:#99a1ae">· con movimientos</small>' : ''}</span><button class="edit-model" data-edit-model="${escapeHtml(m.id)}" title="Editar modelo">Editar</button><button class="remove-model" data-remove-model="${escapeHtml(m.id)}" ${locked ? 'disabled title="No se puede eliminar porque tiene ingresos registrados"' : 'title="Eliminar modelo"'} aria-label="Eliminar modelo">×</button></div>`;
+      const liveStatus = liveStatuses.get(`stripchat:${m.id}`);
+      const liveState = liveStatus?.state || 'unknown';
+      const liveClass = liveState === 'online' ? 'is-online' : liveState === 'offline' ? 'is-offline' : 'is-unknown';
+      const liveLabel = liveState === 'online' ? (appLanguage === 'en' ? 'Live now' : 'En línea') : liveState === 'offline' ? (appLanguage === 'en' ? 'Offline' : 'Fuera de línea') : (appLanguage === 'en' ? 'Status unavailable' : 'Estado no disponible');
+      const liveTitle = liveStatus?.detail ? `${liveLabel} · ${liveStatus.detail}` : liveLabel;
+      const liveBadge = `<small class="model-live-badge" title="${escapeHtml(liveTitle)}"><span class="connection-indicator ${liveClass}" role="img" aria-label="${escapeHtml(liveTitle)}"></span>Stripchat · ${escapeHtml(liveLabel)}</small>`;
+      return `<div class="manage-row"><span class="manage-name">${escapeHtml(m.name)} ${syncBadge} ${liveBadge}<small style="color:#8b94a3">· ${share}</small> ${locked ? '<small title="Tiene ingresos registrados" style="color:#99a1ae">· con movimientos</small>' : ''}</span><button class="edit-model" data-edit-model="${escapeHtml(m.id)}" title="Editar modelo">Editar</button><button class="remove-model" data-remove-model="${escapeHtml(m.id)}" ${locked ? 'disabled title="No se puede eliminar porque tiene ingresos registrados"' : 'title="Eliminar modelo"'} aria-label="Eliminar modelo">×</button></div>`;
     }).join('');
   }
   function renderPreview() {
