@@ -1,8 +1,7 @@
 {
   "source": "https://dolar.wilkinsonpc.com.co/",
-  "trmRate": 3158.43,
-  "deductionCop": 50,
-  "bantokensRate": 3108.43,
-  "validDate": "domingo 25 de octubre de 2026",
-  "fetchedAt": "2026-10-25T14:57:45.181Z"
+  "sourceLabel": "Wilkinsonpc · Casas de Cambio · Te lo compran",
+  "purchaseRateCopPerUsd": 3101.67,
+  "validDate": "25 de octubre de 2026",
+  "fetchedAt": "2026-10-26T05:13:04.000Z"
 }
