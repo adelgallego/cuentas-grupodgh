@@ -729,7 +729,7 @@
     const totals = new Map();
     state.entries.filter(entryMatchesSelectedWeek).forEach((entry) => {
       const key = JSON.stringify([entry.modelId, entry.platform, entry.provider]);
-      if (!totals.has(key)) totals.set(key, { modelName: entry.modelName || modelById(entry.modelId)?.name || 'Modelo eliminada', platform: entry.platform, provider: entry.provider, tokens: 0, modelUsd: 0, modelCop: 0, ownerFeeUsd: 0, ownerFeeCop: 0, ownerUsd: 0, ownerCop: 0, hasCopRate: true });
+      if (!totals.has(key)) totals.set(key, { modelId: entry.modelId, modelName: entry.modelName || modelById(entry.modelId)?.name || 'Modelo eliminada', platform: entry.platform, provider: entry.provider, tokens: 0, modelUsd: 0, modelCop: 0, ownerFeeUsd: 0, ownerFeeCop: 0, ownerUsd: 0, ownerCop: 0, hasCopRate: true });
       const total = totals.get(key);
       total.tokens += entryTokens(entry);
       total.modelUsd += entryModelUsd(entry);
@@ -746,7 +746,11 @@
       const platform = row.platform === 'stripchat' ? 'Stripchat' : row.platform === 'chaturbate' ? 'Chaturbate' : 'Anterior';
       const provider = row.provider === 'bantokens' ? 'BANTOKENS' : row.provider === 'twl' ? 'TWL' : row.provider === 'usdt' ? 'USDT' : 'Anterior';
       const feeLabel = entryOwnerFeeLabel(row.provider, row.platform, row.modelId, row.modelName);
-      return `<tr><td data-label="Modelo"><span class="model-cell"><span class="model-dot">${escapeHtml(row.modelName.trim().charAt(0).toUpperCase() || '?')}</span>${escapeHtml(row.modelName)}</span></td><td data-label="Página">${platform}</td><td data-label="Monetizadora">${provider}</td><td class="token-cell" data-label="Tokens en la semana">${fmt(row.tokens, 0)}</td><td class="amount-cell" data-label="Modelo · USD">${usd(row.modelUsd)}</td><td class="share-cell" data-label="Modelo · COP">${row.hasCopRate ? cop(row.modelCop) : 'Configura la tasa COP/USD'}</td><td class="fee-cell" data-label="Retención monetizadora">${row.ownerFeeUsd > 0 ? `${usd(row.ownerFeeUsd)}<small>${row.hasCopRate ? cop(row.ownerFeeCop) : 'Configura tasa COP/USD'}</small><small>${feeLabel}</small>` : '—'}</td><td class="amount-cell" data-label="Tu neto · USD">${usd(row.ownerUsd)}</td><td class="owner-cell" data-label="Tu neto · COP">${row.hasCopRate ? cop(row.ownerCop) : 'Configura la tasa COP/USD'}</td></tr>`;
+      const credentials = row.platform === 'chaturbate' ? chaturbateCredentials[row.modelId] : row.platform === 'stripchat' ? stripchatModelCredentials[row.modelId] : null;
+      const isConnected = Boolean(credentials?.username && credentials?.lastSyncAt && !credentials?.lastSyncError);
+      const connectionLabel = isConnected ? (appLanguage === 'en' ? 'Connected' : 'Conectada') : (appLanguage === 'en' ? 'Not connected' : 'No conectada');
+      const connectionIndicator = `<span class="connection-indicator ${isConnected ? 'is-connected' : 'is-disconnected'}" role="img" aria-label="${connectionLabel}" title="${connectionLabel}"></span>`;
+      return `<tr><td data-label="Modelo"><span class="model-cell"><span class="model-dot">${escapeHtml(row.modelName.trim().charAt(0).toUpperCase() || '?')}</span>${escapeHtml(row.modelName)}${connectionIndicator}</span></td><td data-label="Página">${platform}</td><td data-label="Monetizadora">${provider}</td><td class="token-cell" data-label="Tokens en la semana">${fmt(row.tokens, 0)}</td><td class="amount-cell" data-label="Modelo · USD">${usd(row.modelUsd)}</td><td class="share-cell" data-label="Modelo · COP">${row.hasCopRate ? cop(row.modelCop) : 'Configura la tasa COP/USD'}</td><td class="fee-cell" data-label="Retención monetizadora">${row.ownerFeeUsd > 0 ? `${usd(row.ownerFeeUsd)}<small>${row.hasCopRate ? cop(row.ownerFeeCop) : 'Configura tasa COP/USD'}</small><small>${feeLabel}</small>` : '—'}</td><td class="amount-cell" data-label="Tu neto · USD">${usd(row.ownerUsd)}</td><td class="owner-cell" data-label="Tu neto · COP">${row.hasCopRate ? cop(row.ownerCop) : 'Configura la tasa COP/USD'}</td></tr>`;
     }).join('');
     const totalTokens = rows.reduce((sum, row) => sum + row.tokens, 0);
     const totalModelUsd = rows.reduce((sum, row) => sum + row.modelUsd, 0);
