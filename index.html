@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f5f7fb">
   <title>GRUPODGH — ingresos por tokens</title>
-  <link rel="stylesheet" href="styles.css?v=settings-page-1">
+  <link rel="stylesheet" href="styles.css?v=team-page-1">
 </head>
 <body>
   <div class="shell">
@@ -17,7 +17,7 @@
       <nav aria-label="Navegación principal">
         <a class="nav-link active" href="#inicio"><span class="nav-icon">▦</span> Resumen</a>
         <a class="nav-link" href="#registro"><span class="nav-icon">＋</span> Registrar ingresos</a>
-        <a class="nav-link" href="#modelos"><span class="nav-icon">♙</span> Modelos</a>
+        <a class="nav-link" href="#equipo"><span class="nav-icon">♙</span> Equipo</a>
         <a class="nav-link" href="#ajustes"><span class="nav-icon">⚙</span> Ajustes</a>
       </nav>
       <div class="sidebar-bottom">
@@ -64,12 +64,7 @@
           <div class="panel-heading"><div><h2>Ingresos recientes</h2><p>Detalle de los registros por modelo</p></div><div class="table-filters"><label class="period-select"><span class="sr-only">Filtrar página</span><select id="platformFilter"><option value="all">Todas las páginas</option><option value="stripchat">Stripchat</option><option value="chaturbate">Chaturbate</option></select></label><label class="period-select"><span class="sr-only">Filtrar monetizadora</span><select id="providerFilter"><option value="all">Todas las monetizadoras</option><option value="bantokens">BANTOKENS</option><option value="twl">TWL</option><option value="usdt">USDT</option></select></label><label class="period-select"><span class="sr-only">Filtrar modelo</span><select id="modelFilter"><option value="all">Todas las modelos</option></select></label><label class="period-select"><span class="sr-only">Filtrar periodo</span><select id="period"><option value="selected-week">Semana seleccionada</option><option value="all">Todo el tiempo</option><option value="month">Este mes</option><option value="week">Últimos 7 días</option></select></label></div></div>
           <div class="table-wrap"><table><thead><tr><th>MODELO</th><th>PÁGINA</th><th>MONETIZADORA</th><th>FECHA</th><th>TOKENS DEL DÍA</th><th>ACUMULADO SEMANAL</th><th>VALOR USD</th><th>MODELO · USD / COP</th><th>RETENCIÓN MONETIZADORA · USD / COP</th><th>TU NETO · USD / COP</th><th></th></tr></thead><tbody id="entriesBody"></tbody></table><div class="empty-state" id="emptyState"><span class="empty-icon">↗</span><b>Aún no hay ingresos</b><p>Registra el acumulado semanal para calcular los tokens de cada día.</p><a href="#registro">Registrar ingreso <span>→</span></a></div></div>
         </article>
-        <article class="panel models-panel" id="modelesPanel">
-          <div class="panel-heading"><div><h2>Modelos</h2><p>Modelos registradas</p></div><a class="text-action" href="#modelos">Gestionar <span>→</span></a></div>
-          <div id="modelList" class="model-list"></div>
-          <div id="noModels" class="mini-empty">Agrega tus modelos para comenzar.</div>
-          <a class="add-model-link" href="#modelos"><span>＋</span> Agregar modelo</a>
-        </article>
+
       </section>
 
       <section class="lower-grid">
@@ -86,7 +81,21 @@
             <div class="entry-form-actions"><button id="entrySubmitButton" class="button primary" type="submit">Guardar ingreso <span>→</span></button><button id="cancelEntryEdit" class="button secondary" type="button" hidden>Cancelar edición</button></div>
           </form>
         </article>
-        <article class="panel form-panel" id="modelos">
+      </section>
+      <footer class="footer-note">GRUPODGH <span>·</span> Los valores son estimados según las tasas que configures.</footer>
+          </div>
+      <div id="equipoView" class="app-view team-view" hidden>
+        <section class="page-heading">
+          <div><p class="eyebrow">TU EQUIPO</p><h1>Equipo</h1><p class="subheading">Administra tus modelos, porcentajes y sincronizaciones.</p></div>
+          <a class="button primary" href="#equipo"><span>＋</span> Agregar modelo</a>
+        </section>
+        <div class="team-layout">
+          <section class="panel team-list-panel">
+            <div class="panel-heading"><div><h2>Modelos registradas</h2><p>Gestiona perfiles, porcentajes y accesos sincronizados.</p></div></div>
+            <div id="noModels" class="mini-empty">Agrega tus modelos para comenzar.</div>
+            <div class="model-manage-list" id="modelManageList"></div>
+          </section>
+                  <article class="panel form-panel" id="modelos">
           <div class="panel-heading"><div><p class="eyebrow">EQUIPO</p><h2 id="modelFormTitle">Agregar modelo</h2><p>Agrega cada modelo una vez y define su porcentaje para cada página.</p></div></div>
           <form id="modelForm" class="model-form">
             <input id="editingModelId" type="hidden" value="">
@@ -127,11 +136,9 @@
             <small class="split-note">La misma modelo estará disponible en ambas páginas. El registro usa los porcentajes y el descuento de la página elegida.</small>
             <div class="model-form-actions"><button class="button secondary" id="modelSubmitButton" type="submit"><span>＋</span> Agregar modelo</button><button class="button cancel-edit" id="cancelModelEdit" type="button" hidden>Cancelar</button></div>
           </form>
-          <div class="model-manage-list" id="modelManageList"></div>
         </article>
-      </section>
-      <footer class="footer-note">GRUPODGH <span>·</span> Los valores son estimados según las tasas que configures.</footer>
-          </div>
+        </div>
+      </div>
       <div id="ajustes" class="app-view settings-view" hidden>
         <section class="page-heading"><div><p class="eyebrow">PREFERENCIAS</p><h1>Ajustes</h1><p class="subheading">Administra tasas, almacenamiento, respaldos y apariencia de la aplicación.</p></div></section>
         <div class="settings-layout">
@@ -186,6 +193,6 @@
     </div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="app.js?v=local-week-display-1"></script>
+  <script src="app.js?v=team-page-1"></script>
 </body>
 </html>
