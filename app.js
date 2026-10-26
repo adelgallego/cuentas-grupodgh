@@ -374,6 +374,19 @@
   };
   try { cloudConfig = JSON.parse(localStorage.getItem(CLOUD_CONFIG_KEY) || '{}') || {}; } catch { cloudConfig = {}; }
   try { cloudSession = JSON.parse(localStorage.getItem(CLOUD_SESSION_KEY) || 'null'); } catch { cloudSession = null; }
+  function normalizeChaturbateReportWeeks() {
+    let changed = false;
+    for (const entry of state.entries) {
+      if (entry.platform !== 'chaturbate') continue;
+      const localWeek = weekKey(entry.date);
+      if (entry.reportWeekKey !== localWeek) {
+        entry.reportWeekKey = localWeek;
+        changed = true;
+      }
+    }
+    return changed;
+  }
+  if (normalizeChaturbateReportWeeks() && !cloudSession) localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   function cloudStatus(message, isError = false) {
     const status = $('#cloudStatus');
     if (!status) return;
@@ -454,6 +467,7 @@
   function cloudApplySnapshot(snapshot) {
     if (!snapshot?.appState || !Array.isArray(snapshot.appState.models) || !Array.isArray(snapshot.appState.entries)) throw new Error('Los datos de la nube no tienen el formato esperado.');
     state = snapshot.appState;
+    if (normalizeChaturbateReportWeeks()) cloudDirty = true;
     localStorage.removeItem(STORAGE_KEY);
     if (!cloudSession) {
       localStorage.setItem(CHATURBATE_CREDENTIALS_KEY, JSON.stringify(snapshot.chaturbateCredentials || {}));
