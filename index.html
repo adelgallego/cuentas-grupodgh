@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f5f7fb">
   <title>GRUPODGH — ingresos por tokens</title>
-  <link rel="stylesheet" href="styles.css?v=team-page-net-residual">
+  <link rel="stylesheet" href="styles.css?v=wilkinson-buy-rate-v1">
 </head>
 <body>
   <div class="shell">
@@ -150,11 +150,9 @@
         <div class="rate-field"><div class="rate-heading"><label for="rateStripchat">Stripchat · USD/token</label></div><span class="input-suffix"><input id="rateStripchat" type="number" min="0.0001" step="any" placeholder="0,05" inputmode="decimal"><i>USD</i></span></div>
         <div class="rate-field"><div class="rate-heading"><label for="rateChaturbate">Chaturbate · USD/token</label></div><span class="input-suffix"><input id="rateChaturbate" type="number" min="0.0001" step="any" placeholder="0,05" inputmode="decimal"><i>USD</i></span></div>
         <div class="rate-field">
-          <div class="rate-heading"><label for="copPerUsdBantokens">BANTOKENS · COP por USD</label><button class="info-trigger" type="button" aria-label="Información sobre la tasa BANTOKENS" aria-describedby="bantokensRateNote">i</button><span class="rate-tooltip" id="bantokensRateNote" role="tooltip">La tasa usa la TRM de Wilkinsonpc menos $50 COP por USD.</span></div>
-          <span class="input-suffix"><input id="copPerUsdBantokens" type="number" min="0.0001" step="any" placeholder="Ej. 3.147" inputmode="decimal" title="Esta tasa actualiza los ingresos BANTOKENS de la semana actual. Las semanas anteriores conservan su tasa."><i>COP</i></span>
+          <div class="rate-heading"><label for="copPerUsdMarketBuy">Compra promedio de casas de cambio · COP/USD</label><button class="info-trigger" type="button" aria-label="Información sobre la tasa de cambio" aria-describedby="bantokensRateNote">i</button><span class="rate-tooltip" id="bantokensRateNote" role="tooltip">La tasa usa el promedio “te lo compran” de las casas de cambio en Wilkinsonpc y se comparte entre todas las monetizadoras.</span></div>
+          <span class="input-suffix"><input id="copPerUsdMarketBuy" type="number" min="0.0001" step="any" placeholder="Se actualiza automáticamente" readonly title="Tasa común para todas las monetizadoras. La semana actual usa la nueva tasa; las semanas anteriores conservan la tasa registrada."><i>COP</i></span>
         </div>
-        <div class="rate-field"><div class="rate-heading"><label for="copPerUsdTwl">TWL · COP por USD</label></div><span class="input-suffix"><input id="copPerUsdTwl" type="number" min="0.0001" step="any" placeholder="Ej. 3.147" inputmode="decimal" title="Esta tasa actualiza los ingresos TWL de la semana actual. Las semanas anteriores conservan su tasa."><i>COP</i></span></div>
-        <div class="rate-field"><div class="rate-heading"><label for="copPerUsdUsdt">USDT · COP por USDT</label></div><span class="input-suffix"><input id="copPerUsdUsdt" type="number" min="0.0001" step="any" placeholder="Ej. 3.147" inputmode="decimal" title="Esta tasa actualiza los ingresos USDT de la semana actual. Las semanas anteriores conservan su tasa."><i>COP</i></span></div>
         <span class="saved-indicator" id="saveIndicator">● Guardado</span>
       </section>
 <section class="cloud-panel" aria-label="Almacenamiento en la nube">
@@ -196,6 +194,6 @@
     </div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="app.js?v=team-page-net-residual"></script>
+  <script src="app.js?v=wilkinson-buy-rate-v1"></script>
 </body>
 </html>
