@@ -140,4 +140,4 @@ body{zoom:var(--app-zoom,1)}
 @media(max-width:900px){.team-layout{grid-template-columns:minmax(0,1fr)}}
 
 .dollar-indicator{display:inline-flex;align-items:center;gap:6px;padding:5px 8px;border:1px solid var(--line);border-radius:7px;background:var(--panel);color:var(--muted);font-size:9px;white-space:nowrap}.dollar-indicator-label{font-weight:700;letter-spacing:.25px}.dollar-indicator strong{color:var(--ink);font-size:10px;font-variant-numeric:tabular-nums}@media(max-width:390px){.dollar-indicator{gap:4px;padding:4px 6px}.dollar-indicator-label{font-size:7px}.dollar-indicator strong{font-size:8px}.today{display:none}}
-.connection-indicator{width:8px;height:8px;flex:none;border-radius:50%;box-shadow:0 0 0 2px var(--panel)}.connection-indicator.is-connected{background:#25a56a}.connection-indicator.is-disconnected{background:#e34d59}
+.connection-indicator{width:8px;height:8px;flex:none;border-radius:50%;box-shadow:0 0 0 2px var(--panel)}.connection-indicator.is-online{background:#25a56a}.connection-indicator.is-offline{background:#e34d59}.connection-indicator.is-unknown{background:#9aa3b2}
