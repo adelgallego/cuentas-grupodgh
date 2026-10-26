@@ -984,7 +984,8 @@
   $('#entryDate').value = todayISO();
   $('#rateStripchat').value = state.rates.usdPerToken.stripchat;
   $('#rateChaturbate').value = state.rates.usdPerToken.chaturbate;
-  $('#copPerUsdMarketBuy').value = ['bantokens', 'twl', 'usdt'].map((provider) => number(state.rates.copPerUsdByProvider[provider])).find((value) => value > 0) || '';\n  for (const [id, platform] of [['rateStripchat', 'stripchat'], ['rateChaturbate', 'chaturbate']]) {
+  $('#copPerUsdMarketBuy').value = ['bantokens', 'twl', 'usdt'].map((provider) => number(state.rates.copPerUsdByProvider[provider])).find((value) => value > 0) || '';
+  for (const [id, platform] of [['rateStripchat', 'stripchat'], ['rateChaturbate', 'chaturbate']]) {
     $(`#${id}`).addEventListener('change', (event) => {
       const value = event.target.value;
       if (value && number(value) <= 0) { event.target.value = ''; return; }
