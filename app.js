@@ -308,7 +308,7 @@
   const previousWeeklyReading = (modelId, platform, date, excludeId = '', targetWeek = weekKey(date)) => {
     const currentReading = excludeId ? state.entries.find((entry) => entry.id === excludeId) : undefined;
     const snapshots = state.entries
-      .filter((entry) => entry.id !== excludeId && entry.weeklyTokens !== undefined && entry.weeklyTokens !== null && entry.modelId === modelId && entry.platform === platform && (entry.date < date || (entry.date === date && currentReading && number(entry.createdAt) > number(currentReading.createdAt))) && entryWeekKey(entry) === targetWeek)
+      .filter((entry) => entry.id !== excludeId && entry.weeklyTokens !== undefined && entry.weeklyTokens !== null && entry.modelId === modelId && entry.platform === platform && (entry.date < date || (entry.date === date && currentReading && number(entry.createdAt) < number(currentReading.createdAt))) && entryWeekKey(entry) === targetWeek)
       .sort((a, b) => b.date.localeCompare(a.date) || (b.createdAt || 0) - (a.createdAt || 0));
     if (snapshots.length) return snapshots[0];
     const earlierDailyLogs = state.entries.filter((entry) => entry.id !== excludeId && (entry.weeklyTokens === undefined || entry.weeklyTokens === null) && entry.modelId === modelId && entry.platform === platform && entry.date <= date && entryWeekKey(entry) === targetWeek);
