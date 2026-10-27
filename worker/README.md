@@ -6,7 +6,7 @@ This Worker keeps the API requests out of the GitHub Pages browser app and enabl
 
 - `POST /stats`: forwards username and API Auth Token to the official Chaturbate Stats API and returns `token_balance`, `time_online`, `num_viewers`, and `last_broadcast`.
 - `POST /stripchat/stats`: forwards a Studio API key in the `API-Key` header to the official Stripchat Studio Stats API and returns `totalEarnings` as `token_balance`.
-- `POST /stripchat/status`: checks the public Stripchat model search API and returns the model’s current `is_online` status; it does not require Studio access.
+- `POST /stripchat/status`: resolves the model ID through Stripchat’s public user lookup API, then reads its public camera status and returns `is_online`; it does not require Studio access.
 
 ## Deploy / update
 
