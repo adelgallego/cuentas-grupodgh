@@ -41,6 +41,25 @@ Deno.serve(async (request) => {
   }
 
   const username = String(credentials?.username || "").trim();
+  if (credentials?.action === "status") {
+    const username = String(credentials?.username || "").trim();
+    if (!/^[a-zA-Z0-9_]{1,30}$/.test(username)) return json({ error: "Enter a valid Chaturbate username" }, 400, origin);
+    let upstream;
+    try {
+      upstream = await fetch(`https://chaturbate.com/api/chatvideocontext/${encodeURIComponent(username)}/`, {
+        headers: { Accept: "application/json", Referer: `https://chaturbate.com/${encodeURIComponent(username)}/`, "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124.0 Safari/537.36" },
+        redirect: "follow",
+      });
+    } catch { return json({ error: "Could not reach Chaturbate live status API" }, 502, origin); }
+    let statusData;
+    try { statusData = await upstream.json(); }
+    catch { return json({ error: `Chaturbate live status returned a non-JSON response (HTTP ${upstream.status})` }, 502, origin); }
+    if (!upstream.ok) return json({ error: `Chaturbate live status returned HTTP ${upstream.status}` }, 502, origin);
+    const roomStatus = String(statusData?.room_status || "").toLowerCase();
+    if (!roomStatus) return json({ error: "Chaturbate response did not contain room_status" }, 502, origin);
+    return json({ is_online: roomStatus !== "offline", room_status: roomStatus, fetched_at: new Date().toISOString() }, 200, origin);
+  }
+
   const token = String(credentials?.token || "").trim();
   if (!/^[a-zA-Z0-9_]{1,30}$/.test(username) || !/^[a-zA-Z0-9]{24}$/.test(token)) {
     return json({ error: "Enter a valid Chaturbate username and 24-character API Auth Token" }, 400, origin);
