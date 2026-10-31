@@ -235,6 +235,47 @@
         const link = event.target.closest(".sidebar nav .nav-link");
         if (link) setTimeout(showAppRoute, 0);
       });
+      document.addEventListener("click", async (event) => {
+        const button = event.target.closest("#cloudSignInGithub");
+        if (!button) return;
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        const status = document.getElementById("cloudStatus");
+        const showStatus = (message, isError = false) => {
+          if (!status) return;
+          status.textContent = message;
+          status.dataset.state = isError ? "error" : "ok";
+        };
+        try {
+          const projectUrl = String(document.getElementById("cloudProjectUrl")?.value || "").trim().replace(/\/$/, "");
+          const publicKey = String(document.getElementById("cloudPublicKey")?.value || "").trim();
+          if (!/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(projectUrl) || !publicKey) {
+            throw new Error("Completa el URL del proyecto y la Publishable key.");
+          }
+          if (window.location.protocol !== "https:") {
+            throw new Error("Inicia sesión con GitHub desde la versión publicada por HTTPS.");
+          }
+          localStorage.setItem("grupodgh-cloud-config-v1", JSON.stringify({ projectUrl, publicKey }));
+          if (!window.supabase?.createClient) {
+            throw new Error("No cargó el cliente de Supabase. Recarga la página e inténtalo de nuevo.");
+          }
+          showStatus("Conectando con GitHub…");
+          const client = window.supabase.createClient(projectUrl, publicKey, {
+            auth: { storageKey: "grupodgh-cloud-session-v1", persistSession: true, autoRefreshToken: false, detectSessionInUrl: true, flowType: "pkce" },
+          });
+          const redirectTo = window.location.origin + window.location.pathname;
+          const { data, error } = await client.auth.signInWithOAuth({
+            provider: "github",
+            options: { redirectTo, skipBrowserRedirect: true },
+          });
+          if (error) throw error;
+          if (!data?.url) throw new Error("Supabase no devolvió la dirección para iniciar sesión.");
+          showStatus("Abriendo GitHub…");
+          window.location.assign(data.url);
+        } catch (error) {
+          showStatus("No se pudo iniciar sesión: " + (error.message || "Error desconocido"), true);
+        }
+      }, true);
       showAppRoute();
     })();
   </script>
