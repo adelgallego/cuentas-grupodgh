@@ -85,49 +85,21 @@ async function fetchChaturbate(credentials, origin) {
 
 async function fetchStripchatLiveStatus(credentials, origin) {
   const username = String(credentials?.username || "").trim();
-  if (!/^[a-zA-Z0-9_]{1,80}$/.test(username)) return json({ error: "Enter a valid Stripchat username" }, 400, origin);
-
-  const headers = {
-    Accept: "application/json",
-    Referer: `https://stripchat.com/${encodeURIComponent(username)}`,
-    "X-Requested-With": "XMLHttpRequest",
-  };
-  let idResponse;
+  if (!/^[a-zA-Z0-9_.-]{1,80}$/.test(username)) return json({ error: "Enter a valid Stripchat username" }, 400, origin);
+  const apiUrl = `https://stripchat.com/api/front/v2/models/username/${encodeURIComponent(username)}/cam`;
+  let upstream;
   try {
-    const idUrl = `https://stripchat.com/api/front/users/user-ids/${encodeURIComponent(username)}`;
-    idResponse = await fetch(idUrl, { headers, cache: "no-store" });
-  } catch {
-    return json({ error: "Could not reach Stripchat user lookup API" }, 502, origin);
-  }
-  let idData;
-  try { idData = await idResponse.json(); } catch {
-    return json({ error: `Stripchat user lookup returned a non-JSON response (HTTP ${idResponse.status}; ${idResponse.headers.get("content-type") || "unknown content type"})` }, 502, origin);
-  }
-  if (!idResponse.ok) return json({ error: `Stripchat user lookup returned HTTP ${idResponse.status}` }, 502, origin);
-  const modelId = idData?.id ?? idData?.item?.id ?? idData?.user?.id;
-  if (modelId === undefined || modelId === null || !/^\\d+$/.test(String(modelId))) {
-    return json({ error: "Stripchat user lookup did not return a valid model ID" }, 502, origin);
-  }
-
-  let statusResponse;
-  try {
-    const statusUrl = `https://stripchat.com/api/front/v2/models/${encodeURIComponent(String(modelId))}/cam`;
-    statusResponse = await fetch(statusUrl, { headers, cache: "no-store" });
-  } catch {
-    return json({ error: "Could not reach Stripchat live status API" }, 502, origin);
-  }
+    upstream = await fetch(apiUrl, { headers: { Accept: "application/json", Referer: `https://stripchat.com/${encodeURIComponent(username)}`, "X-Requested-With": "XMLHttpRequest", "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124.0 Safari/537.36" }, redirect: "follow" });
+  } catch { return json({ error: "Could not reach Stripchat live status API" }, 502, origin); }
   let data;
-  try { data = await statusResponse.json(); } catch {
-    return json({ error: `Stripchat live status returned a non-JSON response (HTTP ${statusResponse.status}; ${statusResponse.headers.get("content-type") || "unknown content type"})` }, 502, origin);
-  }
-  if (!statusResponse.ok) return json({ error: `Stripchat live status returned HTTP ${statusResponse.status}` }, 502, origin);
-
+  try { data = await upstream.json(); }
+  catch { return json({ error: `Stripchat live status returned a non-JSON response (HTTP ${upstream.status}; ${upstream.headers.get("content-type") || "unknown content type"})` }, 502, origin); }
+  if (!upstream.ok) return json({ error: `Stripchat live status returned HTTP ${upstream.status}` }, 502, origin);
   const user = data?.user?.user || data?.user || {};
   const cam = data?.cam || {};
-  const statusFlags = [user.isLive, cam.isCamActive, cam.isCamAvailable].filter((value) => typeof value === "boolean");
-  if (!statusFlags.length) return json({ error: "Stripchat response did not contain a recognizable live status" }, 502, origin);
-  const isOnline = statusFlags.some(Boolean);
-  return json({ is_online: isOnline, fetched_at: new Date().toISOString() }, 200, origin);
+  const flags = [user.isLive, cam.isCamActive, cam.isCamAvailable].filter((value) => typeof value === "boolean");
+  if (!flags.length) return json({ error: "Stripchat response did not contain a recognizable live status" }, 502, origin);
+  return json({ is_online: flags.some(Boolean), fetched_at: new Date().toISOString() }, 200, origin);
 }
 
 async function fetchStripchat(credentials, origin) {
