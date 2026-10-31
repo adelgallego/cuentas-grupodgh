@@ -589,6 +589,12 @@
         cloudStatus(`Sesión iniciada como ${cloudSession.user.email || 'usuario'} · Sincronizado ${new Date().toLocaleTimeString(locale(), { hour: 'numeric', minute: '2-digit' })}`);
       } else {
         cloudUpdatedAt = null;
+        const hasLocalData = state.models.length > 0 || state.entries.length > 0 || state.bankReceipts.length > 0;
+        if (!hasLocalData) {
+          cloudDirty = false;
+          cloudStatus(`No se encontraron datos en la nube para ${cloudSession.user.email || 'esta cuenta'}. No se subió ni guardó un estado vacío. Inicia sesión con la cuenta que usabas antes.`, true);
+          return;
+        }
         cloudDirty = true;
         shouldSeed = true;
       }
@@ -651,12 +657,18 @@
       const { data, error } = await cloudAuthClient().auth.getSession();
       if (error) throw error;
       if (data.session) { cloudSession = data.session; cloudSaveSession(); }
-      if (!cloudSession?.access_token) { cloudSession = null; cloudSetButtons(false); clearCloudAuthCallbackParams(); return; }
+      if (!cloudSession?.access_token) {
+        cloudSession = null;
+        cloudSetButtons(false);
+        clearCloudAuthCallbackParams();
+        cloudStatus('No se completó el inicio de sesión con GitHub. Revisa el proveedor GitHub y las URL de redirección de Supabase.', true);
+        return;
+      }
       clearCloudAuthCallbackParams();
       await cloudLoadOrSeed();
     } catch (error) {
       clearCloudAuthCallbackParams();
-      cloudStatus(`No se pudo conectar con la nube: ${error.message}`, true);
+      cloudStatus(`No se pudo iniciar sesión o leer la nube: ${error.message || 'Error desconocido'}`, true);
       if (!cloudSession?.access_token) cloudSetButtons(false);
     }
   }
