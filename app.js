@@ -39,6 +39,7 @@
   translationPairs.push(['Semana actual', 'Current week'], ['Lunes 00:00 UTC – domingo 23:59 UTC', 'Monday 00:00 UTC – Sunday 23:59 UTC'], ['Escribe el acumulado que muestra la página. La app resta la lectura anterior de esta página.', 'Enter the total shown on the platform. The app subtracts the previous reading for this platform.']);
   translationPairs.push(['Stripchat: lunes 00:00 UTC · Chaturbate: lunes 00:00 hora local', 'Stripchat: Monday 00:00 UTC · Chaturbate: Monday 00:00 local time']);
   translationPairs.push(['Ingresos recibidos en el banco', 'Income received by bank'], ['Registra el dinero que recibiste exactamente. Estos depósitos se agrupan por mes y no modifican los cálculos de tokens.', 'Record the exact money you received. Deposits are grouped by month and do not change token calculations.'], ['Fecha de recepción', 'Date received'], ['Banco / concepto', 'Bank / description'], ['Ej. Bancolombia · pago de octubre', 'e.g. Bancolombia · October payout'], ['Moneda', 'Currency'], ['Monto recibido', 'Amount received'], ['Registrar depósito', 'Record deposit'], ['MES', 'MONTH'], ['DEPÓSITOS', 'DEPOSITS'], ['RECIBIDO · COP', 'RECEIVED · COP'], ['RECIBIDO · USD', 'RECEIVED · USD'], ['Aún no hay depósitos registrados', 'No deposits recorded yet'], ['Al registrar un ingreso bancario, aparecerá aquí en el mes correspondiente.', 'Bank deposits will appear here under their month.'], ['FECHA', 'DATE'], ['Registra el primer depósito', 'Record your first deposit'], ['Guarda cada pago bancario con el monto exacto que recibiste.', 'Save each bank payment with the exact amount you received.'], ['TOTAL REGISTRADO', 'TOTAL RECORDED'], ['Eliminar depósito', 'Delete deposit'], ['Revisa la fecha, el concepto, la moneda y el monto del depósito.', 'Check the date, description, currency, and deposit amount.'], ['Depósito bancario registrado.', 'Bank deposit recorded.'], ['¿Eliminar este depósito bancario?', 'Delete this bank deposit?'], ['Depósito bancario eliminado.', 'Bank deposit deleted.']);
+  translationPairs.push(['URL de respaldo del Worker', 'Fallback Worker URL'], ['Con sesión iniciada, la app consulta la función de Supabase. Sin sesión, utiliza el Worker.', 'When signed in, the app uses the Supabase function. When signed out, it uses the Worker.']);
   const compileTranslations = (pairs) => {
     const values = new Map(pairs);
     const alternatives = [...values.keys()]
@@ -1118,7 +1119,7 @@
       token: $('#modelChaturbateApiToken').value.trim() || oldChaturbateConfig.token || '',
       provider: $('#modelChaturbateProvider').value,
     } : null;
-    const chaturbateUrl = chaturbateWorkerUrl($('#modelChaturbateWorkerUrl').value || cloudWorkerUrls.chaturbate || '');
+    const chaturbateUrl = chaturbateWorkerUrl($('#modelChaturbateWorkerUrl').value || cloudWorkerUrls.chaturbate || '') || supabaseChaturbateFunctionUrl();
     if (chaturbateEnabled && (!chaturbateConfig.username || !chaturbateConfig.token || !chaturbateUrl)) { flash('Completa la URL del Worker, el usuario y el API Auth Token de Chaturbate.'); return; }
     const stripchatEnabled = $('#modelStripchatSync').checked;
     const oldStripchatConfig = stripchatModelCredentials[editingId] || {};
@@ -1274,6 +1275,13 @@
   function chaturbateWorkerUrl(value = cloudWorkerUrls.chaturbate || '') {
     try { const url = new URL(value.trim()); return url.protocol === 'https:' && url.pathname.replace(/\/$/, '') === '/stats' ? url.href : ''; } catch { return ''; }
   }
+  function supabaseChaturbateFunctionUrl() {
+    if (!cloudSession?.access_token || !cloudConfig.projectUrl || !cloudConfig.publicKey) return '';
+    return String(cloudConfig.projectUrl).replace(/\/$/, '') + '/functions/v1/chaturbate-proxy';
+  }
+  function chaturbateProxyUrl(value = cloudWorkerUrls.chaturbate || '') {
+    return supabaseChaturbateFunctionUrl() || chaturbateWorkerUrl(value);
+  }
   function loadModelChaturbateForm(modelId) {
     const credential = chaturbateCredentials[modelId] || {};
     $('#modelChaturbateSync').checked = Boolean(credential.username);
@@ -1299,24 +1307,37 @@
   });
   loadModelChaturbateForm('');
   let chaturbateSyncActive = false;
-  async function fetchChaturbateBalance(workerUrl, credential) {
+  async function fetchChaturbateBalance(workerUrl, credential, retryAuth = true) {
+    const supabaseProxy = new URL(workerUrl).pathname.replace(/\/$/, '') === '/functions/v1/chaturbate-proxy';
+    const headers = { 'Content-Type': 'application/json' };
+    if (supabaseProxy) {
+      const config = cloudConfiguration();
+      if (!cloudSession?.access_token) throw new Error('Inicia sesión en Supabase para usar el proxy de Chaturbate.');
+      headers.apikey = config.publicKey;
+      headers.Authorization = 'Bearer ' + cloudSession.access_token;
+    }
     const response = await fetch(workerUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: 'POST', headers,
       body: JSON.stringify({ username: credential.username, token: credential.token }),
       cache: 'no-store',
     });
+    if (supabaseProxy && response.status === 401 && retryAuth && cloudSession?.refresh_token) {
+      cloudSession = await cloudAuth('token?grant_type=refresh_token', { refresh_token: cloudSession.refresh_token });
+      cloudSaveSession();
+      return fetchChaturbateBalance(workerUrl, credential, false);
+    }
     let result;
     try { result = await response.json(); } catch { throw new Error('La API no devolvió token_balance válido.'); }
-    if (!response.ok) throw new Error(result.error || `HTTP ${response.status}`);
+    if (!response.ok) throw new Error(result.error || 'HTTP ' + response.status);
     const balance = Number(result.token_balance);
     if (!Number.isFinite(balance) || balance < 0) throw new Error('La API no devolvió token_balance válido.');
     const timeOnline = result.time_online === null || result.time_online === undefined ? null : Number(result.time_online);
     return { balance, timeOnline: Number.isFinite(timeOnline) ? timeOnline : null };
   }
+
   async function syncChaturbateAccounts() {
     if (chaturbateSyncActive) return;
-    const workerUrl = chaturbateWorkerUrl();
+    const workerUrl = chaturbateProxyUrl();
     const connectedModels = state.models.filter((model) => chaturbateCredentials[model.id]?.username);
     if (!connectedModels.length) return;
     if (!workerUrl) {
