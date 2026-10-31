@@ -515,7 +515,7 @@
     $('#saveIndicator').textContent = '● Nube sincronizada';
     render();
     if (appLanguage === 'en') translatePage();
-    if (['http:', 'https:'].includes(window.location.protocol)) setTimeout(() => { syncChaturbateAccounts(); syncStripchatModels(); syncChaturbateLiveStatuses(); syncStripchatLiveStatuses(); }, 250);
+    if (['http:', 'https:'].includes(window.location.protocol)) setTimeout(() => { syncChaturbateAccounts(); syncStripchatModels(); syncStripchatLiveStatuses(); }, 250);
   }
   async function cloudRead() {
     return cloudRequest(`user_app_state?select=data,revision&user_id=eq.${encodeURIComponent(cloudSession.user.id)}&limit=1`, { method: 'GET' });
@@ -1626,8 +1626,7 @@
   if (['http:', 'https:'].includes(window.location.protocol)) {
     syncChaturbateAccounts();
     setInterval(() => { if (!document.hidden) syncChaturbateAccounts(); }, 5 * 60 * 1000);
-    syncChaturbateLiveStatuses();
-    setInterval(() => { if (!document.hidden) syncChaturbateLiveStatuses(); }, 5 * 60 * 1000);
+    setInterval(() => { if (!document.hidden) }, 5 * 60 * 1000);
     document.addEventListener('visibilitychange', () => { if (!document.hidden) syncChaturbateAccounts(); });
     syncStripchatModels();
     syncStripchatLiveStatuses();
