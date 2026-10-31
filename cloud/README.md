@@ -27,13 +27,3 @@ La primera sesión en el dispositivo que ya tiene tus datos crea la fila inicial
 Con sesión iniciada, modelos, ingresos, tasas y credenciales se guardan en Supabase; después de sincronizar, la app elimina sus copias persistentes del navegador. La configuración pública del proyecto y el token de sesión sí permanecen en cada navegador para identificar la cuenta. Sin iniciar sesión, la app conserva su modo local habitual. Las credenciales de las plataformas se guardan dentro de la fila privada de la cuenta para que su sincronización automática funcione en otros dispositivos.
 
 **Antes de conectar:** configura un proyecto propio. La configuración pública no debe incluir una secret key; el aislamiento depende de ejecutar `schema.sql` tal cual y mantener RLS habilitado.
-
-## Proxy de Chaturbate para la nube
-
-Si el Worker de Cloudflare recibe HTTP 403 de Chaturbate, GRUPODGH puede usar la Edge Function de Supabase. La función requiere una sesión válida de Supabase (JWT); deja activa la verificación JWT predeterminada. No guarda ni registra el token de Chaturbate.
-
-1. En el Dashboard de Supabase abre **Edge Functions → Deploy a new function → Via Editor** y crea la función **chaturbate-proxy**.
-2. Copia el código de [supabase/functions/chaturbate-proxy/index.ts](../supabase/functions/chaturbate-proxy/index.ts) en el editor y pulsa **Deploy function**.
-3. Cuando la función esté desplegada, inicia sesión en la nube desde GRUPODGH y sincroniza una modelo. La app usa la función automáticamente con sesión iniciada; sin sesión conserva el Worker como alternativa.
-
-Supabase documenta que las funciones validan JWT de forma predeterminada y que las llamadas del cliente autenticado usan el JWT del usuario en Authorization y la publishable key en apikey.
