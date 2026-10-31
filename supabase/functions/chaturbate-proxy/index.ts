@@ -42,6 +42,26 @@ Deno.serve(async (request) => {
 
   const username = String(credentials?.username || "").trim();
   if (credentials?.action === "status") {
+    if (credentials?.platform === "stripchat") {
+      const username = String(credentials?.username || "").trim();
+      if (!/^[a-zA-Z0-9_.-]{1,80}$/.test(username)) return json({ error: "Enter a valid Stripchat username" }, 400, origin);
+      let upstream;
+      try {
+        upstream = await fetch(`https://stripchat.com/api/front/v2/models/username/${encodeURIComponent(username)}/cam`, {
+          headers: { Accept: "application/json", Referer: `https://stripchat.com/${encodeURIComponent(username)}`, "X-Requested-With": "XMLHttpRequest", "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124.0 Safari/537.36" },
+          redirect: "follow",
+        });
+      } catch { return json({ error: "Could not reach Stripchat live status API" }, 502, origin); }
+      let statusData;
+      try { statusData = await upstream.json(); }
+      catch { return json({ error: `Stripchat live status returned a non-JSON response (HTTP ${upstream.status}; ${upstream.headers.get("content-type") || "unknown content type"})` }, 502, origin); }
+      if (!upstream.ok) return json({ error: `Stripchat live status returned HTTP ${upstream.status}` }, 502, origin);
+      const user = statusData?.user?.user || statusData?.user || {};
+      const cam = statusData?.cam || {};
+      const flags = [user.isLive, cam.isCamActive, cam.isCamAvailable].filter((value) => typeof value === "boolean");
+      if (!flags.length) return json({ error: "Stripchat response did not contain a recognizable live status" }, 502, origin);
+      return json({ is_online: flags.some(Boolean), fetched_at: new Date().toISOString() }, 200, origin);
+    }
     const username = String(credentials?.username || "").trim();
     if (!/^[a-zA-Z0-9_]{1,30}$/.test(username)) return json({ error: "Enter a valid Chaturbate username" }, 400, origin);
     let upstream;
