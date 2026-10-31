@@ -628,10 +628,19 @@
     try {
       cloudConfiguration();
       if (window.location.protocol !== 'https:') throw new Error('Inicia sesión con GitHub desde la versión web publicada por HTTPS.');
+      cloudStatus('Conectando con GitHub…');
       const redirectTo = `${window.location.origin}${window.location.pathname}`;
-      const { error } = await cloudAuthClient().auth.signInWithOAuth({ provider: 'github', options: { redirectTo } });
+      const { data, error } = await cloudAuthClient().auth.signInWithOAuth({
+        provider: 'github',
+        options: { redirectTo, skipBrowserRedirect: true },
+      });
       if (error) throw error;
-    } catch (error) { cloudStatus(`No se pudo conectar con la nube: ${error.message}`, true); }
+      if (!data?.url) throw new Error('Supabase no devolvió la dirección para iniciar sesión con GitHub.');
+      cloudStatus('Abriendo GitHub para iniciar sesión…');
+      window.location.assign(data.url);
+    } catch (error) {
+      cloudStatus(`No se pudo conectar con la nube: ${error.message || 'Error desconocido'}`, true);
+    }
   }
   async function cloudInitializeSession() {
     if (!cloudConfig.projectUrl || !cloudConfig.publicKey) { cloudSession = null; cloudSetButtons(false); return; }
