@@ -208,5 +208,35 @@
   </div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="app.js?v=cb-time-online-v1"></script>
+  <script>
+    (() => {
+      function showAppRoute() {
+        const route = window.location.hash.split("?")[0] || "#inicio";
+        const isSettings = route === "#ajustes";
+        const isTeam = route === "#equipo" || route === "#modelos";
+        const dashboard = document.getElementById("dashboardView");
+        const team = document.getElementById("equipoView");
+        const settings = document.getElementById("ajustes");
+        if (!dashboard || !team || !settings) return;
+        dashboard.hidden = isSettings || isTeam;
+        team.hidden = !isTeam;
+        settings.hidden = !isSettings;
+        const activeRoute = isSettings ? "#ajustes" : isTeam ? "#equipo" : route === "#registro" ? "#registro" : "#inicio";
+        document.querySelectorAll(".sidebar nav .nav-link").forEach((link) => {
+          const active = link.getAttribute("href") === activeRoute;
+          link.classList.toggle("active", active);
+          if (active) link.setAttribute("aria-current", "page");
+          else link.removeAttribute("aria-current");
+        });
+        if (isSettings || isTeam || activeRoute === "#inicio") window.scrollTo(0, 0);
+      }
+      window.addEventListener("hashchange", showAppRoute);
+      document.addEventListener("click", (event) => {
+        const link = event.target.closest(".sidebar nav .nav-link");
+        if (link) setTimeout(showAppRoute, 0);
+      });
+      showAppRoute();
+    })();
+  </script>
 </body>
 </html>
