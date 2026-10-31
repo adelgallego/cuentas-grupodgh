@@ -49,6 +49,7 @@
   translationPairs.push(['Almacenamiento en la nube', 'Cloud storage'], ['Configura Supabase para sincronizar tus datos entre dispositivos.', 'Set up Supabase to sync your data across devices.'], ['Configurar Supabase en este dispositivo', 'Configure Supabase on this device'], ['URL del proyecto', 'Project URL'], ['Publishable key', 'Publishable key'], ['Correo electrónico', 'Email address'], ['Contraseña', 'Password'], ['Iniciar sesión', 'Sign in'], ['Crear cuenta', 'Create account'], ['Cerrar sesión', 'Sign out'], ['Continuar con GitHub', 'Continue with GitHub'], ['GitHub debe habilitarse como proveedor en Supabase antes de usar esta opción.', 'GitHub must be enabled as a provider in Supabase before using this option.'], ['Recargar desde la nube', 'Reload from cloud'], ['Subir datos de este dispositivo', 'Upload this device’s data'], ['Preparando conexión a la nube…', 'Connecting to cloud…'], ['Sesión iniciada como ', 'Signed in as '], [' · Sincronizado ', ' · Synced '], ['No se pudo conectar con la nube: ', 'Could not connect to cloud: '], ['Cuenta creada. Revisa tu correo para confirmar y luego inicia sesión.', 'Account created. Check your email to confirm, then sign in.'], ['Sesión cerrada. Los datos de este dispositivo siguen disponibles.', 'Signed out. This device’s data remains available.'], ['Hay cambios más recientes en la nube. Recarga la nube o sube explícitamente los datos de este dispositivo.', 'There are newer cloud changes. Reload from cloud or explicitly upload this device’s data.'], ['No se encontró una configuración para la nube. Primero conecta Supabase.', 'Cloud is not configured. Connect Supabase first.'], ['La sesión expiró. Inicia sesión nuevamente.', 'Your session expired. Please sign in again.'], ['Sin conectar', 'Not connected'], ['Ingresa tu correo y contraseña.', 'Enter your email and password.'], ['La cuenta debe confirmarse por correo antes de iniciar sesión.', 'Confirm your account by email before signing in.'], ['Inicia sesión con GitHub desde la versión web publicada por HTTPS.', 'Sign in with GitHub from the published HTTPS app.'], ['La redirección de GitHub no incluyó un código de autorización.', 'The GitHub redirect did not include an authorization code.'], ['Esa cuenta de GRUPODGH aún no existe. Pulsa Crear cuenta o usa Continuar con GitHub.', 'That GRUPODGH account does not exist yet. Click Create account or use Continue with GitHub.']);
   translationPairs.push(['● Pendiente de nube', '● Cloud pending'], ['● Nube sincronizada', '● Cloud synced'], ['● Conflicto nube', '● Cloud conflict'], ['● Error en nube', '● Cloud error']);
   translationPairs.push(['La semana nueva se muestra el lunes a las 00:00 hora local', 'The new week is shown at 12:00 a.m. local time on Monday']);
+  translationPairs.push(['Ingresos bancarios', 'Bank deposits']);
   const translations = {
     en: compileTranslations(translationPairs),
     es: compileTranslations(translationPairs.map(([spanish, english]) => [english, spanish])),
@@ -1569,12 +1570,14 @@
   render();
   function updateAppPage() {
     const isSettings = location.hash === '#ajustes';
+    const isBank = location.hash === '#banco';
     const isTeam = ['#equipo', '#modelos'].includes(location.hash);
-    $('#dashboardView').hidden = isSettings || isTeam;
+    $('#dashboardView').hidden = isSettings || isTeam || isBank;
     $('#equipoView').hidden = !isTeam;
+    $('#bancoView').hidden = !isBank;
     $('#ajustes').hidden = !isSettings;
-    const activeHref = isSettings ? '#ajustes' : isTeam ? '#equipo' : location.hash === '#registro' ? '#registro' : '#inicio';
-    if (isSettings || isTeam || activeHref === '#inicio') window.scrollTo(0, 0);
+    const activeHref = isSettings ? '#ajustes' : isTeam ? '#equipo' : isBank ? '#banco' : location.hash === '#registro' ? '#registro' : '#inicio';
+    if (isSettings || isTeam || isBank || activeHref === '#inicio') window.scrollTo(0, 0);
     else requestAnimationFrame(() => document.querySelector(activeHref)?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
     document.querySelectorAll('.sidebar nav .nav-link').forEach((link) => {
       const active = link.getAttribute('href') === activeHref;
@@ -1582,7 +1585,7 @@
       if (active) link.setAttribute('aria-current', 'page');
       else link.removeAttribute('aria-current');
     });
-    const labels = { '#inicio': 'Resumen', '#registro': 'Registrar ingresos', '#equipo': 'Equipo', '#ajustes': 'Ajustes' };
+    const labels = { '#inicio': 'Resumen', '#registro': 'Registrar ingresos', '#equipo': 'Equipo', '#banco': 'Ingresos bancarios', '#ajustes': 'Ajustes' };
     document.querySelector('.breadcrumb b').textContent = translateValue(labels[activeHref] || 'Resumen');
   }
   window.addEventListener('hashchange', updateAppPage);

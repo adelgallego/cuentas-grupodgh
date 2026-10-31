@@ -18,6 +18,7 @@
         <a class="nav-link active" href="#inicio"><span class="nav-icon">▦</span> Resumen</a>
         <a class="nav-link" href="#registro"><span class="nav-icon">＋</span> Registrar ingresos</a>
         <a class="nav-link" href="#equipo"><span class="nav-icon">♙</span> Equipo</a>
+        <a class="nav-link" href="#banco"><span class="nav-icon">＄</span> Ingresos bancarios</a>
         <a class="nav-link" href="#ajustes"><span class="nav-icon">⚙</span> Ajustes</a>
       </nav>
       <div class="sidebar-bottom">
@@ -59,19 +60,6 @@
         <div class="table-wrap"><table><thead><tr><th>SEMANA</th><th>TOKENS</th><th>TOTAL · USD</th><th>MODELOS · USD</th><th>MODELOS · COP</th><th>TU NETO · USD</th><th>TU NETO · COP</th><th></th></tr></thead><tbody id="weeklyHistoryBody"></tbody><tfoot id="weeklyHistoryFoot"></tfoot></table><div class="empty-state" id="weeklyHistoryEmpty"><span class="empty-icon">◷</span><b>Aún no hay semanas registradas</b><p>Al ingresar ingresos, cada semana aparecerá aquí y se sumará al acumulado histórico.</p></div></div>
       </section>
 
-      <section class="panel bank-income-panel">
-        <div class="panel-heading"><div><h2>Ingresos recibidos en el banco</h2><p>Registra el dinero que recibiste exactamente. Estos depósitos se agrupan por mes y no modifican los cálculos de tokens.</p></div></div>
-        <form id="bankReceiptForm" class="bank-receipt-form">
-          <label>Fecha de recepción<input id="bankReceiptDate" type="date" required></label>
-          <label>Banco / concepto<input id="bankReceiptDescription" type="text" maxlength="100" placeholder="Ej. Bancolombia · pago de octubre" required></label>
-          <label>Moneda<select id="bankReceiptCurrency" required><option value="COP">COP</option><option value="USD">USD</option></select></label>
-          <label>Monto recibido<input id="bankReceiptAmount" type="number" min="0.01" step="0.01" placeholder="0" required inputmode="decimal"></label>
-          <button class="button primary" type="submit">＋ Registrar depósito</button>
-        </form>
-        <div class="table-wrap bank-monthly-table"><table><thead><tr><th>MES</th><th>DEPÓSITOS</th><th>RECIBIDO · COP</th><th>RECIBIDO · USD</th></tr></thead><tbody id="bankMonthlyBody"></tbody><tfoot id="bankMonthlyFoot"></tfoot></table><div class="empty-state" id="bankMonthlyEmpty"><span class="empty-icon">◷</span><b>Aún no hay depósitos registrados</b><p>Al registrar un ingreso bancario, aparecerá aquí en el mes correspondiente.</p></div></div>
-        <div class="table-wrap bank-receipt-table"><table><thead><tr><th>FECHA</th><th>BANCO / CONCEPTO</th><th>MONEDA</th><th>MONTO RECIBIDO</th><th></th></tr></thead><tbody id="bankReceiptBody"></tbody></table><div class="empty-state" id="bankReceiptEmpty"><span class="empty-icon">＋</span><b>Registra el primer depósito</b><p>Guarda cada pago bancario con el monto exacto que recibiste.</p></div></div>
-      </section>
-
       <section class="content-grid">
         <article class="panel entries-panel">
           <div class="panel-heading"><div><h2>Ingresos recientes</h2><p>Detalle de los registros por modelo</p></div><div class="table-filters"><label class="period-select"><span class="sr-only">Filtrar página</span><select id="platformFilter"><option value="all">Todas las páginas</option><option value="stripchat">Stripchat</option><option value="chaturbate">Chaturbate</option></select></label><label class="period-select"><span class="sr-only">Filtrar monetizadora</span><select id="providerFilter"><option value="all">Todas las monetizadoras</option><option value="bantokens">BANTOKENS</option><option value="twl">TWL</option><option value="usdt">USDT</option></select></label><label class="period-select"><span class="sr-only">Filtrar modelo</span><select id="modelFilter"><option value="all">Todas las modelos</option></select></label><label class="period-select"><span class="sr-only">Filtrar periodo</span><select id="period"><option value="selected-week">Semana seleccionada</option><option value="all">Todo el tiempo</option><option value="month">Este mes</option><option value="week">Últimos 7 días</option></select></label></div></div>
@@ -97,6 +85,20 @@
       </section>
       <footer class="footer-note">GRUPODGH <span>·</span> Los valores son estimados según las tasas que configures.</footer>
           </div>
+      <div id="bancoView" class="app-view bank-view" hidden>
+        <section class="page-heading"><div><p class="eyebrow">ADMINISTRACIÓN</p><h1>Ingresos recibidos en el banco</h1><p class="subheading">Registra el dinero que recibiste exactamente. Estos depósitos se agrupan por mes y no modifican los cálculos de tokens.</p></div></section>
+              <section class="panel bank-income-panel">
+        <form id="bankReceiptForm" class="bank-receipt-form">
+          <label>Fecha de recepción<input id="bankReceiptDate" type="date" required></label>
+          <label>Banco / concepto<input id="bankReceiptDescription" type="text" maxlength="100" placeholder="Ej. Bancolombia · pago de octubre" required></label>
+          <label>Moneda<select id="bankReceiptCurrency" required><option value="COP">COP</option><option value="USD">USD</option></select></label>
+          <label>Monto recibido<input id="bankReceiptAmount" type="number" min="0.01" step="0.01" placeholder="0" required inputmode="decimal"></label>
+          <button class="button primary" type="submit">＋ Registrar depósito</button>
+        </form>
+        <div class="table-wrap bank-monthly-table"><table><thead><tr><th>MES</th><th>DEPÓSITOS</th><th>RECIBIDO · COP</th><th>RECIBIDO · USD</th></tr></thead><tbody id="bankMonthlyBody"></tbody><tfoot id="bankMonthlyFoot"></tfoot></table><div class="empty-state" id="bankMonthlyEmpty"><span class="empty-icon">◷</span><b>Aún no hay depósitos registrados</b><p>Al registrar un ingreso bancario, aparecerá aquí en el mes correspondiente.</p></div></div>
+        <div class="table-wrap bank-receipt-table"><table><thead><tr><th>FECHA</th><th>BANCO / CONCEPTO</th><th>MONEDA</th><th>MONTO RECIBIDO</th><th></th></tr></thead><tbody id="bankReceiptBody"></tbody></table><div class="empty-state" id="bankReceiptEmpty"><span class="empty-icon">＋</span><b>Registra el primer depósito</b><p>Guarda cada pago bancario con el monto exacto que recibiste.</p></div></div>
+      </section>
+      </div>
       <div id="equipoView" class="app-view team-view" hidden>
         <section class="page-heading">
           <div><p class="eyebrow">TU EQUIPO</p><h1>Equipo</h1><p class="subheading">Administra tus modelos, porcentajes y sincronizaciones.</p></div>
@@ -207,6 +209,6 @@
     </div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="app.js?v=bank-receipts-v2"></script>
+  <script src="app.js?v=bank-page-v1"></script>
 </body>
 </html>
