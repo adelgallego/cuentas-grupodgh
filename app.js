@@ -1513,12 +1513,23 @@
     } finally { chaturbateLiveStatusActive = false; render(); }
   }
   async function fetchStripchatLiveStatus(workerUrl, username) {
-    const response = await fetch(workerUrl, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username }), cache: 'no-store',
+    const headers = { 'Content-Type': 'application/json' };
+    let url = workerUrl;
+    let payload = { username };
+    const cloudUrl = supabaseChaturbateFunctionUrl();
+    if (cloudUrl && cloudSession?.access_token) {
+      const config = cloudConfiguration();
+      url = cloudUrl;
+      headers.apikey = config.publicKey;
+      headers.Authorization = 'Bearer ' + cloudSession.access_token;
+      payload = { action: 'status', platform: 'stripchat', username };
+    }
+    const response = await fetch(url, {
+      method: 'POST', headers,
+      body: JSON.stringify(payload), cache: 'no-store',
     });
     let result;
-    try { result = await response.json(); } catch { throw new Error('Stripchat devolvió una respuesta ilegible.'); }
+    try { result = await response.json(); } catch { throw new Error(`Stripchat devolvió una respuesta ilegible (HTTP ${response.status}).`); }
     if (!response.ok) throw new Error(result.error || `HTTP ${response.status}`);
     if (typeof result.is_online !== 'boolean') throw new Error('Stripchat no devolvió un estado en línea válido.');
     return result.is_online;
@@ -1536,7 +1547,8 @@
   async function syncStripchatLiveStatuses() {
     if (stripchatLiveStatusActive || !state.models.length) return;
     const workerUrl = stripchatStatusWorkerUrl();
-    if (!workerUrl) { state.models.forEach((model) => setLiveStatus('stripchat', model.id, 'unknown', 'Falta configurar el Worker de Stripchat.')); render(); return; }
+    const canUseCloudProxy = Boolean(supabaseChaturbateFunctionUrl() && cloudSession?.access_token);
+    if (!workerUrl && !canUseCloudProxy) { state.models.forEach((model) => setLiveStatus('stripchat', model.id, 'unknown', 'Falta configurar el proxy de estado.')); render(); return; }
     stripchatLiveStatusActive = true;
     try {
       await Promise.all(state.models.map(async (model) => {
