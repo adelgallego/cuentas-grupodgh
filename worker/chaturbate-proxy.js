@@ -79,8 +79,10 @@ async function fetchChaturbate(credentials, origin) {
   try { data = JSON.parse(responseText); } catch { return json({ error: `Chaturbate returned a non-JSON response (HTTP ${upstream.status}; ${contentType})` }, 502, origin); }
   const balance = Number(data?.token_balance);
   if (!Number.isFinite(balance) || balance < 0) return json({ error: String(data?.error || "The API response did not contain a valid token_balance") }, 502, origin);
-  const timeOnline = Number(data?.time_online);
-  return json({ token_balance: balance, time_online: Number.isFinite(timeOnline) ? timeOnline : null, num_viewers: Number.isFinite(Number(data?.num_viewers)) ? Number(data.num_viewers) : null, last_broadcast: data?.last_broadcast ?? null, fetched_at: new Date().toISOString() }, 200, origin);
+  const rawTimeOnline = data?.time_online;
+  const parsedTimeOnline = rawTimeOnline === null || rawTimeOnline === undefined || rawTimeOnline === "" ? null : Number(rawTimeOnline);
+  const timeOnline = parsedTimeOnline !== null && Number.isFinite(parsedTimeOnline) ? parsedTimeOnline : null;
+  return json({ token_balance: balance, time_online: timeOnline, is_online: timeOnline === null ? null : timeOnline >= 0, num_viewers: Number.isFinite(Number(data?.num_viewers)) ? Number(data.num_viewers) : null, last_broadcast: data?.last_broadcast ?? null, fetched_at: new Date().toISOString() }, 200, origin);
 }
 
 async function fetchStripchatLiveStatus(credentials, origin) {
