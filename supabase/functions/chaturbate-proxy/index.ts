@@ -111,5 +111,13 @@ Deno.serve(async (request) => {
   if (!Number.isFinite(balance) || balance < 0) {
     return json({ error: String(data?.error || "The API response did not contain a valid token_balance") }, 502, origin);
   }
-  return json({ token_balance: balance, fetched_at: new Date().toISOString() }, 200, origin);
+  const rawTimeOnline = data?.time_online;
+  const parsedTimeOnline = rawTimeOnline === null || rawTimeOnline === undefined || rawTimeOnline === "" ? null : Number(rawTimeOnline);
+  const timeOnline = parsedTimeOnline !== null && Number.isFinite(parsedTimeOnline) ? parsedTimeOnline : null;
+  return json({
+    token_balance: balance,
+    time_online: timeOnline,
+    is_online: timeOnline === null ? null : timeOnline >= 0,
+    fetched_at: new Date().toISOString(),
+  }, 200, origin);
 });
