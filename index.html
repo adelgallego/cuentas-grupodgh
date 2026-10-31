@@ -128,12 +128,12 @@
               <legend>Sincronización de Chaturbate</legend>
               <label class="model-stripchat-toggle"><input id="modelChaturbateSync" type="checkbox"> Sincronizar esta modelo automáticamente</label>
               <div class="model-split-fields" id="modelChaturbateFields" hidden>
-                <label>URL de tu Worker<input id="modelChaturbateWorkerUrl" type="url" placeholder="https://tu-worker.workers.dev/stats" autocomplete="url"></label>
+                <label>URL de respaldo del Worker<input id="modelChaturbateWorkerUrl" type="url" placeholder="https://tu-proyecto.supabase.co/functions/v1/chaturbate-proxy" autocomplete="url"></label>
                 <label>Usuario de Chaturbate<input id="modelChaturbateUsername" type="text" autocomplete="off"></label>
                 <label>API Auth Token<input id="modelChaturbateApiToken" type="password" autocomplete="new-password"></label>
                 <label>Monetizadora<select id="modelChaturbateProvider"><option value="bantokens">BANTOKENS</option><option value="twl">TWL</option><option value="usdt">USDT</option></select></label>
               </div>
-              <small class="split-note">El contador se reinicia los lunes a las 00:00; la app consulta cada 5 minutos mientras está abierta. Las credenciales se guardan en este navegador, no en los respaldos. Configura un Worker de Cloudflare.</small>
+              <small class="split-note">El contador se reinicia los lunes a las 00:00; la app consulta cada 5 minutos mientras está abierta. Las credenciales se guardan en este navegador, no en los respaldos. Con sesión iniciada, la app consulta la función de Supabase; sin sesión, utiliza el Worker.</small>
             </fieldset>
             <fieldset class="model-stripchat-settings">
               <legend>Sincronización de Stripchat</legend>
@@ -207,6 +207,6 @@
     </div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="app.js?v=bank-receipts-v2"></script>
+  <script src="app.js?v=supabase-cb-proxy-v1"></script>
 </body>
 </html>
