@@ -515,7 +515,7 @@
     $('#saveIndicator').textContent = '● Nube sincronizada';
     render();
     if (appLanguage === 'en') translatePage();
-    if (['http:', 'https:'].includes(window.location.protocol)) setTimeout(() => { syncChaturbateAccounts(); syncStripchatModels(); syncStripchatLiveStatuses(); }, 250);
+    if (['http:', 'https:'].includes(window.location.protocol)) setTimeout(() => { syncChaturbateAccounts(); syncStripchatModels(); syncChaturbateLiveStatuses(); syncStripchatLiveStatuses(); }, 250);
   }
   async function cloudRead() {
     return cloudRequest(`user_app_state?select=data,revision&user_id=eq.${encodeURIComponent(cloudSession.user.id)}&limit=1`, { method: 'GET' });
@@ -863,13 +863,19 @@
       const locked = state.entries.some((e) => e.modelId === m.id);
       const share = `SC ${fmt(m.sharePctByPlatform.stripchat, 1)}% · -${fmt(m.copDiscountByPlatform.stripchat, 0)} COP/USD · CB ${fmt(m.sharePctByPlatform.chaturbate, 1)}% · -${fmt(m.copDiscountByPlatform.chaturbate, 0)} COP/USD`;
       const syncBadge = `${modelSyncBadge('chaturbate', chaturbateCredentials[m.id])} ${modelSyncBadge('stripchat', stripchatModelCredentials[m.id])}`;
-      const liveStatus = liveStatuses.get(`stripchat:${m.id}`);
-      const liveState = liveStatus?.state || 'unknown';
-      const liveClass = liveState === 'online' ? 'is-online' : liveState === 'offline' ? 'is-offline' : 'is-unknown';
-      const liveLabel = liveState === 'online' ? (appLanguage === 'en' ? 'Live now' : 'En línea') : liveState === 'offline' ? (appLanguage === 'en' ? 'Offline' : 'Fuera de línea') : (appLanguage === 'en' ? 'Status unavailable' : 'Estado no disponible');
-      const liveTitle = liveStatus?.detail ? `${liveLabel} · ${liveStatus.detail}` : liveLabel;
-      const liveBadge = `<small class="model-live-badge" title="${escapeHtml(liveTitle)}"><span class="connection-indicator ${liveClass}" role="img" aria-label="${escapeHtml(liveTitle)}"></span>Stripchat · ${escapeHtml(liveLabel)}</small>`;
-      return `<div class="manage-row"><span class="manage-name">${escapeHtml(m.name)} ${syncBadge} ${liveBadge}<small style="color:#8b94a3">· ${share}</small> ${locked ? '<small title="Tiene ingresos registrados" style="color:#99a1ae">· con movimientos</small>' : ''}</span><button class="edit-model" data-edit-model="${escapeHtml(m.id)}" title="Editar modelo">Editar</button><button class="remove-model" data-remove-model="${escapeHtml(m.id)}" ${locked ? 'disabled title="No se puede eliminar porque tiene ingresos registrados"' : 'title="Eliminar modelo"'} aria-label="Eliminar modelo">×</button></div>`;
+      const stripchatStatus = liveStatuses.get(`stripchat:${m.id}`);
+      const stripchatState = stripchatStatus?.state || 'unknown';
+      const liveBadgeFor = (platform, status, pageName) => {
+        const current = status?.state || 'unknown';
+        const liveClass = current === 'online' ? 'is-online' : current === 'offline' ? 'is-offline' : 'is-unknown';
+        const liveLabel = current === 'online' ? (appLanguage === 'en' ? 'Live now' : 'En línea') : current === 'offline' ? (appLanguage === 'en' ? 'Offline' : 'Fuera de línea') : (appLanguage === 'en' ? 'Status unavailable' : 'Estado no disponible');
+        const liveTitle = status?.detail ? `${liveLabel} · ${status.detail}` : liveLabel;
+        return `<small class="model-live-badge" title="${escapeHtml(liveTitle)}"><span class="connection-indicator ${liveClass}" role="img" aria-label="${escapeHtml(liveTitle)}"></span>${pageName} · ${escapeHtml(liveLabel)}</small>`;
+      };
+      const chaturbateLiveBadge = chaturbateCredentials[m.id]?.username ? liveBadgeFor('chaturbate', liveStatuses.get(`chaturbate:${m.id}`), 'Chaturbate') : '';
+      const liveBadge = liveBadgeFor('stripchat', stripchatStatus, 'Stripchat');
+      const liveBadges = [chaturbateLiveBadge, liveBadge].filter(Boolean).join(' ');
+      return `<div class="manage-row"><span class="manage-name">${escapeHtml(m.name)} ${syncBadge} ${liveBadges}<small style="color:#8b94a3">· ${share}</small> ${locked ? '<small title="Tiene ingresos registrados" style="color:#99a1ae">· con movimientos</small>' : ''}</span><button class="edit-model" data-edit-model="${escapeHtml(m.id)}" title="Editar modelo">Editar</button><button class="remove-model" data-remove-model="${escapeHtml(m.id)}" ${locked ? 'disabled title="No se puede eliminar porque tiene ingresos registrados"' : 'title="Eliminar modelo"'} aria-label="Eliminar modelo">×</button></div>`;
     }).join('');
   }
   function renderPreview() {
@@ -1469,6 +1475,43 @@
     if (!Number.isFinite(balance) || balance < 0) throw new Error('La API no devolvió totalEarnings válido.');
     return balance;
   }
+  async function fetchChaturbateLiveStatus(username) {
+    let url = chaturbateProxyUrl();
+    if (!url) throw new Error('Inicia sesión en Supabase o configura el Worker de Chaturbate.');
+    const headers = { 'Content-Type': 'application/json' };
+    const payload = { action: 'status', username };
+    if (new URL(url).pathname.replace(/\/$/, '') === '/functions/v1/chaturbate-proxy') {
+      const config = cloudConfiguration();
+      headers.apikey = config.publicKey;
+      headers.Authorization = 'Bearer ' + cloudSession.access_token;
+    } else {
+      const worker = new URL(url);
+      worker.pathname = '/chaturbate/status';
+      url = worker.href;
+    }
+    const response = await fetch(url, { method: 'POST', headers, body: JSON.stringify(payload), cache: 'no-store' });
+    let result;
+    try { result = await response.json(); } catch { throw new Error(`Chaturbate devolvió una respuesta ilegible (HTTP ${response.status}).`); }
+    if (!response.ok) throw new Error(result.error || `HTTP ${response.status}`);
+    if (typeof result.is_online !== 'boolean') throw new Error('Chaturbate no devolvió un estado en línea válido.');
+    return result.is_online;
+  }
+  let chaturbateLiveStatusActive = false;
+  async function syncChaturbateLiveStatuses() {
+    const connected = state.models.filter((model) => chaturbateCredentials[model.id]?.username);
+    if (chaturbateLiveStatusActive || !connected.length) return;
+    chaturbateLiveStatusActive = true;
+    try {
+      await Promise.all(connected.map(async (model) => {
+        try {
+          const online = await fetchChaturbateLiveStatus(chaturbateCredentials[model.id].username);
+          setLiveStatus('chaturbate', model.id, online ? 'online' : 'offline');
+        } catch (error) {
+          setLiveStatus('chaturbate', model.id, 'unknown', error instanceof Error ? error.message : String(error));
+        }
+      }));
+    } finally { chaturbateLiveStatusActive = false; render(); }
+  }
   async function fetchStripchatLiveStatus(workerUrl, username) {
     const response = await fetch(workerUrl, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -1571,6 +1614,8 @@
   if (['http:', 'https:'].includes(window.location.protocol)) {
     syncChaturbateAccounts();
     setInterval(() => { if (!document.hidden) syncChaturbateAccounts(); }, 5 * 60 * 1000);
+    syncChaturbateLiveStatuses();
+    setInterval(() => { if (!document.hidden) syncChaturbateLiveStatuses(); }, 5 * 60 * 1000);
     document.addEventListener('visibilitychange', () => { if (!document.hidden) syncChaturbateAccounts(); });
     syncStripchatModels();
     syncStripchatLiveStatuses();
