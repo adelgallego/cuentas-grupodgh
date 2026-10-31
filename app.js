@@ -26,7 +26,7 @@
     ['Tasa común para todas las monetizadoras. La semana actual usa la nueva tasa; las semanas anteriores conservan la tasa registrada.', 'Common rate for all providers. The current week uses the new rate; previous weeks keep their recorded rate.'], ['● Guardado', '● Saved'],
     ['Respaldo y transferencia de datos', 'Data backup and transfer'], ['Respaldo de datos', 'Data backup'], ['Transfiere modelos, ingresos y tasas entre la app local y la versión web.', 'Transfer models, income, and rates between the local app and web version.'], ['Descargar respaldo', 'Download backup'], ['Importar respaldo', 'Import backup'], ['Resumen de ingresos', 'Income summary'], ['INGRESOS REGISTRADOS', 'RECORDED INCOME'], ['tokens', 'tokens'], ['En la semana seleccionada', 'For the selected week'], ['VALOR TOTAL', 'TOTAL VALUE'], ['PARA LAS MODELOS', 'MODEL PAYOUTS'], ['TU PARTE NETA', 'YOUR NET SHARE'], ['Descuentos', 'Deductions'], ['semanal', 'weekly'],
     ['Liquidación semanal por modelo', 'Weekly payout by model'], ['Semana actual · lunes a domingo', 'Current week · Monday to Sunday'], ['Consultar semana', 'Select week'], ['MODELO', 'MODEL'], ['PÁGINA', 'PLATFORM'], ['MONETIZADORA', 'PROVIDER'], ['TOKENS EN LA SEMANA', 'WEEKLY TOKENS'], ['MODELO · USD', 'MODEL · USD'], ['MODELO · COP', 'MODEL · COP'], ['RETENCIÓN MONETIZADORA · USD / COP', 'PROVIDER DEDUCTION · USD / COP'], ['TU NETO · USD', 'YOUR NET · USD'], ['TU NETO · COP', 'YOUR NET · COP'], ['Aún no hay ingresos esta semana', 'No income recorded this week yet'], ['Al registrar lecturas, aquí verás el pago por modelo, página y monetizadora.', 'Once you record readings, payouts by model, platform, and provider will appear here.'],
-    ['Histórico semanal', 'Weekly history'], ['Cada semana se conserva por separado; el total reúne todo el historial.', 'Each week is kept separate; the total combines the full history.'], ['Histórico mensual', 'Monthly history'], ['Cada mes reúne sus ingresos; el acumulado incluye todo el historial.', 'Each month groups its income; the cumulative total includes the full history.'], ['MES', 'MONTH'], ['Aún no hay meses registrados', 'No months recorded yet'], ['Al registrar ingresos, cada mes aparecerá aquí junto con los pagos y tu neto.', 'As you record income, each month will appear here with model payouts and your net.'], ['SEMANA', 'WEEK'], ['TOKENS', 'TOKENS'], ['TOTAL · USD', 'TOTAL · USD'], ['Aún no hay semanas registradas', 'No weeks recorded yet'], ['Al ingresar ingresos, cada semana aparecerá aquí y se sumará al acumulado histórico.', 'Each week will appear here as you record income and will be added to the historical total.'],
+    ['Histórico semanal', 'Weekly history'], ['Cada semana se conserva por separado; el total reúne todo el historial.', 'Each week is kept separate; the total combines the full history.'], ['SEMANA', 'WEEK'], ['TOKENS', 'TOKENS'], ['TOTAL · USD', 'TOTAL · USD'], ['Aún no hay semanas registradas', 'No weeks recorded yet'], ['Al ingresar ingresos, cada semana aparecerá aquí y se sumará al acumulado histórico.', 'Each week will appear here as you record income and will be added to the historical total.'],
     ['Ingresos recientes', 'Recent income'], ['Detalle de los registros por modelo', 'Income entries by model'], ['Filtrar página', 'Filter by platform'], ['Todas las páginas', 'All platforms'], ['Filtrar monetizadora', 'Filter by provider'], ['Todas las monetizadoras', 'All providers'], ['Filtrar modelo', 'Filter by model'], ['Todas las modelos', 'All models'], ['Filtrar periodo', 'Filter by period'], ['Semana seleccionada', 'Selected week'], ['Todo el tiempo', 'All time'], ['Este mes', 'This month'], ['Últimos 7 días', 'Last 7 days'], ['FECHA', 'DATE'], ['TOKENS DEL DÍA', 'DAILY TOKENS'], ['ACUMULADO SEMANAL', 'WEEKLY TOTAL'], ['VALOR USD', 'VALUE · USD'], ['MODELO · USD / COP', 'MODEL · USD / COP'], ['RETENCIÓN MONETIZADORA · USD / COP', 'PROVIDER DEDUCTION · USD / COP'], ['TU NETO · USD / COP', 'YOUR NET · USD / COP'], ['Aún no hay ingresos', 'No income recorded yet'], ['Registra el acumulado semanal para calcular los tokens de cada día.', 'Enter the weekly total to calculate tokens earned each day.'], ['Registrar ingreso', 'Record income'], ['Gestionar', 'Manage'], ['Modelos registradas', 'Registered models'], ['Agrega tus modelos para comenzar.', 'Add models to get started.'], ['Agregar modelo', 'Add model'],
     ['NUEVO MOVIMIENTO', 'NEW ENTRY'], ['Ingresa los tokens ganados por una modelo.', 'Enter the tokens earned by a model.'], ['Página', 'Platform'], ['Monetizadora', 'Provider'], ['Modelo', 'Model'], ['Selecciona un modelo', 'Select a model'], ['Fecha', 'Date'], ['Tokens acumulados en la semana', 'Weekly accumulated tokens'], ['Escribe el acumulado que muestra la página. Se resta la lectura anterior de esta modelo y página (semana de lunes a domingo).', 'Enter the total shown on the platform. The previous reading for this model and platform (Monday through Sunday) is subtracted.'], ['Configura las tasas de conversión para ver el cálculo estimado.', 'Set conversion rates to see the estimated calculation.'], ['Guardar ingreso', 'Save income'], ['Cancelar edición', 'Cancel editing'], ['EQUIPO', 'TEAM'], ['Agrega cada modelo una vez y define su porcentaje para cada página.', 'Add each model once and set its share for each platform.'], ['Nombre de la modelo', 'Model name'], ['Stripchat · COP menos/USD', 'Stripchat · COP deduction/USD'], ['Chaturbate · COP menos/USD', 'Chaturbate · COP deduction/USD'], ['La misma modelo estará disponible en ambas páginas. El registro usa los porcentajes y el descuento de la página elegida.', 'The model will be available on both platforms. Each entry uses the share and deduction set for the selected platform.'], ['Cancelar', 'Cancel'], ['Los valores son estimados según las tasas que configures.', 'Values are estimates based on the rates you set.'], ['Confirmar importación', 'Confirm import'], ['Esto reemplazará los datos guardados en esta versión de la app.', 'This will replace the data stored in this version of the app.'], ['Importar y aplicar', 'Import and apply'],
     ['Guardar cambios', 'Save changes'], ['Editar modelo', 'Edit model'], ['Eliminar modelo', 'Delete model'], ['Editar ingreso', 'Edit income'], ['Eliminar ingreso', 'Delete income'], ['Tiene ingresos registrados', 'Has recorded income'], ['No se puede eliminar porque tiene ingresos registrados', 'Cannot delete because this model has recorded income'], ['· con movimientos', '· has entries'], ['Todas', 'All'], ['Configura las tasas', 'Set the rates'], ['Configura la tasa COP/USD', 'Set the COP/USD rate'], ['Configura la tasa COP/USD de esta monetizadora', 'Set this provider’s COP/USD rate'], ['Detalle', 'Details'], ['Ver semana →', 'View week →'], ['· actual', '· current'], ['ACUMULADO HISTÓRICO', 'HISTORICAL TOTAL'], ['TOTAL SEMANAL', 'WEEKLY TOTAL'], ['Primera lectura de esta modelo y página en la semana: el acumulado completo se contará como tokens del día.', 'First reading for this model and platform this week: the full total will count as today’s tokens.'], ['Tokens registrados antes', 'Previously recorded tokens'], ['Última lectura', 'Previous reading'], ['Actualizando ingreso.', 'Updating income.'], ['Tokens del día estimados:', 'Estimated tokens today:'], ['Acumulado semanal:', 'Weekly total:'], ['· Acumulado:', '· Weekly total:'], ['Configura las tasas para calcular el dinero.', 'Set the rates to calculate the payout.'], ['Total del día:', 'Daily total:'], ['Modelo (', 'Model ('], [' · paga ', ' · payout '], ['Tu parte neta:', 'Your net share:'], ['BANTOKENS descuenta ', 'BANTOKENS deducts '], [' de la deducción semanal de ', ' from the weekly deduction of '], [' de Tiffany; los ', ' for Tiffany; the remaining '], [' restantes se reparten según el porcentaje de ella.', ' is split according to her share.'], ['TWL retiene ', 'TWL withholds '], [' del total.', ' from the total.'], ['USDT descuenta primero ', 'USDT deducts '], [' (1%); los ', ' (1%) first; the remaining '], [' restantes se reparten ', ' is split '], [' para ella y ', ' to her and '], [' para ti.', ' to you.'], ['Los ', 'The '], ['tokens del día', 'tokens today'],
@@ -38,6 +38,7 @@
   translationPairs.push(['Ajustes', 'Settings'], ['PREFERENCIAS', 'PREFERENCES'], ['Administra tasas, almacenamiento, respaldos y apariencia de la aplicación.', 'Manage rates, cloud storage, backups, and app appearance.'], ['Apariencia', 'Appearance'], ['Personaliza cómo se ve la aplicación en este dispositivo.', 'Customize how the app looks on this device.'], ['Tema', 'Theme'], ['Cambia entre modo claro y oscuro.', 'Switch between light and dark mode.'], ['Color principal', 'Accent color'], ['Elige el color de los controles y acentos.', 'Choose the color used for controls and accents.']);
   translationPairs.push(['Semana actual', 'Current week'], ['Lunes 00:00 UTC – domingo 23:59 UTC', 'Monday 00:00 UTC – Sunday 23:59 UTC'], ['Escribe el acumulado que muestra la página. La app resta la lectura anterior de esta página.', 'Enter the total shown on the platform. The app subtracts the previous reading for this platform.']);
   translationPairs.push(['Stripchat: lunes 00:00 UTC · Chaturbate: lunes 00:00 hora local', 'Stripchat: Monday 00:00 UTC · Chaturbate: Monday 00:00 local time']);
+  translationPairs.push(['Ingresos recibidos en el banco', 'Income received by bank'], ['Registra el dinero que recibiste exactamente. Estos depósitos se agrupan por mes y no modifican los cálculos de tokens.', 'Record the exact money you received. Deposits are grouped by month and do not change token calculations.'], ['Fecha de recepción', 'Date received'], ['Banco / concepto', 'Bank / description'], ['Ej. Bancolombia · pago de octubre', 'e.g. Bancolombia · October payout'], ['Moneda', 'Currency'], ['Monto recibido', 'Amount received'], ['Registrar depósito', 'Record deposit'], ['MES', 'MONTH'], ['DEPÓSITOS', 'DEPOSITS'], ['RECIBIDO · COP', 'RECEIVED · COP'], ['RECIBIDO · USD', 'RECEIVED · USD'], ['Aún no hay depósitos registrados', 'No deposits recorded yet'], ['Al registrar un ingreso bancario, aparecerá aquí en el mes correspondiente.', 'Bank deposits will appear here under their month.'], ['FECHA', 'DATE'], ['Registra el primer depósito', 'Record your first deposit'], ['Guarda cada pago bancario con el monto exacto que recibiste.', 'Save each bank payment with the exact amount you received.'], ['TOTAL REGISTRADO', 'TOTAL RECORDED'], ['Eliminar depósito', 'Delete deposit'], ['Revisa la fecha, el concepto, la moneda y el monto del depósito.', 'Check the date, description, currency, and deposit amount.'], ['Depósito bancario registrado.', 'Bank deposit recorded.'], ['¿Eliminar este depósito bancario?', 'Delete this bank deposit?'], ['Depósito bancario eliminado.', 'Bank deposit deleted.']);
   const compileTranslations = (pairs) => {
     const values = new Map(pairs);
     const alternatives = [...values.keys()]
@@ -154,7 +155,7 @@
     if (swatch) swatch.style.backgroundColor = color;
   }
   if (savedAccent) applyAccentColor(savedAccent);
-  const defaults = { rates: { usdPerToken: { stripchat: 0.05, chaturbate: 0.05 }, copPerUsdByProvider: { bantokens: '', twl: '', usdt: '' } }, models: [], entries: [] };
+  const defaults = { rates: { usdPerToken: { stripchat: 0.05, chaturbate: 0.05 }, copPerUsdByProvider: { bantokens: '', twl: '', usdt: '' } }, models: [], entries: [], bankReceipts: [] };
   const modelIdRemap = {};
   let state;
   try {
@@ -213,6 +214,7 @@
       }
     }
     state.entries = Array.isArray(state.entries) ? state.entries : [];
+    state.bankReceipts = Array.isArray(state.bankReceipts) ? state.bankReceipts : [];
     state.entries = state.entries.map((entry) => ({
       ...entry,
       modelId: modelIdRemap[entry.modelId] || entry.modelId,
@@ -487,6 +489,7 @@
   function cloudApplySnapshot(snapshot) {
     if (!snapshot?.appState || !Array.isArray(snapshot.appState.models) || !Array.isArray(snapshot.appState.entries)) throw new Error('Los datos de la nube no tienen el formato esperado.');
     state = snapshot.appState;
+    state.bankReceipts = Array.isArray(state.bankReceipts) ? state.bankReceipts : [];
     if (normalizeChaturbateReportWeeks()) cloudDirty = true;
     localStorage.removeItem(STORAGE_KEY);
     if (!cloudSession) {
@@ -790,40 +793,38 @@
     const total = rows.reduce((all, row) => ({ tokens: all.tokens + row.tokens, totalUsd: all.totalUsd + row.totalUsd, modelUsd: all.modelUsd + row.modelUsd, modelCop: all.modelCop + row.modelCop, ownerUsd: all.ownerUsd + row.ownerUsd, ownerCop: all.ownerCop + row.ownerCop, hasCopRate: all.hasCopRate && row.hasCopRate }), { tokens: 0, totalUsd: 0, modelUsd: 0, modelCop: 0, ownerUsd: 0, ownerCop: 0, hasCopRate: rows.length > 0 });
     $('#weeklyHistoryFoot').innerHTML = rows.length ? `<tr><th>ACUMULADO HISTÓRICO</th><th data-label="Tokens">${fmt(total.tokens, 0)}</th><th data-label="Total · USD">${usd(total.totalUsd)}</th><th data-label="Modelos · USD">${usd(total.modelUsd)}</th><th data-label="Modelos · COP">${total.hasCopRate ? cop(total.modelCop) : 'Configura las tasas'}</th><th data-label="Tu neto · USD">${usd(total.ownerUsd)}</th><th data-label="Tu neto · COP">${total.hasCopRate ? cop(total.ownerCop) : 'Configura las tasas'}</th><th></th></tr>` : '';
   }
-  function renderMonthlyHistory() {
+  function bankReceiptAmount(receipt) {
+    return new Intl.NumberFormat(locale(), { style: 'currency', currency: receipt.currency, minimumFractionDigits: receipt.currency === 'USD' ? 2 : 0, maximumFractionDigits: 2 }).format(number(receipt.amount));
+  }
+  function renderBankIncome() {
+    state.bankReceipts = Array.isArray(state.bankReceipts) ? state.bankReceipts : [];
     const totals = new Map();
-    const today = todayISO();
-    state.entries.forEach((entry) => {
-      if (entry.date > today) return;
-      const monthKey = String(entry.date || '').slice(0, 7);
-      if (!/^\\d{4}-\\d{2}$/.test(monthKey)) return;
-      if (!totals.has(monthKey)) totals.set(monthKey, { month: monthKey, tokens: 0, totalUsd: 0, modelUsd: 0, modelCop: 0, ownerUsd: 0, ownerCop: 0, hasCopRate: true });
-      const month = totals.get(monthKey);
-      month.tokens += entryTokens(entry);
-      month.totalUsd += entryUsd(entry);
-      month.modelUsd += entryModelUsd(entry);
-      month.modelCop += entryModelCop(entry);
-      month.ownerUsd += entryOwnerUsd(entry);
-      month.ownerCop += entryOwnerCop(entry);
-      if (!(entryCopRate(entry) > 0)) month.hasCopRate = false;
-    });
+    for (const receipt of state.bankReceipts) {
+      const monthKey = String(receipt.date || '').slice(0, 7);
+      if (!/^\d{4}-\d{2}$/.test(monthKey) || !['COP', 'USD'].includes(receipt.currency) || !(number(receipt.amount) > 0)) continue;
+      if (!totals.has(monthKey)) totals.set(monthKey, { month: monthKey, count: 0, COP: 0, USD: 0 });
+      const month = totals.get(monthKey); month.count += 1; month[receipt.currency] += number(receipt.amount);
+    }
     const rows = [...totals.values()].sort((a, b) => b.month.localeCompare(a.month));
-    $('#monthlyHistoryEmpty').hidden = rows.length > 0;
-    $('#monthlyHistoryBody').innerHTML = rows.map((row) => {
-      const date = new Date(`${row.month}-01T00:00:00`);
+    $('#bankMonthlyEmpty').hidden = rows.length > 0;
+    $('#bankMonthlyBody').innerHTML = rows.map((row) => {
+      const date = new Date(row.month + '-01T00:00:00');
       const rawLabel = date.toLocaleDateString(locale(), { month: 'long', year: 'numeric' });
       const label = rawLabel.charAt(0).toLocaleUpperCase(locale()) + rawLabel.slice(1);
-      return `<tr><td data-label="Mes">${escapeHtml(label)}</td><td class="token-cell" data-label="Tokens">${fmt(row.tokens, 0)}</td><td class="amount-cell" data-label="Total · USD">${usd(row.totalUsd)}</td><td class="share-cell" data-label="Modelos · USD">${usd(row.modelUsd)}</td><td data-label="Modelos · COP">${row.hasCopRate ? cop(row.modelCop) : 'Configura las tasas'}</td><td class="amount-cell" data-label="Tu neto · USD">${usd(row.ownerUsd)}</td><td data-label="Tu neto · COP">${row.hasCopRate ? cop(row.ownerCop) : 'Configura las tasas'}</td></tr>`;
+      return '<tr><td data-label="Mes">' + escapeHtml(label) + '</td><td data-label="Depósitos">' + fmt(row.count, 0) + '</td><td data-label="Recibido · COP">' + bankReceiptAmount({ currency: 'COP', amount: row.COP }) + '</td><td data-label="Recibido · USD">' + bankReceiptAmount({ currency: 'USD', amount: row.USD }) + '</td></tr>';
     }).join('');
-    const total = rows.reduce((all, row) => ({
-      tokens: all.tokens + row.tokens, totalUsd: all.totalUsd + row.totalUsd, modelUsd: all.modelUsd + row.modelUsd,
-      modelCop: all.modelCop + row.modelCop, ownerUsd: all.ownerUsd + row.ownerUsd, ownerCop: all.ownerCop + row.ownerCop,
-      hasCopRate: all.hasCopRate && row.hasCopRate,
-    }), { tokens: 0, totalUsd: 0, modelUsd: 0, modelCop: 0, ownerUsd: 0, ownerCop: 0, hasCopRate: rows.length > 0 });
-    $('#monthlyHistoryFoot').innerHTML = rows.length
-      ? `<tr><th>ACUMULADO HISTÓRICO</th><th data-label="Tokens">${fmt(total.tokens, 0)}</th><th data-label="Total · USD">${usd(total.totalUsd)}</th><th data-label="Modelos · USD">${usd(total.modelUsd)}</th><th data-label="Modelos · COP">${total.hasCopRate ? cop(total.modelCop) : 'Configura las tasas'}</th><th data-label="Tu neto · USD">${usd(total.ownerUsd)}</th><th data-label="Tu neto · COP">${total.hasCopRate ? cop(total.ownerCop) : 'Configura las tasas'}</th></tr>`
-      : '';
+    const totalCop = rows.reduce((sum, row) => sum + row.COP, 0);
+    const totalUsd = rows.reduce((sum, row) => sum + row.USD, 0);
+    const totalCount = rows.reduce((sum, row) => sum + row.count, 0);
+    $('#bankMonthlyFoot').innerHTML = rows.length ? '<tr><th>TOTAL REGISTRADO</th><th data-label="Depósitos">' + fmt(totalCount, 0) + '</th><th data-label="Recibido · COP">' + bankReceiptAmount({ currency: 'COP', amount: totalCop }) + '</th><th data-label="Recibido · USD">' + bankReceiptAmount({ currency: 'USD', amount: totalUsd }) + '</th></tr>' : '';
+    const receipts = state.bankReceipts.slice().sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')) || number(b.createdAt) - number(a.createdAt));
+    $('#bankReceiptEmpty').hidden = receipts.length > 0;
+    $('#bankReceiptBody').innerHTML = receipts.map((receipt) => {
+      const date = /^\d{4}-\d{2}-\d{2}$/.test(receipt.date || '') ? new Date(receipt.date + 'T00:00:00').toLocaleDateString(locale(), { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
+      return '<tr><td data-label="Fecha">' + escapeHtml(date) + '</td><td data-label="Banco / concepto">' + escapeHtml(receipt.description || '') + '</td><td data-label="Moneda">' + escapeHtml(receipt.currency) + '</td><td class="amount-cell" data-label="Monto recibido">' + bankReceiptAmount(receipt) + '</td><td data-label="Acciones"><button class="delete-entry" type="button" data-delete-bank-receipt="' + escapeHtml(receipt.id) + '" aria-label="Eliminar depósito" title="Eliminar depósito">×</button></td></tr>';
+    }).join('');
   }
+
   function renderEntries() {
     const modelFilter = $('#modelFilter');
     const selectedModel = modelFilter.value;
@@ -849,7 +850,7 @@
     renderSummary();
     renderWeeklyPayouts();
     renderWeeklyHistory();
-    renderMonthlyHistory();
+    renderBankIncome();
   }
   function renderModels() {
     const currentSelection = $('#entryModel').value;
@@ -1064,6 +1065,22 @@
   $('#providerFilter').addEventListener('change', renderEntries);
   $('#modelFilter').addEventListener('change', renderEntries);
   $('#weekSelector').addEventListener('change', (event) => { selectedWeek = event.target.value; renderEntries(); });
+  $('#bankReceiptDate').value = todayISO();
+  $('#bankReceiptForm').addEventListener('submit', (event) => {
+    event.preventDefault();
+    const date = $('#bankReceiptDate').value;
+    const description = $('#bankReceiptDescription').value.trim();
+    const currency = $('#bankReceiptCurrency').value;
+    const amount = Number($('#bankReceiptAmount').value);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !description || !['COP', 'USD'].includes(currency) || !Number.isFinite(amount) || amount <= 0) { flash('Revisa la fecha, el concepto, la moneda y el monto del depósito.'); return; }
+    state.bankReceipts.push({ id: crypto.randomUUID ? crypto.randomUUID() : 'bank-' + Date.now(), date, description, currency, amount, createdAt: Date.now() });
+    persist(); event.target.reset(); $('#bankReceiptDate').value = todayISO(); renderBankIncome(); flash('Depósito bancario registrado.');
+  });
+  $('#bankReceiptBody').addEventListener('click', (event) => {
+    const button = event.target.closest('[data-delete-bank-receipt]'); if (!button) return;
+    const id = button.dataset.deleteBankReceipt; if (!confirm('¿Eliminar este depósito bancario?')) return;
+    state.bankReceipts = state.bankReceipts.filter((receipt) => receipt.id !== id); persist(); renderBankIncome(); flash('Depósito bancario eliminado.');
+  });
   $('#weeklyHistoryBody').addEventListener('click', (event) => {
     const button = event.target.closest('[data-select-week]');
     if (!button) return;
