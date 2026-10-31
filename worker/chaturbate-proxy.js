@@ -22,7 +22,7 @@ export default {
     const url = new URL(request.url);
     const origin = request.headers.get("Origin") || "";
     if (!allowedOrigins.has(origin)) return new Response("Forbidden origin", { status: 403 });
-    if (!["/stats", "/stripchat/stats", "/stripchat/status"].includes(url.pathname)) return json({ error: "Not found" }, 404, origin);
+    if (!["/stats", "/chaturbate/status", "/stripchat/stats", "/stripchat/status"].includes(url.pathname)) return json({ error: "Not found" }, 404, origin);
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: corsHeaders(origin) });
     if (request.method !== "POST") return json({ error: "Use POST" }, 405, origin);
 
@@ -35,10 +35,26 @@ export default {
     }
 
     if (url.pathname === "/stats") return fetchChaturbate(credentials, origin);
+    if (url.pathname === "/chaturbate/status") return fetchChaturbateLiveStatus(credentials, origin);
     if (url.pathname === "/stripchat/status") return fetchStripchatLiveStatus(credentials, origin);
     return fetchStripchat(credentials, origin);
   },
 };
+
+async function fetchChaturbateLiveStatus(credentials, origin) {
+  const username = String(credentials?.username || "").trim();
+  if (!/^[a-zA-Z0-9_]{1,30}$/.test(username)) return json({ error: "Enter a valid Chaturbate username" }, 400, origin);
+  let upstream;
+  try {
+    upstream = await fetch(`https://chaturbate.com/api/chatvideocontext/${encodeURIComponent(username)}/`, { headers: { Accept: "application/json", Referer: `https://chaturbate.com/${encodeURIComponent(username)}/`, "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124.0 Safari/537.36" }, redirect: "follow" });
+  } catch { return json({ error: "Could not reach Chaturbate live status API" }, 502, origin); }
+  let data;
+  try { data = await upstream.json(); } catch { return json({ error: `Chaturbate live status returned a non-JSON response (HTTP ${upstream.status})` }, 502, origin); }
+  if (!upstream.ok) return json({ error: `Chaturbate live status returned HTTP ${upstream.status}` }, 502, origin);
+  const roomStatus = String(data?.room_status || "").toLowerCase();
+  if (!roomStatus) return json({ error: "Chaturbate response did not contain room_status" }, 502, origin);
+  return json({ is_online: roomStatus !== "offline", room_status: roomStatus, fetched_at: new Date().toISOString() }, 200, origin);
+}
 
 async function fetchChaturbate(credentials, origin) {
   const username = String(credentials?.username || "").trim();
