@@ -51,7 +51,7 @@ async function fetchChaturbate(credentials, origin) {
   apiUrl.searchParams.set("token", token);
   let upstream;
   try {
-    upstream = await fetch(apiUrl, { headers: { Accept: "application/json" }, redirect: "follow" });
+    upstream = await fetch(apiUrl, { headers: { Accept: "application/json", "User-Agent": "GRUPODGH/1.0 (+https://adelgallego.github.io/cuentas-grupodgh/)" }, redirect: "follow" });
   } catch {
     return json({ error: "Could not reach Chaturbate Stats API" }, 502, origin);
   }
