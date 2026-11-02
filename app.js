@@ -50,6 +50,7 @@
   translationPairs.push(['● Pendiente de nube', '● Cloud pending'], ['● Nube sincronizada', '● Cloud synced'], ['● Conflicto nube', '● Cloud conflict'], ['● Error en nube', '● Cloud error']);
   translationPairs.push(['La semana nueva se muestra el lunes a las 00:00 hora local', 'The new week is shown at 12:00 a.m. local time on Monday']);
   translationPairs.push(['Ingresos bancarios', 'Bank deposits']);
+  translationPairs.push(['El contador se reinicia los lunes a las 00:00. Si retiras los tokens y el saldo vuelve a 0, se conserva el acumulado semanal y se suman los tokens nuevos. La app consulta cada 5 minutos mientras está abierta. Las credenciales se guardan en este navegador, no en los respaldos. Configura un Worker de Cloudflare.', 'The counter resets on Mondays at 00:00. If you cash out and the balance returns to 0, the weekly total is preserved and new tokens are added. The app checks every 5 minutes while it is open. Credentials are stored in this browser and are not included in backups. Configure a Cloudflare Worker.']);
   const translations = {
     en: compileTranslations(translationPairs),
     es: compileTranslations(translationPairs.map(([spanish, english]) => [english, spanish])),
@@ -1315,6 +1316,34 @@
     const timeOnline = result.time_online === null || result.time_online === undefined ? null : Number(result.time_online);
     return { balance, timeOnline: Number.isFinite(timeOnline) ? timeOnline : null };
   }
+  function chaturbateWeeklyBalance(modelId, reportWeek, credential, apiBalance) {
+    const readings = state.entries.filter((entry) => entry.modelId === modelId && entry.platform === 'chaturbate' && entry.weeklyTokens !== undefined && entry.weeklyTokens !== null && entryWeekKey(entry) === reportWeek);
+    const recordedTotal = readings.reduce((highest, entry) => Math.max(highest, number(entry.weeklyTokens)), 0);
+    const trackedReadings = readings.filter((entry) => entry.chaturbateApiBalance !== undefined && entry.chaturbateApiBalance !== null)
+      .sort((a, b) => b.date.localeCompare(a.date) || number(b.createdAt) - number(a.createdAt));
+    let offset = credential.apiBalanceWeek === reportWeek ? Math.max(0, number(credential.apiBalanceOffset)) : 0;
+    for (const entry of trackedReadings) {
+      const entryOffset = entry.chaturbateApiOffset === undefined || entry.chaturbateApiOffset === null
+        ? Math.max(0, number(entry.weeklyTokens) - number(entry.chaturbateApiBalance))
+        : Math.max(0, number(entry.chaturbateApiOffset));
+      offset = Math.max(offset, entryOffset);
+    }
+    const hasTrackedBalance = credential.apiBalanceWeek === reportWeek && credential.apiLastBalance !== undefined && credential.apiLastBalance !== null && Number.isFinite(Number(credential.apiLastBalance));
+    const lastBalance = hasTrackedBalance ? Number(credential.apiLastBalance) : trackedReadings.length
+      ? number(trackedReadings[0].chaturbateApiBalance)
+      : readings.length ? recordedTotal : null;
+    if (lastBalance !== null && apiBalance < lastBalance) offset = Math.max(offset + lastBalance, recordedTotal);
+    let weeklyBalance = offset + apiBalance;
+    if (weeklyBalance < recordedTotal) {
+      weeklyBalance = recordedTotal;
+      offset = weeklyBalance - apiBalance;
+    }
+    credential.apiBalanceWeek = reportWeek;
+    credential.apiBalanceOffset = offset;
+    credential.apiLastBalance = apiBalance;
+    return { weeklyBalance, offset };
+  }
+
   async function syncChaturbateAccounts() {
     if (chaturbateSyncActive) return;
     const workerUrl = chaturbateWorkerUrl();
@@ -1335,16 +1364,20 @@
         const { balance, timeOnline } = await fetchChaturbateBalance(workerUrl, credential);
         setLiveStatus('chaturbate', model.id, timeOnline === null ? 'unknown' : timeOnline >= 0 ? 'online' : 'offline');
         if (!ratesReady('chaturbate', provider)) throw new Error(`Faltan las tasas USD/token o COP/USD para ${model.name}.`);
+        const weeklySnapshot = chaturbateWeeklyBalance(model.id, reportWeek, credential, balance);
         const reading = state.entries.find((entry) => entry.modelId === model.id && entry.platform === 'chaturbate' && entry.date === date && reportWeekKey(entry) === reportWeek && entry.weeklyTokens !== undefined && entry.weeklyTokens !== null);
         if (reading) {
-          reading.weeklyTokens = balance;
+          reading.weeklyTokens = weeklySnapshot.weeklyBalance;
+          reading.chaturbateApiBalance = balance;
+          reading.chaturbateApiOffset = weeklySnapshot.offset;
           reading.modelName = model.name;
           reading.reportWeekKey = reportWeek;
         } else {
           state.entries.push({
             id: crypto.randomUUID ? crypto.randomUUID() : `cb-${model.id}-${date}-${reportWeek}`,
             modelId: model.id, modelName: model.name, platform: 'chaturbate', provider, date, reportWeekKey: reportWeek,
-            tokens: 0, weeklyTokens: balance,
+            tokens: 0, weeklyTokens: weeklySnapshot.weeklyBalance,
+            chaturbateApiBalance: balance, chaturbateApiOffset: weeklySnapshot.offset,
             sharePct: Number(model.sharePctByPlatform.chaturbate),
             usdPerToken: number(state.rates.usdPerToken.chaturbate),
             copPerUsd: number(state.rates.copPerUsdByProvider[provider]),
